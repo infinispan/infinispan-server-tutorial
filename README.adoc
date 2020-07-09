@@ -6,4 +6,79 @@
 
 image::infinispan_logo.svg[Infinispan Logo]
 
+<a href="https://github.com/you"><img width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_left_orange_ff7600.png?resize=149%2C149" class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1"></a>
 == Client Server Tutorial
+
+=== Run an Infinispan Server locally
+
+For this tutorial, the first thing we need to do is to run an Infinispan Server.
+
+==== Option 1: Use Docker (recommended way)
+
+Use the Infinispan Server docker image to run a standalone infinispan server.
+
+The server is secured by default with a simple security realm.
+Provide a USER and PASS. In this tutorial we will be using 'user' and 'pass' credentials.
+
+`docker run -it -p 11222:11222 -e USER="user" -e PASS="pass" infinispan/server:11.0`
+
+==== Option 2: Download the server
+
+- Go to the infinispan https://infinispan.org/download/#stable[downloads] and download the server
+
+- From the installation directory create a user using the Command Line Interface (CLI)
+`./bin/cli.sh user create`
+
+- Run the server
+`./bin/server.sh`
+
+For this tutorial we will be using 'user' and 'pass' credentials, but feel free to chose your own.
+
+==== Check the Server is correctly running
+
+Open a navigator in `http://localhost:11222/'. The welcome page of the Infinispan Server
+should be displayed.
+
+Click on the 'Go to the console button, enter the credentials 'user' and 'pass' and
+display the Console Web.
+
+=== Client Server Application using
+
+In this tutorial we will build a Weather Application. This application
+...
+
+Clone the
+If you want to build the tutorial from scratch, clone the 'init' branch in the repository.
+
+=== Creating a cache dynamically
+
+TBD
+
+=== Putting data in the cache
+
+TBD
+
+=== Reading data from the cache
+
+TBD
+
+=== Listening to the changes
+
+TBD
+
+=== Creating a Query
+
+TBD
+
+=== Creating a Continuous Query
+
+TBD
+
+=== Unit testing using Test Containers
+
+TBD
+
+=== Conclusion
+
+
+

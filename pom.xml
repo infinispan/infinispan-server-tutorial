@@ -93,7 +93,7 @@
                    <argument>-Djava.util.logging.config.file=src/main/resources/logging.properties</argument>
                    <argument>-classpath</argument>
                    <classpath/>
-                   <argument>org.infinispan.tutorial.embedded.WeatherApp</argument>
+                   <argument>org.infinispan.tutorial.client.ClientWeatherApp</argument>
                </arguments>
             </configuration>
         </plugin>
