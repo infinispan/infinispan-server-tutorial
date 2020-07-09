@@ -6,7 +6,7 @@
   <name>Infinispan Tutorial: Client/Server tutorial</name>
 
   <properties>
-    <version.infinispan>10.1.5.Final</version.infinispan>
+    <version.infinispan>11.0.1.Final</version.infinispan>
   </properties>
 
   <dependencyManagement>
@@ -25,6 +25,20 @@
       <dependency>
           <groupId>org.infinispan</groupId>
           <artifactId>infinispan-client-hotrod</artifactId>
+      </dependency>
+      <dependency>
+          <groupId>org.infinispan</groupId>
+          <artifactId>infinispan-remote-query-client</artifactId>
+      </dependency>
+      <dependency>
+          <groupId>org.infinispan</groupId>
+          <artifactId>infinispan-query-dsl</artifactId>
+      </dependency>
+      <dependency>
+          <groupId>org.infinispan</groupId>
+          <artifactId>infinispan-server-testdriver-junit5</artifactId>
+          <version>${version.infinispan}</version>
+          <scope>test</scope>
       </dependency>
   </dependencies>
 

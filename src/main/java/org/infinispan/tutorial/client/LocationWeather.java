@@ -1,20 +1,22 @@
 package org.infinispan.tutorial.client;
 
-import org.infinispan.protostream.annotations.ProtoFactory;
 import org.infinispan.protostream.annotations.ProtoField;
 
 public class LocationWeather {
 
    @ProtoField(number = 1, defaultValue = "0.0")
-   final float temperature;
+   float temperature;
 
    @ProtoField(number = 2)
-   final String conditions;
+   String conditions;
 
    @ProtoField(number = 3)
-   final String country;
+   String country;
 
-   @ProtoFactory
+   public LocationWeather() {
+
+   }
+
    public LocationWeather(float temperature, String conditions, String country) {
       this.temperature = temperature;
       this.conditions = conditions;
@@ -23,6 +25,10 @@ public class LocationWeather {
 
    @Override
    public String toString() {
-      return String.format("Temperature: %.1f° C, Conditions: %s", temperature, conditions);
+      return "LocationWeather{" +
+              "temperature=" + temperature +
+              ", conditions='" + conditions + '\'' +
+              ", country='" + country + '\'' +
+              '}';
    }
 }

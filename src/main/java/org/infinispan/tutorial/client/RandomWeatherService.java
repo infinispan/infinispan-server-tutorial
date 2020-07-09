@@ -19,7 +19,7 @@ public class RandomWeatherService extends CachingWeatherService {
          TimeUnit.MILLISECONDS.sleep(200);
       } catch (InterruptedException e) {}
       String[] split = location.split(",");
-      return new LocationWeather(random.nextFloat() * 20f + 5f, "sunny", split[1].trim());
+      return new LocationWeather(random.nextFloat() * 20f + 5f, "sunny", split[1]);
    }
 
 }
