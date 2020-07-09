@@ -6,4 +6,4 @@
 
 image::infinispan_logo.svg[Infinispan Logo]
 
-== Infinispan Client Server Tutorial
+== Client Server Tutorial
