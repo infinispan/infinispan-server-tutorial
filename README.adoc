@@ -1,0 +1,9 @@
+:toc: left
+:toclevels: 4
+:source-highlighter: highlightjs
+:icons: font
+:imagesdir: ./images
+
+image::infinispan_logo.svg[Infinispan Logo]
+
+== Infinispan Client Server Tutorial
