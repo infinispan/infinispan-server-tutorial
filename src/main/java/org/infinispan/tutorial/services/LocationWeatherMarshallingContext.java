@@ -1,10 +1,11 @@
-package org.infinispan.tutorial.client;
+package org.infinispan.tutorial.services;
 
 import org.infinispan.client.hotrod.RemoteCache;
 import org.infinispan.client.hotrod.RemoteCacheManager;
 import org.infinispan.client.hotrod.marshall.MarshallerUtil;
 import org.infinispan.protostream.SerializationContext;
 import org.infinispan.protostream.annotations.ProtoSchemaBuilder;
+import org.infinispan.tutorial.data.LocationWeather;
 
 import java.io.IOException;
 

@@ -1,4 +1,4 @@
-package org.infinispan.tutorial.client;
+package org.infinispan.tutorial.data;
 
 import org.infinispan.protostream.annotations.ProtoField;
 

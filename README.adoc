@@ -6,8 +6,21 @@
 
 image::infinispan_logo.svg[Infinispan Logo]
 
-<a href="https://github.com/you"><img width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_left_orange_ff7600.png?resize=149%2C149" class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1"></a>
 == Client Server Tutorial
+
+=== Prerequisites
+
+To complete this guide, you need:
+
+- 20 minutes
+- an IDE
+- JDK 8 or 11+ installed
+- Apache Maven 3.6.2.+
+
+TIP: Verify Maven is using the Java you expect
+If you have multiple JDK’s installed it is not certain Maven will pick up the expected
+java and you could end up with unexpected results. You can verify which JDK Maven uses by
+running mvn --version.
 
 === Run an Infinispan Server locally
 
@@ -42,7 +55,7 @@ should be displayed.
 Click on the 'Go to the console button, enter the credentials 'user' and 'pass' and
 display the Console Web.
 
-=== Client Server Application using
+=== Architecture
 
 In this tutorial we will build a Weather Application. This application
 ...
@@ -50,9 +63,30 @@ In this tutorial we will build a Weather Application. This application
 Clone the
 If you want to build the tutorial from scratch, clone the 'init' branch in the repository.
 
+=== Solution
+
+We recommend that you follow the instructions from Boostrapping project and onwards to create the application step by step.
+
+However, you can go right to the completed example.
+
+Download an archive or clone the git repository:
+
+git clone https://github.com/infinispan/infinispan-server-tutorial.git
+The solution is located in the 'solution' branch.
+
+=== Bootstrapping the project
+
+`git clone https://github.com/infinispan/infinispan-server-tutorial.git`
+
+In the master branch you will have the minimum code and all the place holders to complete this tutorial.
+
 === Creating a cache dynamically
 
-TBD
+.CachingWeatherService.java
+[source,java]
+----
+System.out.println("toto");
+----
 
 === Putting data in the cache
 
@@ -78,7 +112,8 @@ TBD
 
 TBD
 
-=== Conclusion
+=== What's next?
 
+This guide covered ...
 
 
