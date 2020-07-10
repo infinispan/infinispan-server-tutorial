@@ -442,7 +442,29 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
-<li><a href="#_client_server_tutorial">Client Server Tutorial</a></li>
+<li><a href="#_client_server_tutorial">Client Server Tutorial</a>
+<ul class="sectlevel2">
+<li><a href="#_prerequisites">Prerequisites</a></li>
+<li><a href="#_run_an_infinispan_server_locally">Run an Infinispan Server locally</a>
+<ul class="sectlevel3">
+<li><a href="#_option_1_use_docker_recommended_way">Option 1: Use Docker (recommended way)</a></li>
+<li><a href="#_option_2_download_the_server">Option 2: Download the server</a></li>
+<li><a href="#_check_the_server_is_correctly_running">Check the Server is correctly running</a></li>
+</ul>
+</li>
+<li><a href="#_architecture">Architecture</a></li>
+<li><a href="#_solution">Solution</a></li>
+<li><a href="#_bootstrapping_the_project">Bootstrapping the project</a></li>
+<li><a href="#_creating_a_cache_dynamically">Creating a cache dynamically</a></li>
+<li><a href="#_putting_data_in_the_cache">Putting data in the cache</a></li>
+<li><a href="#_reading_data_from_the_cache">Reading data from the cache</a></li>
+<li><a href="#_listening_to_the_changes">Listening to the changes</a></li>
+<li><a href="#_creating_a_query">Creating a Query</a></li>
+<li><a href="#_creating_a_continuous_query">Creating a Continuous Query</a></li>
+<li><a href="#_unit_testing_using_test_containers">Unit testing using Test Containers</a></li>
+<li><a href="#_whats_next">What&#8217;s next?</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
@@ -455,14 +477,259 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="sect1">
 <h2 id="_client_server_tutorial">Client Server Tutorial</h2>
 <div class="sectionbody">
-
+<div class="sect2">
+<h3 id="_prerequisites">Prerequisites</h3>
+<div class="paragraph">
+<p>To complete this guide, you need:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>20 minutes</p>
+</li>
+<li>
+<p>an IDE</p>
+</li>
+<li>
+<p>JDK 8 or 11+ installed</p>
+</li>
+<li>
+<p>Apache Maven 3.6.2.+</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+Verify Maven is using the Java you expect
+If you have multiple JDK’s installed it is not certain Maven will pick up the expected
+java and you could end up with unexpected results. You can verify which JDK Maven uses by
+running mvn --version.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_run_an_infinispan_server_locally">Run an Infinispan Server locally</h3>
+<div class="paragraph">
+<p>For this tutorial, the first thing we need to do is to run an Infinispan Server.</p>
+</div>
+<div class="sect3">
+<h4 id="_option_1_use_docker_recommended_way">Option 1: Use Docker (recommended way)</h4>
+<div class="paragraph">
+<p>Use the Infinispan Server docker image to run a standalone infinispan server.</p>
+</div>
+<div class="paragraph">
+<p>The server is secured by default with a simple security realm.
+Provide a USER and PASS. In this tutorial we will be using 'user' and 'pass' credentials.</p>
+</div>
+<div class="paragraph">
+<p><code>docker run -it -p 11222:11222 -e USER="user" -e PASS="pass" infinispan/server:11.0</code></p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_option_2_download_the_server">Option 2: Download the server</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>Go to the infinispan <a href="https://infinispan.org/download/#stable">downloads</a> and download the server</p>
+</li>
+<li>
+<p>From the installation directory create a user using the Command Line Interface (CLI)
+<code>./bin/cli.sh user create</code></p>
+</li>
+<li>
+<p>Run the server
+<code>./bin/server.sh</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>For this tutorial we will be using 'user' and 'pass' credentials, but feel free to chose your own.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_check_the_server_is_correctly_running">Check the Server is correctly running</h4>
+<div class="paragraph">
+<p>Open a navigator in `http://localhost:11222/'. The welcome page of the Infinispan Server
+should be displayed.</p>
+</div>
+<div class="paragraph">
+<p>Click on the 'Go to the console button, enter the credentials 'user' and 'pass' and
+display the Console Web.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_architecture">Architecture</h3>
+<div class="paragraph">
+<p>In this tutorial we will build a Weather Application. This application
+&#8230;&#8203;</p>
+</div>
+<div class="paragraph">
+<p>Clone the
+If you want to build the tutorial from scratch, clone the 'init' branch in the repository.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_solution">Solution</h3>
+<div class="paragraph">
+<p>We recommend that you follow the instructions from Boostrapping project and onwards to create the application step by step.</p>
+</div>
+<div class="paragraph">
+<p>However, you can go right to the completed example.</p>
+</div>
+<div class="paragraph">
+<p>Download an archive or clone the git repository:</p>
+</div>
+<div class="paragraph">
+<p>git clone <a href="https://github.com/infinispan/infinispan-server-tutorial.git" class="bare">https://github.com/infinispan/infinispan-server-tutorial.git</a>
+The solution is located in the 'solution' branch.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_bootstrapping_the_project">Bootstrapping the project</h3>
+<div class="paragraph">
+<p><code>git clone <a href="https://github.com/infinispan/infinispan-server-tutorial.git" class="bare">https://github.com/infinispan/infinispan-server-tutorial.git</a></code></p>
+</div>
+<div class="paragraph">
+<p>In the master branch you will have the minimum code and all the place holders to complete this tutorial.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_creating_a_cache_dynamically">Creating a cache dynamically</h3>
+<div class="listingblock">
+<div class="title">CachingWeatherService.java</div>
+<div class="content">
+<pre class="pygments highlight"><code data-lang="java"><span></span><span class="tok-n">System</span><span class="tok-o">.</span><span class="tok-na">out</span><span class="tok-o">.</span><span class="tok-na">println</span><span class="tok-o">(</span><span class="tok-s">&quot;tbd&quot;</span><span class="tok-o">);</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_putting_data_in_the_cache">Putting data in the cache</h3>
+<div class="paragraph">
+<p>TBD</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_reading_data_from_the_cache">Reading data from the cache</h3>
+<div class="paragraph">
+<p>TBD</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_listening_to_the_changes">Listening to the changes</h3>
+<div class="paragraph">
+<p>TBD</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_creating_a_query">Creating a Query</h3>
+<div class="paragraph">
+<p>TBD</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_creating_a_continuous_query">Creating a Continuous Query</h3>
+<div class="paragraph">
+<p>TBD</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_unit_testing_using_test_containers">Unit testing using Test Containers</h3>
+<div class="paragraph">
+<p>TBD</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_whats_next">What&#8217;s next?</h3>
+<div class="paragraph">
+<p>This guide covered &#8230;&#8203;</p>
+</div>
+</div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-09 18:42:05 +0200
+Last updated 2020-07-10 20:16:34 +0200
 </div>
 </div>
+<style>
+pre.pygments .hll { background-color: #ffffcc }
+pre.pygments  { background: #f8f8f8; }
+pre.pygments .tok-c { color: #408080; font-style: italic } /* Comment */
+pre.pygments .tok-err { border: 1px solid #FF0000 } /* Error */
+pre.pygments .tok-k { color: #008000; font-weight: bold } /* Keyword */
+pre.pygments .tok-o { color: #666666 } /* Operator */
+pre.pygments .tok-ch { color: #408080; font-style: italic } /* Comment.Hashbang */
+pre.pygments .tok-cm { color: #408080; font-style: italic } /* Comment.Multiline */
+pre.pygments .tok-cp { color: #BC7A00 } /* Comment.Preproc */
+pre.pygments .tok-cpf { color: #408080; font-style: italic } /* Comment.PreprocFile */
+pre.pygments .tok-c1 { color: #408080; font-style: italic } /* Comment.Single */
+pre.pygments .tok-cs { color: #408080; font-style: italic } /* Comment.Special */
+pre.pygments .tok-gd { color: #A00000 } /* Generic.Deleted */
+pre.pygments .tok-ge { font-style: italic } /* Generic.Emph */
+pre.pygments .tok-gr { color: #FF0000 } /* Generic.Error */
+pre.pygments .tok-gh { color: #000080; font-weight: bold } /* Generic.Heading */
+pre.pygments .tok-gi { color: #00A000 } /* Generic.Inserted */
+pre.pygments .tok-go { color: #888888 } /* Generic.Output */
+pre.pygments .tok-gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+pre.pygments .tok-gs { font-weight: bold } /* Generic.Strong */
+pre.pygments .tok-gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+pre.pygments .tok-gt { color: #0044DD } /* Generic.Traceback */
+pre.pygments .tok-kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+pre.pygments .tok-kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+pre.pygments .tok-kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+pre.pygments .tok-kp { color: #008000 } /* Keyword.Pseudo */
+pre.pygments .tok-kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+pre.pygments .tok-kt { color: #B00040 } /* Keyword.Type */
+pre.pygments .tok-m { color: #666666 } /* Literal.Number */
+pre.pygments .tok-s { color: #BA2121 } /* Literal.String */
+pre.pygments .tok-na { color: #7D9029 } /* Name.Attribute */
+pre.pygments .tok-nb { color: #008000 } /* Name.Builtin */
+pre.pygments .tok-nc { color: #0000FF; font-weight: bold } /* Name.Class */
+pre.pygments .tok-no { color: #880000 } /* Name.Constant */
+pre.pygments .tok-nd { color: #AA22FF } /* Name.Decorator */
+pre.pygments .tok-ni { color: #999999; font-weight: bold } /* Name.Entity */
+pre.pygments .tok-ne { color: #D2413A; font-weight: bold } /* Name.Exception */
+pre.pygments .tok-nf { color: #0000FF } /* Name.Function */
+pre.pygments .tok-nl { color: #A0A000 } /* Name.Label */
+pre.pygments .tok-nn { color: #0000FF; font-weight: bold } /* Name.Namespace */
+pre.pygments .tok-nt { color: #008000; font-weight: bold } /* Name.Tag */
+pre.pygments .tok-nv { color: #19177C } /* Name.Variable */
+pre.pygments .tok-ow { color: #AA22FF; font-weight: bold } /* Operator.Word */
+pre.pygments .tok-w { color: #bbbbbb } /* Text.Whitespace */
+pre.pygments .tok-mb { color: #666666 } /* Literal.Number.Bin */
+pre.pygments .tok-mf { color: #666666 } /* Literal.Number.Float */
+pre.pygments .tok-mh { color: #666666 } /* Literal.Number.Hex */
+pre.pygments .tok-mi { color: #666666 } /* Literal.Number.Integer */
+pre.pygments .tok-mo { color: #666666 } /* Literal.Number.Oct */
+pre.pygments .tok-sa { color: #BA2121 } /* Literal.String.Affix */
+pre.pygments .tok-sb { color: #BA2121 } /* Literal.String.Backtick */
+pre.pygments .tok-sc { color: #BA2121 } /* Literal.String.Char */
+pre.pygments .tok-dl { color: #BA2121 } /* Literal.String.Delimiter */
+pre.pygments .tok-sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+pre.pygments .tok-s2 { color: #BA2121 } /* Literal.String.Double */
+pre.pygments .tok-se { color: #BB6622; font-weight: bold } /* Literal.String.Escape */
+pre.pygments .tok-sh { color: #BA2121 } /* Literal.String.Heredoc */
+pre.pygments .tok-si { color: #BB6688; font-weight: bold } /* Literal.String.Interpol */
+pre.pygments .tok-sx { color: #008000 } /* Literal.String.Other */
+pre.pygments .tok-sr { color: #BB6688 } /* Literal.String.Regex */
+pre.pygments .tok-s1 { color: #BA2121 } /* Literal.String.Single */
+pre.pygments .tok-ss { color: #19177C } /* Literal.String.Symbol */
+pre.pygments .tok-bp { color: #008000 } /* Name.Builtin.Pseudo */
+pre.pygments .tok-fm { color: #0000FF } /* Name.Function.Magic */
+pre.pygments .tok-vc { color: #19177C } /* Name.Variable.Class */
+pre.pygments .tok-vg { color: #19177C } /* Name.Variable.Global */
+pre.pygments .tok-vi { color: #19177C } /* Name.Variable.Instance */
+pre.pygments .tok-vm { color: #19177C } /* Name.Variable.Magic */
+pre.pygments .tok-il { color: #666666 } /* Literal.Number.Integer.Long */
+</style>
 </body>
 </html>
