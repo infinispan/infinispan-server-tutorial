@@ -16,7 +16,7 @@ public class TemperatureLoader implements WeatherLoader<Float> {
    private final Random random;
 
    public TemperatureLoader(DataSourceConnector dataSourceConnector) {
-      cache = dataSourceConnector.getSimpleCache();
+      cache = dataSourceConnector.getTemperatureCache();
       cache.clear();
       random = new Random();
    }

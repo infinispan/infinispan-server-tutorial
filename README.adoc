@@ -93,12 +93,42 @@ The solution is located in the 'solution' branch.
 
 In the master branch you will have the minimum code and all the place holders to complete this tutorial.
 
-=== Creating a cache dynamically
+=== Connecting to the Infinispan Server using the Java Client
 
-.CachingWeatherService.java
+.pom.xml
+[source,xml]
+----
+<dependency>
+    <groupId>org.infinispan</groupId>
+    <artifactId>infinispan-client-hotrod</artifactId>
+</dependency>
+----
+
+.db.DataSourceConnector.java
 [source,java]
 ----
-System.out.println("tbd");
+ConfigurationBuilder builder = new ConfigurationBuilder();
+
+builder.clientIntelligence(ClientIntelligence.BASIC);
+
+builder.addServer()
+       .host("127.0.0.1")
+       .port(ConfigurationProperties.DEFAULT_HOTROD_PORT);
+
+builder.security().authentication().username("admin").password("pass");
+----
+
+=== Creating the 'Temperatures' cache
+
+.db.DataSourceConnector.java
+[source,java]
+----
+public RemoteCache<String, Float> getTemperatureCache() {
+   return remoteCacheManager.administration()
+              .withFlags(CacheContainerAdmin.AdminFlag.VOLATILE)
+              .getOrCreateCache("temperature", DefaultTemplate.DIST_SYNC);
+}
+
 ----
 
 === Putting data in the cache

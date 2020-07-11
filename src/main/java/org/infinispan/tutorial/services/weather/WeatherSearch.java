@@ -23,7 +23,7 @@ public class WeatherSearch {
    private final RemoteCache<String, LocationWeather> weather;
 
    public WeatherSearch(DataSourceConnector admin) {
-      this.weather = admin.getQueryCache();
+      this.weather = admin.getWeatherCache();
    }
 
    /**

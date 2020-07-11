@@ -17,7 +17,7 @@ public class FullWeatherLoader implements WeatherLoader<LocationWeather> {
    private final Random random;
 
    public FullWeatherLoader(DataSourceConnector dataSourceConnector) {
-      cache = dataSourceConnector.getQueryCache();
+      cache = dataSourceConnector.getWeatherCache();
       cache.clear();
       random = new Random();
    }

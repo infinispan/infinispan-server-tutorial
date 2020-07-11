@@ -22,7 +22,7 @@ public class DataSourceConnector {
 
     // Step 1 - Connect to Infinispan
     public void connect() {
-        System.out.println("Connect to Infinispan");
+        System.out.println("---- Connect to Infinispan ----");
         ConfigurationBuilder builder = new ConfigurationBuilder();
         builder.clientIntelligence(ClientIntelligence.BASIC);
         builder.addServer().host("127.0.0.1")
@@ -34,20 +34,18 @@ public class DataSourceConnector {
     }
 
     // Step 2 - Get or create a simple cache
-    public RemoteCache<String, Float> getSimpleCache() {
+    public RemoteCache<String, Float> getTemperatureCache() {
         Objects.requireNonNull(remoteCacheManager);
+        System.out.println("---- Get or create the 'temperature' cache ----");
 
-        System.out.println("Get or Create a weather cache");
         // Get the cache, create it if needed with an existing template name
-       RemoteCache simpleCache = remoteCacheManager.administration()
+       return remoteCacheManager.administration()
               .withFlags(CacheContainerAdmin.AdminFlag.VOLATILE)
-              .getOrCreateCache("weather-simple", DefaultTemplate.DIST_SYNC);
-
-        return simpleCache;
+              .getOrCreateCache("temperature", DefaultTemplate.DIST_SYNC);
     }
 
     // Step - Get or create a Queryable Cache
-    public RemoteCache<String, LocationWeather> getQueryCache() {
+    public RemoteCache<String, LocationWeather> getWeatherCache() {
         Objects.requireNonNull(remoteCacheManager);
 
         // Initialize the Marshalling context
@@ -56,11 +54,9 @@ public class DataSourceConnector {
         System.out.println("Get or Create a queryable weather cache");
 
         // Get the cache, create it if needed with an existing template name
-       RemoteCache queryCache = remoteCacheManager.administration()
+       return remoteCacheManager.administration()
               .withFlags(CacheContainerAdmin.AdminFlag.VOLATILE)
-              .getOrCreateCache("weather-query", DefaultTemplate.DIST_SYNC);
-
-        return queryCache;
+              .getOrCreateCache("weather", DefaultTemplate.DIST_SYNC);
     }
 
     public void shutdown() {

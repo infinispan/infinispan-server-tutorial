@@ -10,7 +10,7 @@ public class TemperatureMonitor {
    private final RemoteCache<String, Float> cache;
 
    public TemperatureMonitor(DataSourceConnector dataSourceConnector) {
-      cache = dataSourceConnector.getSimpleCache();
+      cache = dataSourceConnector.getTemperatureCache();
    }
 
    public Float getTemperatureForLocation(String location) {
