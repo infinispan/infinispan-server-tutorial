@@ -455,7 +455,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_architecture">Architecture</a></li>
 <li><a href="#_solution">Solution</a></li>
 <li><a href="#_bootstrapping_the_project">Bootstrapping the project</a></li>
-<li><a href="#_creating_a_cache_dynamically">Creating a cache dynamically</a></li>
+<li><a href="#_connecting_to_the_infinispan_server_using_the_java_client">Connecting to the Infinispan Server using the Java Client</a></li>
+<li><a href="#_creating_the_temperatures_cache">Creating the 'Temperatures' cache</a></li>
 <li><a href="#_putting_data_in_the_cache">Putting data in the cache</a></li>
 <li><a href="#_reading_data_from_the_cache">Reading data from the cache</a></li>
 <li><a href="#_listening_to_the_changes">Listening to the changes</a></li>
@@ -638,11 +639,41 @@ The solution is located in the 'solution' branch.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_creating_a_cache_dynamically">Creating a cache dynamically</h3>
+<h3 id="_connecting_to_the_infinispan_server_using_the_java_client">Connecting to the Infinispan Server using the Java Client</h3>
 <div class="listingblock">
-<div class="title">CachingWeatherService.java</div>
+<div class="title">pom.xml</div>
 <div class="content">
-<pre class="pygments highlight"><code data-lang="java"><span></span><span class="tok-n">System</span><span class="tok-o">.</span><span class="tok-na">out</span><span class="tok-o">.</span><span class="tok-na">println</span><span class="tok-o">(</span><span class="tok-s">&quot;tbd&quot;</span><span class="tok-o">);</span></code></pre>
+<pre class="pygments highlight"><code data-lang="xml"><span></span><span class="tok-nt">&lt;dependency&gt;</span>
+    <span class="tok-nt">&lt;groupId&gt;</span>org.infinispan<span class="tok-nt">&lt;/groupId&gt;</span>
+    <span class="tok-nt">&lt;artifactId&gt;</span>infinispan-client-hotrod<span class="tok-nt">&lt;/artifactId&gt;</span>
+<span class="tok-nt">&lt;/dependency&gt;</span></code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">db.DataSourceConnector.java</div>
+<div class="content">
+<pre class="pygments highlight"><code data-lang="java"><span></span><span class="tok-n">ConfigurationBuilder</span> <span class="tok-n">builder</span> <span class="tok-o">=</span> <span class="tok-k">new</span> <span class="tok-n">ConfigurationBuilder</span><span class="tok-o">();</span>
+
+<span class="tok-n">builder</span><span class="tok-o">.</span><span class="tok-na">clientIntelligence</span><span class="tok-o">(</span><span class="tok-n">ClientIntelligence</span><span class="tok-o">.</span><span class="tok-na">BASIC</span><span class="tok-o">);</span>
+
+<span class="tok-n">builder</span><span class="tok-o">.</span><span class="tok-na">addServer</span><span class="tok-o">()</span>
+       <span class="tok-o">.</span><span class="tok-na">host</span><span class="tok-o">(</span><span class="tok-s">&quot;127.0.0.1&quot;</span><span class="tok-o">)</span>
+       <span class="tok-o">.</span><span class="tok-na">port</span><span class="tok-o">(</span><span class="tok-n">ConfigurationProperties</span><span class="tok-o">.</span><span class="tok-na">DEFAULT_HOTROD_PORT</span><span class="tok-o">);</span>
+
+<span class="tok-n">builder</span><span class="tok-o">.</span><span class="tok-na">security</span><span class="tok-o">().</span><span class="tok-na">authentication</span><span class="tok-o">().</span><span class="tok-na">username</span><span class="tok-o">(</span><span class="tok-s">&quot;admin&quot;</span><span class="tok-o">).</span><span class="tok-na">password</span><span class="tok-o">(</span><span class="tok-s">&quot;pass&quot;</span><span class="tok-o">);</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_creating_the_temperatures_cache">Creating the 'Temperatures' cache</h3>
+<div class="listingblock">
+<div class="title">db.DataSourceConnector.java</div>
+<div class="content">
+<pre class="pygments highlight"><code data-lang="java"><span></span><span class="tok-kd">public</span> <span class="tok-n">RemoteCache</span><span class="tok-o">&lt;</span><span class="tok-n">String</span><span class="tok-o">,</span> <span class="tok-n">Float</span><span class="tok-o">&gt;</span> <span class="tok-nf">getTemperatureCache</span><span class="tok-o">()</span> <span class="tok-o">{</span>
+   <span class="tok-k">return</span> <span class="tok-n">remoteCacheManager</span><span class="tok-o">.</span><span class="tok-na">administration</span><span class="tok-o">()</span>
+              <span class="tok-o">.</span><span class="tok-na">withFlags</span><span class="tok-o">(</span><span class="tok-n">CacheContainerAdmin</span><span class="tok-o">.</span><span class="tok-na">AdminFlag</span><span class="tok-o">.</span><span class="tok-na">VOLATILE</span><span class="tok-o">)</span>
+              <span class="tok-o">.</span><span class="tok-na">getOrCreateCache</span><span class="tok-o">(</span><span class="tok-s">&quot;temperature&quot;</span><span class="tok-o">,</span> <span class="tok-n">DefaultTemplate</span><span class="tok-o">.</span><span class="tok-na">DIST_SYNC</span><span class="tok-o">);</span>
+<span class="tok-o">}</span></code></pre>
 </div>
 </div>
 </div>
@@ -693,7 +724,7 @@ The solution is located in the 'solution' branch.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-11 13:25:14 +0200
+Last updated 2020-07-11 13:35:57 +0200
 </div>
 </div>
 <style>
