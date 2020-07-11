@@ -1,4 +1,4 @@
-package org.infinispan.tutorial.services;
+package org.infinispan.tutorial.db;
 
 import org.infinispan.client.hotrod.DefaultTemplate;
 import org.infinispan.client.hotrod.RemoteCache;
@@ -9,7 +9,14 @@ import org.infinispan.client.hotrod.impl.ConfigurationProperties;
 import org.infinispan.commons.api.CacheContainerAdmin;
 import org.infinispan.tutorial.data.LocationWeather;
 
-public class InfinispanAdmin {
+import java.util.Objects;
+
+/**
+ * This class connects to Infinispan and gets or creates two caches in the server
+ * - Simple cache (String-Float)
+ * - Queryable Cache (String, {@link LocationWeather}
+ */
+public class DataSourceConnector {
     private RemoteCacheManager remoteCacheManager;
     private LocationWeatherMarshallingContext locationWeatherMarshallingContext;
 
@@ -24,16 +31,11 @@ public class InfinispanAdmin {
 
         // Connect to the server
         remoteCacheManager = new RemoteCacheManager(builder.build());
-
-        // Create Serialization Context
-        locationWeatherMarshallingContext = new LocationWeatherMarshallingContext(remoteCacheManager);
     }
 
-    // Step 2 - Create a cache and clean up
+    // Step 2 - Get or create a simple cache
     public RemoteCache<String, Float> getSimpleCache() {
-        if(remoteCacheManager == null) {
-            throw new IllegalStateException("You need to initialize the connection first");
-        }
+        Objects.requireNonNull(remoteCacheManager);
 
         System.out.println("Get or Create a weather cache");
         // Get the cache, create it if needed with an existing template name
@@ -41,38 +43,28 @@ public class InfinispanAdmin {
               .withFlags(CacheContainerAdmin.AdminFlag.VOLATILE)
               .getOrCreateCache("weather-simple", DefaultTemplate.DIST_SYNC);
 
-        // Clear all
-        System.out.println("Clear the cache on init");
-        simpleCache.clear();
         return simpleCache;
     }
 
+    // Step - Get or create a Queryable Cache
     public RemoteCache<String, LocationWeather> getQueryCache() {
-        if(remoteCacheManager == null) {
-            throw new IllegalStateException("You need to initialize the connection first");
-        }
+        Objects.requireNonNull(remoteCacheManager);
 
-        if(locationWeatherMarshallingContext == null) {
-            throw new IllegalStateException("You need to initialize the serialization context for LocationWeather");
-        }
+        // Initialize the Marshalling context
+        LocationWeatherMarshallingContext.initSerializationContext(remoteCacheManager);
 
         System.out.println("Get or Create a queryable weather cache");
+
         // Get the cache, create it if needed with an existing template name
        RemoteCache queryCache = remoteCacheManager.administration()
               .withFlags(CacheContainerAdmin.AdminFlag.VOLATILE)
               .getOrCreateCache("weather-query", DefaultTemplate.DIST_SYNC);
 
-        // Clear all
-        System.out.println("Clear the cache on init");
-        queryCache.clear();
         return queryCache;
     }
 
     public void shutdown() {
-        if (remoteCacheManager == null) {
-            return;
-        }
-
+        Objects.requireNonNull(remoteCacheManager);
         System.out.println("Shutdown");
         remoteCacheManager.stop();
     }
