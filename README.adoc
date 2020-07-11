@@ -13,9 +13,9 @@ After completing this guide, you will know:
 . How to connect to the Infinispan Server web console
 . How to create caches in the Infinispan Server
 . How to put and read primitive data
-. How Data expiration works
+. How expiration works
 . How client listeners work
-. How to put and read non primitive java Objects
+. How to put and read non primitive Java Objects
 . How to query values
 
 === Prerequisites
