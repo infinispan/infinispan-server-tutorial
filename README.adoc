@@ -7,12 +7,22 @@
 image::infinispan_logo.svg[Infinispan Logo]
 
 == Client Server Tutorial
+After completing this guide, you will know:
+
+. How to run the Infinispan Server locally
+. How to connect to the Infinispan Server web console
+. How to create caches in the Infinispan Server
+. How to put and read primitive data
+. How Data expiration works
+. How client listeners work
+. How to put and read non primitive java Objects
+. How to query values
 
 === Prerequisites
 
 To complete this guide, you need:
 
-- 20 minutes
+- 25 minutes
 - an IDE
 - JDK 8 or 11+ installed
 - Apache Maven 3.6.2.+
@@ -57,7 +67,10 @@ display the Console Web.
 
 === Architecture
 
-In this tutorial we will build a Weather Application. This application
+In this tutorial we will build a Weather System. This system is composed by 4 bare java applications.
+
+TemperatureFetcherApp
+
 ...
 
 Clone the
