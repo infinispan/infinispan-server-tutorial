@@ -29,7 +29,6 @@ public class WeatherFinderApp extends App {
     }
 
     public static void main(String[] args) {
-        WeatherFinderApp weatherFinderApp = new WeatherFinderApp();
-        weatherFinderApp.run();
+        new WeatherFinderApp().run();
     }
 }

@@ -22,7 +22,6 @@ public class TemperatureMonitorApp extends App {
     }
 
     public static void main(String[] args) {
-        TemperatureMonitorApp temperatureMonitorApp = new TemperatureMonitorApp();
-        temperatureMonitorApp.run();
+        new TemperatureMonitorApp().run();
     }
 }

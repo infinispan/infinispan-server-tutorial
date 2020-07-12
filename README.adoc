@@ -18,7 +18,7 @@ After completing this guide, you will know:
 . How to put and read non primitive Java Objects
 . How to query values
 
-=== Prerequisites
+=== 0. Prerequisites
 
 To complete this guide, you need:
 
@@ -32,7 +32,7 @@ If you have multiple JDK’s installed it is not certain Maven will pick up the 
 java and you could end up with unexpected results. You can verify which JDK Maven uses by
 running mvn --version.
 
-=== Run an Infinispan Server locally
+=== 1. Run an Infinispan Server locally
 
 For this tutorial, the first thing we need to do is to run an Infinispan Server.
 
@@ -65,23 +65,7 @@ should be displayed.
 Click on the 'Go to the console button, enter the credentials 'user' and 'pass' and
 display the Console Web.
 
-=== Architecture
-
-In this tutorial we will build a Weather System. This system is composed by 4 java applications.
-
-== Temperature
-
-image::Temperature.png[Temperature.png]
-
-image::Weather.png[Weather.png]
-
-
-...
-
-Clone the
-If you want to build the tutorial from scratch, clone the 'init' branch in the repository.
-
-=== Solution
+=== 2. Solution
 
 We recommend that you follow the instructions from Boostrapping project and onwards to create the application step by step.
 
@@ -92,13 +76,66 @@ Download an archive or clone the git repository:
 git clone https://github.com/infinispan/infinispan-server-tutorial.git
 The solution is located in the 'solution' branch.
 
-=== Bootstrapping the project
+=== 3. Architecture
+
+In this tutorial we will build a Weather System.
+This system is composed by 4 java applications.
+
+==== Temperature sub-system
+
+The temperature sub-system is composed by two applications:
+
+image::Temperature.png[Temperature.png]
+
+===== Temperature Loader App
+
+The loader application loads the temperatures for all the existing locations.
+Infinispan stores the data in the "temperature" cache.
+
+- Location: Key `String`
+- Temperature: Value `Float`
+
+This process runs every 5 seconds.
+
+===== Temperature Monitor App
+
+The monitor application monitors the temperature of a specific location. Infinispan sends a
+notification, and the application displays a message with the new temperature.
+
+==== Weather sub-system
+
+The weather sub-system is composed by two applications:
+
+image::Weather.png[Weather.png]
+
+===== Weather Loader App
+
+The loader application loads the Weather information for all the existing locations.
+Infinispan stores the data in the "weather" cache.
+
+- Location: Key `String`
+- Temperature: Value `Float`
+
+This process runs every 5 seconds.
+
+===== Weather Finder App
+
+
+
+=== 4. Bootstrapping the project
 
 `git clone https://github.com/infinispan/infinispan-server-tutorial.git`
 
 In the master branch you will have the minimum code and all the place holders to complete this tutorial.
 
-=== Connecting to the Infinispan Server using the Java Client
+=== 5. Connecting to the Infinispan Server using the Java client
+
+Let's implement the connection to the running Infinispan Server.
+
+==== Maven
+
+To connect to the Infinispan Server using the Java Client, add the hotrod client dependency to the
+`pom.xml' file.
 
 .pom.xml
 [source,xml]
@@ -109,21 +146,49 @@ In the master branch you will have the minimum code and all the place holders to
 </dependency>
 ----
 
+==== Implement the connection
+
+
+==== Health Check
+
+Run the main class `org.infinispan.tutorial.client.HealthChecker`.
+If the connection is correct, you will see:
+
+.HealthChecker
+[source,bash]
+----
+
+---- Connect to Infinispan ----
+INFO: ISPN004021: Infinispan version: Infinispan ...
+---- Connection count: 1 ----
+---- Shutdown the client ----
+
+----
+
+==== Temperature Monitor App
+
+Change the method "connect" in the DataSourceConnector file.
+
 .db.DataSourceConnector.java
 [source,java]
 ----
 ConfigurationBuilder builder = new ConfigurationBuilder();
 
+// Necessary for docker 4 mac
 builder.clientIntelligence(ClientIntelligence.BASIC);
 
+// Define a server
 builder.addServer()
        .host("127.0.0.1")
        .port(ConfigurationProperties.DEFAULT_HOTROD_PORT);
 
+// Add the credentials you used to run the server
 builder.security().authentication().username("admin").password("pass");
 ----
 
-=== Creating the 'Temperatures' cache
+=== Creating the 'Temperature' cache
+
+Change the method `getTemperatureCache` and get or create a cache using the administrator API.
 
 .db.DataSourceConnector.java
 [source,java]

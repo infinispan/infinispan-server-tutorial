@@ -23,7 +23,6 @@ public class TemperatureLoaderApp extends App {
     }
 
     public static void main(String[] args) {
-        TemperatureLoaderApp temperatureLoaderApp = new TemperatureLoaderApp();
-        temperatureLoaderApp.run();
+        new TemperatureLoaderApp().run();
     }
 }

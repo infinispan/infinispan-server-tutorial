@@ -33,6 +33,11 @@ public class DataSourceConnector {
         remoteCacheManager = new RemoteCacheManager(builder.build());
     }
 
+    public void health() {
+        Objects.requireNonNull(remoteCacheManager);
+        System.out.println("---- Connection count: " + remoteCacheManager.getConnectionCount() + " ----");
+    }
+
     // Step 2 - Get or create a simple cache
     public RemoteCache<String, Float> getTemperatureCache() {
         Objects.requireNonNull(remoteCacheManager);
@@ -43,8 +48,8 @@ public class DataSourceConnector {
               .withFlags(CacheContainerAdmin.AdminFlag.VOLATILE)
               .getOrCreateCache("temperature", DefaultTemplate.DIST_SYNC);
     }
-
     // Step - Get or create a Queryable Cache
+
     public RemoteCache<String, LocationWeather> getWeatherCache() {
         Objects.requireNonNull(remoteCacheManager);
 
@@ -61,7 +66,7 @@ public class DataSourceConnector {
 
     public void shutdown() {
         Objects.requireNonNull(remoteCacheManager);
-        System.out.println("Shutdown");
+        System.out.println("---- Shutdown the client ----");
         remoteCacheManager.stop();
     }
 }

@@ -20,7 +20,6 @@ public class WeatherLoaderApp extends App {
     }
 
     public static void main(String[] args) throws Exception {
-        WeatherLoaderApp weatherLoaderApp = new WeatherLoaderApp();
-        weatherLoaderApp.execute();
+        new WeatherLoaderApp().run();
     }
 }
