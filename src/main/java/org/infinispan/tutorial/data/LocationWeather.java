@@ -2,6 +2,9 @@ package org.infinispan.tutorial.data;
 
 import org.infinispan.protostream.annotations.ProtoField;
 
+/**
+ * Annotated with Protostream
+ */
 public class LocationWeather {
 
    @ProtoField(number = 1, defaultValue = "0.0")

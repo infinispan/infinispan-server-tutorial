@@ -26,7 +26,7 @@ public class TemperatureLoader implements WeatherLoader<Float> {
       Float temperature = cache.get(location);
       if (temperature == null) {
          temperature = fetchTemperature(location);
-         cache.put(location, temperature, 30, TimeUnit.SECONDS);
+         cache.put(location, temperature, 20, TimeUnit.SECONDS);
       }
       return temperature;
    }
