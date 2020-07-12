@@ -30,13 +30,18 @@ public class TemperatureMonitor {
          if(event.getKey().equals(location)) {
             cache.getAsync(location)
                   .whenComplete((temperature, ex) ->
-                  System.out.printf("Location %s Temperature %s", location, temperature));
+                  System.out.printf(">> Location %s Temperature %s", location, temperature));
          }
       }
    }
 
+   /**
+    * Monitor the given location
+    *
+    * @param location
+    */
    public void monitorLocation(String location) {
-      System.out.println("Start monitoring temperature changes for " + location);
+      System.out.println("---- Start monitoring temperature changes for " + location + " ----\n");
       TemperatureChangesListener temperatureChangesListener = new TemperatureChangesListener(location);
       cache.addClientListener(temperatureChangesListener);
    }

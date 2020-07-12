@@ -56,7 +56,7 @@ public class DataSourceConnector {
         // Initialize the Marshalling context
         LocationWeatherMarshallingContext.initSerializationContext(remoteCacheManager);
 
-        System.out.println("Get or Create a queryable weather cache");
+        System.out.println("---- Get or create the 'weather' cache ----");
 
         // Get the cache, create it if needed with an existing template name
        return remoteCacheManager.administration()

@@ -13,7 +13,6 @@ import java.util.Objects;
 import static org.infinispan.query.remote.client.ProtobufMetadataManagerConstants.PROTOBUF_METADATA_CACHE_NAME;
 
 public final class LocationWeatherMarshallingContext {
-    private RemoteCacheManager cacheManager;
 
     public static void initSerializationContext(RemoteCacheManager cacheManager) {
         System.out.println("LocationWeatherMarshallingContext - initialize the serialization context for LocationWeather class");

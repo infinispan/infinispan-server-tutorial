@@ -114,13 +114,14 @@ The loader application loads the Weather information for all the existing locati
 Infinispan stores the data in the "weather" cache.
 
 - Location: Key `String`
-- Temperature: Value `Float`
+- Weather: Value `LocationWeather` (temperature, condition, city, country)
 
 This process runs every 5 seconds.
 
 ===== Weather Finder App
 
-
+The weather finder application uses Infinispan Search capabilities to perform full text search and
+continuous queries.
 
 === 4. Bootstrapping the project
 
@@ -269,31 +270,228 @@ Change the `put` method and make the temperature data expire every 20s.
 .org.infinispan.tutorial.services.TemperatureLoader.java
 [source,java]
 ----
-cache.put(location, temperature, 20, TimeUnit.SECONDS);
+   cache.put(location, temperature, 20, TimeUnit.SECONDS);
 ----
 
-Running the application again, you will notice that after 20 minutes, the temperature loading gets `slow'
+Running the application again, you will notice that after 20 minutes, the temperature loading gets `slow`
 again.
 
-=== Putting data in the cache
+=== 7. Implement the Temperature Monitor
 
-TBD
+Implementing the Temperature Monitor, you will learn how to use
+https://infinispan.org/docs/stable/titles/hotrod_java/hotrod_java.html#creating_event_listeners[Infinispan Client Listeners].
 
-=== Reading data from the cache
+The temperature monitor application will display the notifications of the temperature changes in a
+given location.
 
-TBD
+==== Implement a Client Listener
 
-=== Listening to the changes
+Use the `@ClientListener` to make the `TemperatureChangesListener` an infinispan listener.
+Use the `@ClientCacheEntryCreated` to get a notification every time a new cache entry is created.
 
-TBD
+At the time of this writing, client listeners do not bring the value of the key in the receiving event.
+Use the async API to get the value and display the temperature corresponding to the key.
 
-=== Creating a Query
+.org.infinispan.tutorial.services.TemperatureMonitor
+[source,java]
+----
+   @ClientListener
+   public class TemperatureChangesListener {
+      private String location;
 
-TBD
+      TemperatureChangesListener(String location) {
+         this.location = location;
+      }
 
-=== Creating a Continuous Query
+      @ClientCacheEntryCreated
+      public void created(ClientCacheEntryCreatedEvent event) {
+         if(event.getKey().equals(location)) {
+            cache.getAsync(location)
+                  .whenComplete((temperature, ex) ->
+                  System.out.printf(">> Location %s Temperature %s", location, temperature));
+         }
+      }
+   }
+----
 
-TBD
+TIP: The example above filters the events in the listener for the example. These events can be also filtered
+server side. For this, an event can be created and deployed in the server. This functionality is out of the scope
+of this tutorial.
+
+==== Add a Client Listener to the cache
+
+.org.infinispan.tutorial.services.TemperatureMonitor
+[source,java]
+----
+    public void monitorLocation(String location) {
+        System.out.println("---- Start monitoring temperature changes for " + location + " ----\n");
+        TemperatureChangesListener temperatureChangesListener = new TemperatureChangesListener(location);
+        cache.addClientListener(temperatureChangesListener);
+    }
+----
+
+CAUTION Ensure that the client listeners are removed from the cache if you don't need them anymore.
+
+==== Verify the Monitoring application
+
+`TemperatureLoaderApp` should be running, loading temperatures periodically and temperatures getting expired every 20s.
+
+Run the `TemperatureMonitorApp`.
+You should see a message for the current temperature of the chosen location.
+You should get notifications of new temperatures every 20s.
+
+.org.infinispan.tutorial.client.temperature.TemperatureMonitorApp
+[source,bash]
+----
+
+---- Connect to Infinispan ----
+Jul 12, 2020 3:48:22 PM org.infinispan.client.hotrod.RemoteCacheManager actualStart
+INFO: ISPN004021: Infinispan version: Infinispan 'Corona Extra' 11.0.1.Final
+---- Get or create the 'temperature' cache ----
+Temperature 14.185611 for Bilbao, Spain
+---- Start monitoring temperature changes for Bilbao, Spain ----
+---- Press any key to quit ----
+>> Location Bilbao, Spain Temperature 7.374308
+>> Location Bilbao, Spain Temperature 24.784744
+----
+
+TIP: Change the expiration values to get more notifications. Use `@ClientCacheEntryExpired` to get notifications
+when data is expired.
+
+=== 8. Implement the Weather Loader
+
+The Weather loader application puts complex Key-Value entries in the `weather` cache. These objects need to
+be serialized to travel the network and land in the remote Infinispan Server.
+
+==== Annotate the POJO LocationWeather
+
+The default data serializer used by Infinispan is https://github.com/infinispan/protostream[Protostream].
+
+.org.infinispan.tutorial.data.LocationWeather
+[source,java]
+----
+    public class LocationWeather {
+
+       @ProtoField(number = 1, defaultValue = "0.0")
+       float temperature;
+
+       @ProtoField(number = 2)
+       String condition;
+
+       @ProtoField(number = 3)
+       String city;
+
+       @ProtoField(number = 4)
+       String country;
+...
+
+----
+
+==== Configure the marshalling context
+
+Infinispan needs to know wich protobuf schema use to marshall the previously annotated class.
+You can provide a protobuf descriptor file or the descriptor file be created based on the annotations
+you previously used in the POJO.
+
+In the `LocationWeatherMarshallingContext`, we will add the schema to the Protobuf cache in infinispan.
+You need to build a schema using the builder API, pass the annotation POJO and add the schema to the cache.
+
+.org.infinispan.tutorial.db.LocationWeatherMarshallingContext
+[source,java]
+----
+    // Get the serialization context of the client
+    SerializationContext ctx = MarshallerUtil.getSerializationContext(cacheManager);
+
+    // Use ProtoSchemaBuilder to define a Protobuf schema on the client
+    ProtoSchemaBuilder protoSchemaBuilder = new ProtoSchemaBuilder();
+    String fileName = "weather.proto";
+    String protoFile = null;
+    try {
+        protoFile = protoSchemaBuilder
+                .fileName(fileName)
+                .addClass(LocationWeather.class)
+                .packageName("org.infinispan.tutorial.data")
+                .build(ctx);
+    } catch (IOException e) {
+        throw new RuntimeException(e);
+    }
+
+    // Retrieve metadata cache
+    RemoteCache<String, String> metadataCache =
+            cacheManager.getCache(PROTOBUF_METADATA_CACHE_NAME);
+
+    // Define the new schema on the server too
+    metadataCache.put(fileName, protoFile);
+----
+
+==== Create the `weather` cache
+
+Unlike the cache containing primitive data, to store `LocationWeather` objects we need to initialize
+the marshalling context.In this application. Do this `before` creating the `weather` cache in
+the `getWeatherCache` method.
+
+.org.infinispan.tutorial.db.DataSourceConnector
+[source,java]
+----
+    public RemoteCache<String, LocationWeather> getWeatherCache() {
+        Objects.requireNonNull(remoteCacheManager);
+
+        // Initialize the Marshalling context
+        LocationWeatherMarshallingContext.initSerializationContext(remoteCacheManager);
+
+        System.out.println("Get or Create a queryable weather cache");
+
+        ...
+    }
+----
+
+==== Run the Weather Loader app
+
+The code loading the data into the cache is available in the
+`org.infinispan.tutorial.services.weather.FullWeatherLoader`.
+The code is very similar to the code you already implemented in the `TemperatureLoader` so you won't
+code anything else at this point.
+
+Run the `WeatherLoaderApp` application. If everything works, the data should be loading and you should
+get the resulting logs.
+
+.org.infinispan.tutorial.client.weather.WeatherLoaderApp
+[source,bash]
+----
+
+---- Connect to Infinispan ----
+Jul 12, 2020 4:11:42 PM org.infinispan.client.hotrod.RemoteCacheManager actualStart
+INFO: ISPN004021: Infinispan version: Infinispan 'Corona Extra' 11.0.1.Final
+LocationWeatherMarshallingContext - initialize the serialization context for LocationWeather class
+---- Get or create the 'weather' cache ----
+---- Press any key to quit ----
+
+---- Loading information ----
+Rome, Italy - LocationWeather{temperature=17.252243, condition='SUNNY', city='Rome', country='Italy'}
+Como, Italy - LocationWeather{temperature=24.495003, condition='WINDLESS', city='Como', country='Italy'}
+Basel, Switzerland - LocationWeather{temperature=19.795946, condition='WINDLESS', city='Basel', country='Switzerland'}
+Bern, Switzerland - LocationWeather{temperature=20.455978, condition='WINDLESS', city='Bern', country='Switzerland'}
+London, UK - LocationWeather{temperature=8.399549, condition='FOGGY', city='London', country='UK'}
+Newcastle, UK - LocationWeather{temperature=7.2848473, condition='WINDY', city='Newcastle', country='UK'}
+Madrid, Spain - LocationWeather{temperature=11.511543, condition='SUNNY', city='Madrid', country='Spain'}
+Bilbao, Spain - LocationWeather{temperature=10.426537, condition='PARTIALLY_COVERED', city='Bilbao', country='Spain'}
+Bucarest, Romania - LocationWeather{temperature=18.765896, condition='DRY', city='Bucarest', country='Romania'}
+Cluj-Napoca, Romania - LocationWeather{temperature=9.634157, condition='DRY', city='Cluj-Napoca', country='Romania'}
+Ottawa, Canada - LocationWeather{temperature=11.64571, condition='WINDLESS', city='Ottawa', country='Canada'}
+Toronto, Canada - LocationWeather{temperature=13.520051, condition='FOGGY', city='Toronto', country='Canada'}
+Lisbon, Portugal - LocationWeather{temperature=11.366248, condition='DRY', city='Lisbon', country='Portugal'}
+Porto, Portugal - LocationWeather{temperature=8.092586, condition='FOGGY', city='Porto', country='Portugal'}
+Raleigh, USA - LocationWeather{temperature=18.143414, condition='WET', city='Raleigh', country='USA'}
+Washington, USA - LocationWeather{temperature=21.916203, condition='WINDLESS', city='Washington', country='USA'}
+---- Loaded in 3386ms ----
+
+---- Loading information ----
+Rome, Italy - LocationWeather{temperature=17.252243, condition='CLOUDY', city='Rome', country='Italy'}
+Como, Italy - LocationWeather{temperature=24.495003, condition='PARTIALLY_COVERED', city='Como', country='Italy'}
+...
+---- Loaded in 70ms ----
+
+----
 
 === Unit testing using Test Containers
 
