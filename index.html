@@ -485,11 +485,21 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_making_the_data_expire">Making the data expire</a></li>
 </ul>
 </li>
-<li><a href="#_putting_data_in_the_cache">Putting data in the cache</a></li>
-<li><a href="#_reading_data_from_the_cache">Reading data from the cache</a></li>
-<li><a href="#_listening_to_the_changes">Listening to the changes</a></li>
-<li><a href="#_creating_a_query">Creating a Query</a></li>
-<li><a href="#_creating_a_continuous_query">Creating a Continuous Query</a></li>
+<li><a href="#_7_implement_the_temperature_monitor">7. Implement the Temperature Monitor</a>
+<ul class="sectlevel3">
+<li><a href="#_implement_a_client_listener">Implement a Client Listener</a></li>
+<li><a href="#_add_a_client_listener_to_the_cache">Add a Client Listener to the cache</a></li>
+<li><a href="#_verify_the_monitoring_application">Verify the Monitoring application</a></li>
+</ul>
+</li>
+<li><a href="#_8_implement_the_weather_loader">8. Implement the Weather Loader</a>
+<ul class="sectlevel3">
+<li><a href="#_annotate_the_pojo_locationweather">Annotate the POJO LocationWeather</a></li>
+<li><a href="#_configure_the_marshalling_context">Configure the marshalling context</a></li>
+<li><a href="#_create_the_weather_cache">Create the <code>weather</code> cache</a></li>
+<li><a href="#_run_the_weather_loader_app">Run the Weather Loader app</a></li>
+</ul>
+</li>
 <li><a href="#_unit_testing_using_test_containers">Unit testing using Test Containers</a></li>
 <li><a href="#_whats_next">What&#8217;s next?</a></li>
 </ul>
@@ -707,7 +717,7 @@ Infinispan stores the data in the "weather" cache.</p>
 <p>Location: Key <code>String</code></p>
 </li>
 <li>
-<p>Temperature: Value <code>Float</code></p>
+<p>Weather: Value <code>LocationWeather</code> (temperature, condition, city, country)</p>
 </li>
 </ul>
 </div>
@@ -717,7 +727,10 @@ Infinispan stores the data in the "weather" cache.</p>
 </div>
 <div class="sect4">
 <h5 id="_weather_finder_app">Weather Finder App</h5>
-
+<div class="paragraph">
+<p>The weather finder application uses Infinispan Search capabilities to perform full text search and
+continuous queries.</p>
+</div>
 </div>
 </div>
 </div>
@@ -885,43 +898,271 @@ expiration.</p>
 <div class="listingblock">
 <div class="title">org.infinispan.tutorial.services.TemperatureLoader.java</div>
 <div class="content">
-<pre class="pygments highlight"><code data-lang="java"><span></span><span class="tok-n">cache</span><span class="tok-o">.</span><span class="tok-na">put</span><span class="tok-o">(</span><span class="tok-n">location</span><span class="tok-o">,</span> <span class="tok-n">temperature</span><span class="tok-o">,</span> <span class="tok-mi">20</span><span class="tok-o">,</span> <span class="tok-n">TimeUnit</span><span class="tok-o">.</span><span class="tok-na">SECONDS</span><span class="tok-o">);</span></code></pre>
+<pre class="pygments highlight"><code data-lang="java"><span></span>   <span class="tok-n">cache</span><span class="tok-o">.</span><span class="tok-na">put</span><span class="tok-o">(</span><span class="tok-n">location</span><span class="tok-o">,</span> <span class="tok-n">temperature</span><span class="tok-o">,</span> <span class="tok-mi">20</span><span class="tok-o">,</span> <span class="tok-n">TimeUnit</span><span class="tok-o">.</span><span class="tok-na">SECONDS</span><span class="tok-o">);</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Running the application again, you will notice that after 20 minutes, the temperature loading gets `slow'
+<p>Running the application again, you will notice that after 20 minutes, the temperature loading gets <code>slow</code>
 again.</p>
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_putting_data_in_the_cache">Putting data in the cache</h3>
+<h3 id="_7_implement_the_temperature_monitor">7. Implement the Temperature Monitor</h3>
 <div class="paragraph">
-<p>TBD</p>
+<p>Implementing the Temperature Monitor, you will learn how to use
+<a href="https://infinispan.org/docs/stable/titles/hotrod_java/hotrod_java.html#creating_event_listeners">Infinispan Client Listeners</a>.</p>
+</div>
+<div class="paragraph">
+<p>The temperature monitor application will display the notifications of the temperature changes in a
+given location.</p>
+</div>
+<div class="sect3">
+<h4 id="_implement_a_client_listener">Implement a Client Listener</h4>
+<div class="paragraph">
+<p>Use the <code>@ClientListener</code> to make the <code>TemperatureChangesListener</code> an infinispan listener.
+Use the <code>@ClientCacheEntryCreated</code> to get a notification every time a new cache entry is created.</p>
+</div>
+<div class="paragraph">
+<p>At the time of this writing, client listeners do not bring the value of the key in the receiving event.
+Use the async API to get the value and display the temperature corresponding to the key.</p>
+</div>
+<div class="listingblock">
+<div class="title">org.infinispan.tutorial.services.TemperatureMonitor</div>
+<div class="content">
+<pre class="pygments highlight"><code data-lang="java"><span></span>   <span class="tok-nd">@ClientListener</span>
+   <span class="tok-kd">public</span> <span class="tok-kd">class</span> <span class="tok-nc">TemperatureChangesListener</span> <span class="tok-o">{</span>
+      <span class="tok-kd">private</span> <span class="tok-n">String</span> <span class="tok-n">location</span><span class="tok-o">;</span>
+
+      <span class="tok-n">TemperatureChangesListener</span><span class="tok-o">(</span><span class="tok-n">String</span> <span class="tok-n">location</span><span class="tok-o">)</span> <span class="tok-o">{</span>
+         <span class="tok-k">this</span><span class="tok-o">.</span><span class="tok-na">location</span> <span class="tok-o">=</span> <span class="tok-n">location</span><span class="tok-o">;</span>
+      <span class="tok-o">}</span>
+
+      <span class="tok-nd">@ClientCacheEntryCreated</span>
+      <span class="tok-kd">public</span> <span class="tok-kt">void</span> <span class="tok-nf">created</span><span class="tok-o">(</span><span class="tok-n">ClientCacheEntryCreatedEvent</span> <span class="tok-n">event</span><span class="tok-o">)</span> <span class="tok-o">{</span>
+         <span class="tok-k">if</span><span class="tok-o">(</span><span class="tok-n">event</span><span class="tok-o">.</span><span class="tok-na">getKey</span><span class="tok-o">().</span><span class="tok-na">equals</span><span class="tok-o">(</span><span class="tok-n">location</span><span class="tok-o">))</span> <span class="tok-o">{</span>
+            <span class="tok-n">cache</span><span class="tok-o">.</span><span class="tok-na">getAsync</span><span class="tok-o">(</span><span class="tok-n">location</span><span class="tok-o">)</span>
+                  <span class="tok-o">.</span><span class="tok-na">whenComplete</span><span class="tok-o">((</span><span class="tok-n">temperature</span><span class="tok-o">,</span> <span class="tok-n">ex</span><span class="tok-o">)</span> <span class="tok-o">-&gt;</span>
+                  <span class="tok-n">System</span><span class="tok-o">.</span><span class="tok-na">out</span><span class="tok-o">.</span><span class="tok-na">printf</span><span class="tok-o">(</span><span class="tok-s">&quot;&gt;&gt; Location %s Temperature %s&quot;</span><span class="tok-o">,</span> <span class="tok-n">location</span><span class="tok-o">,</span> <span class="tok-n">temperature</span><span class="tok-o">));</span>
+         <span class="tok-o">}</span>
+      <span class="tok-o">}</span>
+   <span class="tok-o">}</span></code></pre>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+The example above filters the events in the listener for the example. These events can be also filtered
+server side. For this, an event can be created and deployed in the server. This functionality is out of the scope
+of this tutorial.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_add_a_client_listener_to_the_cache">Add a Client Listener to the cache</h4>
+<div class="listingblock">
+<div class="title">org.infinispan.tutorial.services.TemperatureMonitor</div>
+<div class="content">
+<pre class="pygments highlight"><code data-lang="java"><span></span>    <span class="tok-kd">public</span> <span class="tok-kt">void</span> <span class="tok-nf">monitorLocation</span><span class="tok-o">(</span><span class="tok-n">String</span> <span class="tok-n">location</span><span class="tok-o">)</span> <span class="tok-o">{</span>
+        <span class="tok-n">System</span><span class="tok-o">.</span><span class="tok-na">out</span><span class="tok-o">.</span><span class="tok-na">println</span><span class="tok-o">(</span><span class="tok-s">&quot;---- Start monitoring temperature changes for &quot;</span> <span class="tok-o">+</span> <span class="tok-n">location</span> <span class="tok-o">+</span> <span class="tok-s">&quot; ----\n&quot;</span><span class="tok-o">);</span>
+        <span class="tok-n">TemperatureChangesListener</span> <span class="tok-n">temperatureChangesListener</span> <span class="tok-o">=</span> <span class="tok-k">new</span> <span class="tok-n">TemperatureChangesListener</span><span class="tok-o">(</span><span class="tok-n">location</span><span class="tok-o">);</span>
+        <span class="tok-n">cache</span><span class="tok-o">.</span><span class="tok-na">addClientListener</span><span class="tok-o">(</span><span class="tok-n">temperatureChangesListener</span><span class="tok-o">);</span>
+    <span class="tok-o">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>CAUTION Ensure that the client listeners are removed from the cache if you don&#8217;t need them anymore.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_verify_the_monitoring_application">Verify the Monitoring application</h4>
+<div class="paragraph">
+<p><code>TemperatureLoaderApp</code> should be running, loading temperatures periodically and temperatures getting expired every 20s.</p>
+</div>
+<div class="paragraph">
+<p>Run the <code>TemperatureMonitorApp</code>.
+You should see a message for the current temperature of the chosen location.
+You should get notifications of new temperatures every 20s.</p>
+</div>
+<div class="listingblock">
+<div class="title">org.infinispan.tutorial.client.temperature.TemperatureMonitorApp</div>
+<div class="content">
+<pre class="pygments highlight"><code data-lang="bash"><span></span>
+---- Connect to Infinispan ----
+Jul <span class="tok-m">12</span>, <span class="tok-m">2020</span> <span class="tok-m">3</span>:48:22 PM org.infinispan.client.hotrod.RemoteCacheManager actualStart
+INFO: ISPN004021: Infinispan version: Infinispan <span class="tok-s1">&#39;Corona Extra&#39;</span> <span class="tok-m">11</span>.0.1.Final
+---- Get or create the <span class="tok-s1">&#39;temperature&#39;</span> cache ----
+Temperature <span class="tok-m">14</span>.185611 <span class="tok-k">for</span> Bilbao, Spain
+---- Start monitoring temperature changes <span class="tok-k">for</span> Bilbao, Spain ----
+---- Press any key to quit ----
+&gt;&gt; Location Bilbao, Spain Temperature <span class="tok-m">7</span>.374308
+&gt;&gt; Location Bilbao, Spain Temperature <span class="tok-m">24</span>.784744</code></pre>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+Change the expiration values to get more notifications. Use <code>@ClientCacheEntryExpired</code> to get notifications
+when data is expired.
+</td>
+</tr>
+</table>
+</div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_reading_data_from_the_cache">Reading data from the cache</h3>
+<h3 id="_8_implement_the_weather_loader">8. Implement the Weather Loader</h3>
 <div class="paragraph">
-<p>TBD</p>
+<p>The Weather loader application puts complex Key-Value entries in the <code>weather</code> cache. These objects need to
+be serialized to travel the network and land in the remote Infinispan Server.</p>
 </div>
-</div>
-<div class="sect2">
-<h3 id="_listening_to_the_changes">Listening to the changes</h3>
+<div class="sect3">
+<h4 id="_annotate_the_pojo_locationweather">Annotate the POJO LocationWeather</h4>
 <div class="paragraph">
-<p>TBD</p>
+<p>The default data serializer used by Infinispan is <a href="https://github.com/infinispan/protostream">Protostream</a>.</p>
+</div>
+<div class="listingblock">
+<div class="title">org.infinispan.tutorial.data.LocationWeather</div>
+<div class="content">
+<pre class="pygments highlight"><code data-lang="java"><span></span>    <span class="tok-kd">public</span> <span class="tok-kd">class</span> <span class="tok-nc">LocationWeather</span> <span class="tok-o">{</span>
+
+       <span class="tok-nd">@ProtoField</span><span class="tok-o">(</span><span class="tok-n">number</span> <span class="tok-o">=</span> <span class="tok-mi">1</span><span class="tok-o">,</span> <span class="tok-n">defaultValue</span> <span class="tok-o">=</span> <span class="tok-s">&quot;0.0&quot;</span><span class="tok-o">)</span>
+       <span class="tok-kt">float</span> <span class="tok-n">temperature</span><span class="tok-o">;</span>
+
+       <span class="tok-nd">@ProtoField</span><span class="tok-o">(</span><span class="tok-n">number</span> <span class="tok-o">=</span> <span class="tok-mi">2</span><span class="tok-o">)</span>
+       <span class="tok-n">String</span> <span class="tok-n">condition</span><span class="tok-o">;</span>
+
+       <span class="tok-nd">@ProtoField</span><span class="tok-o">(</span><span class="tok-n">number</span> <span class="tok-o">=</span> <span class="tok-mi">3</span><span class="tok-o">)</span>
+       <span class="tok-n">String</span> <span class="tok-n">city</span><span class="tok-o">;</span>
+
+       <span class="tok-nd">@ProtoField</span><span class="tok-o">(</span><span class="tok-n">number</span> <span class="tok-o">=</span> <span class="tok-mi">4</span><span class="tok-o">)</span>
+       <span class="tok-n">String</span> <span class="tok-n">country</span><span class="tok-o">;</span>
+<span class="tok-o">...</span></code></pre>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_creating_a_query">Creating a Query</h3>
+</div>
+<div class="sect3">
+<h4 id="_configure_the_marshalling_context">Configure the marshalling context</h4>
 <div class="paragraph">
-<p>TBD</p>
+<p>Infinispan needs to know wich protobuf schema use to marshall the previously annotated class.
+You can provide a protobuf descriptor file or the descriptor file be created based on the annotations
+you previously used in the POJO.</p>
 </div>
-</div>
-<div class="sect2">
-<h3 id="_creating_a_continuous_query">Creating a Continuous Query</h3>
 <div class="paragraph">
-<p>TBD</p>
+<p>In the <code>LocationWeatherMarshallingContext</code>, we will add the schema to the Protobuf cache in infinispan.
+You need to build a schema using the builder API, pass the annotation POJO and add the schema to the cache.</p>
+</div>
+<div class="listingblock">
+<div class="title">org.infinispan.tutorial.db.LocationWeatherMarshallingContext</div>
+<div class="content">
+<pre class="pygments highlight"><code data-lang="java"><span></span>    <span class="tok-c1">// Get the serialization context of the client</span>
+    <span class="tok-n">SerializationContext</span> <span class="tok-n">ctx</span> <span class="tok-o">=</span> <span class="tok-n">MarshallerUtil</span><span class="tok-o">.</span><span class="tok-na">getSerializationContext</span><span class="tok-o">(</span><span class="tok-n">cacheManager</span><span class="tok-o">);</span>
+
+    <span class="tok-c1">// Use ProtoSchemaBuilder to define a Protobuf schema on the client</span>
+    <span class="tok-n">ProtoSchemaBuilder</span> <span class="tok-n">protoSchemaBuilder</span> <span class="tok-o">=</span> <span class="tok-k">new</span> <span class="tok-n">ProtoSchemaBuilder</span><span class="tok-o">();</span>
+    <span class="tok-n">String</span> <span class="tok-n">fileName</span> <span class="tok-o">=</span> <span class="tok-s">&quot;weather.proto&quot;</span><span class="tok-o">;</span>
+    <span class="tok-n">String</span> <span class="tok-n">protoFile</span> <span class="tok-o">=</span> <span class="tok-kc">null</span><span class="tok-o">;</span>
+    <span class="tok-k">try</span> <span class="tok-o">{</span>
+        <span class="tok-n">protoFile</span> <span class="tok-o">=</span> <span class="tok-n">protoSchemaBuilder</span>
+                <span class="tok-o">.</span><span class="tok-na">fileName</span><span class="tok-o">(</span><span class="tok-n">fileName</span><span class="tok-o">)</span>
+                <span class="tok-o">.</span><span class="tok-na">addClass</span><span class="tok-o">(</span><span class="tok-n">LocationWeather</span><span class="tok-o">.</span><span class="tok-na">class</span><span class="tok-o">)</span>
+                <span class="tok-o">.</span><span class="tok-na">packageName</span><span class="tok-o">(</span><span class="tok-s">&quot;org.infinispan.tutorial.data&quot;</span><span class="tok-o">)</span>
+                <span class="tok-o">.</span><span class="tok-na">build</span><span class="tok-o">(</span><span class="tok-n">ctx</span><span class="tok-o">);</span>
+    <span class="tok-o">}</span> <span class="tok-k">catch</span> <span class="tok-o">(</span><span class="tok-n">IOException</span> <span class="tok-n">e</span><span class="tok-o">)</span> <span class="tok-o">{</span>
+        <span class="tok-k">throw</span> <span class="tok-k">new</span> <span class="tok-n">RuntimeException</span><span class="tok-o">(</span><span class="tok-n">e</span><span class="tok-o">);</span>
+    <span class="tok-o">}</span>
+
+    <span class="tok-c1">// Retrieve metadata cache</span>
+    <span class="tok-n">RemoteCache</span><span class="tok-o">&lt;</span><span class="tok-n">String</span><span class="tok-o">,</span> <span class="tok-n">String</span><span class="tok-o">&gt;</span> <span class="tok-n">metadataCache</span> <span class="tok-o">=</span>
+            <span class="tok-n">cacheManager</span><span class="tok-o">.</span><span class="tok-na">getCache</span><span class="tok-o">(</span><span class="tok-n">PROTOBUF_METADATA_CACHE_NAME</span><span class="tok-o">);</span>
+
+    <span class="tok-c1">// Define the new schema on the server too</span>
+    <span class="tok-n">metadataCache</span><span class="tok-o">.</span><span class="tok-na">put</span><span class="tok-o">(</span><span class="tok-n">fileName</span><span class="tok-o">,</span> <span class="tok-n">protoFile</span><span class="tok-o">);</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_create_the_weather_cache">Create the <code>weather</code> cache</h4>
+<div class="paragraph">
+<p>Unlike the cache containing primitive data, to store <code>LocationWeather</code> objects we need to initialize
+the marshalling context.In this application. Do this <code>before</code> creating the <code>weather</code> cache in
+the <code>getWeatherCache</code> method.</p>
+</div>
+<div class="listingblock">
+<div class="title">org.infinispan.tutorial.db.DataSourceConnector</div>
+<div class="content">
+<pre class="pygments highlight"><code data-lang="java"><span></span>    <span class="tok-kd">public</span> <span class="tok-n">RemoteCache</span><span class="tok-o">&lt;</span><span class="tok-n">String</span><span class="tok-o">,</span> <span class="tok-n">LocationWeather</span><span class="tok-o">&gt;</span> <span class="tok-nf">getWeatherCache</span><span class="tok-o">()</span> <span class="tok-o">{</span>
+        <span class="tok-n">Objects</span><span class="tok-o">.</span><span class="tok-na">requireNonNull</span><span class="tok-o">(</span><span class="tok-n">remoteCacheManager</span><span class="tok-o">);</span>
+
+        <span class="tok-c1">// Initialize the Marshalling context</span>
+        <span class="tok-n">LocationWeatherMarshallingContext</span><span class="tok-o">.</span><span class="tok-na">initSerializationContext</span><span class="tok-o">(</span><span class="tok-n">remoteCacheManager</span><span class="tok-o">);</span>
+
+        <span class="tok-n">System</span><span class="tok-o">.</span><span class="tok-na">out</span><span class="tok-o">.</span><span class="tok-na">println</span><span class="tok-o">(</span><span class="tok-s">&quot;Get or Create a queryable weather cache&quot;</span><span class="tok-o">);</span>
+
+        <span class="tok-o">...</span>
+    <span class="tok-o">}</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_run_the_weather_loader_app">Run the Weather Loader app</h4>
+<div class="paragraph">
+<p>The code loading the data into the cache is available in the
+<code>org.infinispan.tutorial.services.weather.FullWeatherLoader</code>.
+The code is very similar to the code you already implemented in the <code>TemperatureLoader</code> so you won&#8217;t
+code anything else at this point.</p>
+</div>
+<div class="paragraph">
+<p>Run the <code>WeatherLoaderApp</code> application. If everything works, the data should be loading and you should
+get the resulting logs.</p>
+</div>
+<div class="listingblock">
+<div class="title">org.infinispan.tutorial.client.weather.WeatherLoaderApp</div>
+<div class="content">
+<pre class="pygments highlight"><code data-lang="bash"><span></span>
+---- Connect to Infinispan ----
+Jul <span class="tok-m">12</span>, <span class="tok-m">2020</span> <span class="tok-m">4</span>:11:42 PM org.infinispan.client.hotrod.RemoteCacheManager actualStart
+INFO: ISPN004021: Infinispan version: Infinispan <span class="tok-s1">&#39;Corona Extra&#39;</span> <span class="tok-m">11</span>.0.1.Final
+LocationWeatherMarshallingContext - initialize the serialization context <span class="tok-k">for</span> LocationWeather class
+---- Get or create the <span class="tok-s1">&#39;weather&#39;</span> cache ----
+---- Press any key to quit ----
+
+---- Loading information ----
+Rome, Italy - LocationWeather<span class="tok-o">{</span><span class="tok-nv">temperature</span><span class="tok-o">=</span><span class="tok-m">17</span>.252243, <span class="tok-nv">condition</span><span class="tok-o">=</span><span class="tok-s1">&#39;SUNNY&#39;</span>, <span class="tok-nv">city</span><span class="tok-o">=</span><span class="tok-s1">&#39;Rome&#39;</span>, <span class="tok-nv">country</span><span class="tok-o">=</span><span class="tok-s1">&#39;Italy&#39;</span><span class="tok-o">}</span>
+Como, Italy - LocationWeather<span class="tok-o">{</span><span class="tok-nv">temperature</span><span class="tok-o">=</span><span class="tok-m">24</span>.495003, <span class="tok-nv">condition</span><span class="tok-o">=</span><span class="tok-s1">&#39;WINDLESS&#39;</span>, <span class="tok-nv">city</span><span class="tok-o">=</span><span class="tok-s1">&#39;Como&#39;</span>, <span class="tok-nv">country</span><span class="tok-o">=</span><span class="tok-s1">&#39;Italy&#39;</span><span class="tok-o">}</span>
+Basel, Switzerland - LocationWeather<span class="tok-o">{</span><span class="tok-nv">temperature</span><span class="tok-o">=</span><span class="tok-m">19</span>.795946, <span class="tok-nv">condition</span><span class="tok-o">=</span><span class="tok-s1">&#39;WINDLESS&#39;</span>, <span class="tok-nv">city</span><span class="tok-o">=</span><span class="tok-s1">&#39;Basel&#39;</span>, <span class="tok-nv">country</span><span class="tok-o">=</span><span class="tok-s1">&#39;Switzerland&#39;</span><span class="tok-o">}</span>
+Bern, Switzerland - LocationWeather<span class="tok-o">{</span><span class="tok-nv">temperature</span><span class="tok-o">=</span><span class="tok-m">20</span>.455978, <span class="tok-nv">condition</span><span class="tok-o">=</span><span class="tok-s1">&#39;WINDLESS&#39;</span>, <span class="tok-nv">city</span><span class="tok-o">=</span><span class="tok-s1">&#39;Bern&#39;</span>, <span class="tok-nv">country</span><span class="tok-o">=</span><span class="tok-s1">&#39;Switzerland&#39;</span><span class="tok-o">}</span>
+London, UK - LocationWeather<span class="tok-o">{</span><span class="tok-nv">temperature</span><span class="tok-o">=</span><span class="tok-m">8</span>.399549, <span class="tok-nv">condition</span><span class="tok-o">=</span><span class="tok-s1">&#39;FOGGY&#39;</span>, <span class="tok-nv">city</span><span class="tok-o">=</span><span class="tok-s1">&#39;London&#39;</span>, <span class="tok-nv">country</span><span class="tok-o">=</span><span class="tok-s1">&#39;UK&#39;</span><span class="tok-o">}</span>
+Newcastle, UK - LocationWeather<span class="tok-o">{</span><span class="tok-nv">temperature</span><span class="tok-o">=</span><span class="tok-m">7</span>.2848473, <span class="tok-nv">condition</span><span class="tok-o">=</span><span class="tok-s1">&#39;WINDY&#39;</span>, <span class="tok-nv">city</span><span class="tok-o">=</span><span class="tok-s1">&#39;Newcastle&#39;</span>, <span class="tok-nv">country</span><span class="tok-o">=</span><span class="tok-s1">&#39;UK&#39;</span><span class="tok-o">}</span>
+Madrid, Spain - LocationWeather<span class="tok-o">{</span><span class="tok-nv">temperature</span><span class="tok-o">=</span><span class="tok-m">11</span>.511543, <span class="tok-nv">condition</span><span class="tok-o">=</span><span class="tok-s1">&#39;SUNNY&#39;</span>, <span class="tok-nv">city</span><span class="tok-o">=</span><span class="tok-s1">&#39;Madrid&#39;</span>, <span class="tok-nv">country</span><span class="tok-o">=</span><span class="tok-s1">&#39;Spain&#39;</span><span class="tok-o">}</span>
+Bilbao, Spain - LocationWeather<span class="tok-o">{</span><span class="tok-nv">temperature</span><span class="tok-o">=</span><span class="tok-m">10</span>.426537, <span class="tok-nv">condition</span><span class="tok-o">=</span><span class="tok-s1">&#39;PARTIALLY_COVERED&#39;</span>, <span class="tok-nv">city</span><span class="tok-o">=</span><span class="tok-s1">&#39;Bilbao&#39;</span>, <span class="tok-nv">country</span><span class="tok-o">=</span><span class="tok-s1">&#39;Spain&#39;</span><span class="tok-o">}</span>
+Bucarest, Romania - LocationWeather<span class="tok-o">{</span><span class="tok-nv">temperature</span><span class="tok-o">=</span><span class="tok-m">18</span>.765896, <span class="tok-nv">condition</span><span class="tok-o">=</span><span class="tok-s1">&#39;DRY&#39;</span>, <span class="tok-nv">city</span><span class="tok-o">=</span><span class="tok-s1">&#39;Bucarest&#39;</span>, <span class="tok-nv">country</span><span class="tok-o">=</span><span class="tok-s1">&#39;Romania&#39;</span><span class="tok-o">}</span>
+Cluj-Napoca, Romania - LocationWeather<span class="tok-o">{</span><span class="tok-nv">temperature</span><span class="tok-o">=</span><span class="tok-m">9</span>.634157, <span class="tok-nv">condition</span><span class="tok-o">=</span><span class="tok-s1">&#39;DRY&#39;</span>, <span class="tok-nv">city</span><span class="tok-o">=</span><span class="tok-s1">&#39;Cluj-Napoca&#39;</span>, <span class="tok-nv">country</span><span class="tok-o">=</span><span class="tok-s1">&#39;Romania&#39;</span><span class="tok-o">}</span>
+Ottawa, Canada - LocationWeather<span class="tok-o">{</span><span class="tok-nv">temperature</span><span class="tok-o">=</span><span class="tok-m">11</span>.64571, <span class="tok-nv">condition</span><span class="tok-o">=</span><span class="tok-s1">&#39;WINDLESS&#39;</span>, <span class="tok-nv">city</span><span class="tok-o">=</span><span class="tok-s1">&#39;Ottawa&#39;</span>, <span class="tok-nv">country</span><span class="tok-o">=</span><span class="tok-s1">&#39;Canada&#39;</span><span class="tok-o">}</span>
+Toronto, Canada - LocationWeather<span class="tok-o">{</span><span class="tok-nv">temperature</span><span class="tok-o">=</span><span class="tok-m">13</span>.520051, <span class="tok-nv">condition</span><span class="tok-o">=</span><span class="tok-s1">&#39;FOGGY&#39;</span>, <span class="tok-nv">city</span><span class="tok-o">=</span><span class="tok-s1">&#39;Toronto&#39;</span>, <span class="tok-nv">country</span><span class="tok-o">=</span><span class="tok-s1">&#39;Canada&#39;</span><span class="tok-o">}</span>
+Lisbon, Portugal - LocationWeather<span class="tok-o">{</span><span class="tok-nv">temperature</span><span class="tok-o">=</span><span class="tok-m">11</span>.366248, <span class="tok-nv">condition</span><span class="tok-o">=</span><span class="tok-s1">&#39;DRY&#39;</span>, <span class="tok-nv">city</span><span class="tok-o">=</span><span class="tok-s1">&#39;Lisbon&#39;</span>, <span class="tok-nv">country</span><span class="tok-o">=</span><span class="tok-s1">&#39;Portugal&#39;</span><span class="tok-o">}</span>
+Porto, Portugal - LocationWeather<span class="tok-o">{</span><span class="tok-nv">temperature</span><span class="tok-o">=</span><span class="tok-m">8</span>.092586, <span class="tok-nv">condition</span><span class="tok-o">=</span><span class="tok-s1">&#39;FOGGY&#39;</span>, <span class="tok-nv">city</span><span class="tok-o">=</span><span class="tok-s1">&#39;Porto&#39;</span>, <span class="tok-nv">country</span><span class="tok-o">=</span><span class="tok-s1">&#39;Portugal&#39;</span><span class="tok-o">}</span>
+Raleigh, USA - LocationWeather<span class="tok-o">{</span><span class="tok-nv">temperature</span><span class="tok-o">=</span><span class="tok-m">18</span>.143414, <span class="tok-nv">condition</span><span class="tok-o">=</span><span class="tok-s1">&#39;WET&#39;</span>, <span class="tok-nv">city</span><span class="tok-o">=</span><span class="tok-s1">&#39;Raleigh&#39;</span>, <span class="tok-nv">country</span><span class="tok-o">=</span><span class="tok-s1">&#39;USA&#39;</span><span class="tok-o">}</span>
+Washington, USA - LocationWeather<span class="tok-o">{</span><span class="tok-nv">temperature</span><span class="tok-o">=</span><span class="tok-m">21</span>.916203, <span class="tok-nv">condition</span><span class="tok-o">=</span><span class="tok-s1">&#39;WINDLESS&#39;</span>, <span class="tok-nv">city</span><span class="tok-o">=</span><span class="tok-s1">&#39;Washington&#39;</span>, <span class="tok-nv">country</span><span class="tok-o">=</span><span class="tok-s1">&#39;USA&#39;</span><span class="tok-o">}</span>
+---- Loaded in 3386ms ----
+
+---- Loading information ----
+Rome, Italy - LocationWeather<span class="tok-o">{</span><span class="tok-nv">temperature</span><span class="tok-o">=</span><span class="tok-m">17</span>.252243, <span class="tok-nv">condition</span><span class="tok-o">=</span><span class="tok-s1">&#39;CLOUDY&#39;</span>, <span class="tok-nv">city</span><span class="tok-o">=</span><span class="tok-s1">&#39;Rome&#39;</span>, <span class="tok-nv">country</span><span class="tok-o">=</span><span class="tok-s1">&#39;Italy&#39;</span><span class="tok-o">}</span>
+Como, Italy - LocationWeather<span class="tok-o">{</span><span class="tok-nv">temperature</span><span class="tok-o">=</span><span class="tok-m">24</span>.495003, <span class="tok-nv">condition</span><span class="tok-o">=</span><span class="tok-s1">&#39;PARTIALLY_COVERED&#39;</span>, <span class="tok-nv">city</span><span class="tok-o">=</span><span class="tok-s1">&#39;Como&#39;</span>, <span class="tok-nv">country</span><span class="tok-o">=</span><span class="tok-s1">&#39;Italy&#39;</span><span class="tok-o">}</span>
+...
+---- Loaded in 70ms ----</code></pre>
+</div>
+</div>
 </div>
 </div>
 <div class="sect2">
@@ -941,7 +1182,7 @@ again.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-12 14:07:01 +0200
+Last updated 2020-07-12 16:28:55 +0200
 </div>
 </div>
 <style>
