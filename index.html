@@ -444,23 +444,47 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <ul class="sectlevel1">
 <li><a href="#_client_server_tutorial">Client Server Tutorial</a>
 <ul class="sectlevel2">
-<li><a href="#_prerequisites">Prerequisites</a></li>
-<li><a href="#_run_an_infinispan_server_locally">Run an Infinispan Server locally</a>
+<li><a href="#_0_prerequisites">0. Prerequisites</a></li>
+<li><a href="#_1_run_an_infinispan_server_locally">1. Run an Infinispan Server locally</a>
 <ul class="sectlevel3">
 <li><a href="#_option_1_use_docker_recommended_way">Option 1: Use Docker (recommended way)</a></li>
 <li><a href="#_option_2_download_the_server">Option 2: Download the server</a></li>
 <li><a href="#_check_the_server_is_correctly_running">Check the Server is correctly running</a></li>
 </ul>
 </li>
-<li><a href="#_architecture">Architecture</a></li>
+<li><a href="#_2_solution">2. Solution</a></li>
+<li><a href="#_3_architecture">3. Architecture</a>
+<ul class="sectlevel3">
+<li><a href="#_temperature_sub_system">Temperature sub-system</a>
+<ul class="sectlevel4">
+<li><a href="#_temperature_loader_app">Temperature Loader App</a></li>
+<li><a href="#_temperature_monitor_app">Temperature Monitor App</a></li>
 </ul>
 </li>
-<li><a href="#_temperature">Temperature</a>
-<ul class="sectlevel2">
-<li><a href="#_solution">Solution</a></li>
-<li><a href="#_bootstrapping_the_project">Bootstrapping the project</a></li>
-<li><a href="#_connecting_to_the_infinispan_server_using_the_java_client">Connecting to the Infinispan Server using the Java Client</a></li>
-<li><a href="#_creating_the_temperatures_cache">Creating the 'Temperatures' cache</a></li>
+<li><a href="#_weather_sub_system">Weather sub-system</a>
+<ul class="sectlevel4">
+<li><a href="#_weather_loader_app">Weather Loader App</a></li>
+<li><a href="#_weather_finder_app">Weather Finder App</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#_4_bootstrapping_the_project">4. Bootstrapping the project</a></li>
+<li><a href="#_5_connecting_to_the_infinispan_server_using_the_java_client">5. Connecting to the Infinispan Server using the Java client</a>
+<ul class="sectlevel3">
+<li><a href="#_maven">Maven</a></li>
+<li><a href="#_implement_the_connection">Implement the connection</a></li>
+<li><a href="#_health_check">Health Check</a></li>
+</ul>
+</li>
+<li><a href="#_6_implement_the_temperature_loader">6. Implement the Temperature Loader</a>
+<ul class="sectlevel3">
+<li><a href="#_creating_the_temperature_cache">Creating the 'temperature' cache</a></li>
+<li><a href="#_put_and_read_data_in_the_temperature_cache">Put and Read data in the 'temperature' cache</a></li>
+<li><a href="#_temperature_loading_check">Temperature Loading Check</a></li>
+<li><a href="#_making_the_data_expire">Making the data expire</a></li>
+</ul>
+</li>
 <li><a href="#_putting_data_in_the_cache">Putting data in the cache</a></li>
 <li><a href="#_reading_data_from_the_cache">Reading data from the cache</a></li>
 <li><a href="#_listening_to_the_changes">Listening to the changes</a></li>
@@ -514,7 +538,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </ol>
 </div>
 <div class="sect2">
-<h3 id="_prerequisites">Prerequisites</h3>
+<h3 id="_0_prerequisites">0. Prerequisites</h3>
 <div class="paragraph">
 <p>To complete this guide, you need:</p>
 </div>
@@ -551,7 +575,7 @@ running mvn --version.
 </div>
 </div>
 <div class="sect2">
-<h3 id="_run_an_infinispan_server_locally">Run an Infinispan Server locally</h3>
+<h3 id="_1_run_an_infinispan_server_locally">1. Run an Infinispan Server locally</h3>
 <div class="paragraph">
 <p>For this tutorial, the first thing we need to do is to run an Infinispan Server.</p>
 </div>
@@ -602,35 +626,7 @@ display the Console Web.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_architecture">Architecture</h3>
-<div class="paragraph">
-<p>In this tutorial we will build a Weather System. This system is composed by 4 java applications.</p>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_temperature">Temperature</h2>
-<div class="sectionbody">
-<div class="imageblock">
-<div class="content">
-<img src="./images/Temperature.png" alt="Temperature.png">
-</div>
-</div>
-<div class="imageblock">
-<div class="content">
-<img src="./images/Weather.png" alt="Weather.png">
-</div>
-</div>
-<div class="paragraph">
-<p>&#8230;&#8203;</p>
-</div>
-<div class="paragraph">
-<p>Clone the
-If you want to build the tutorial from scratch, clone the 'init' branch in the repository.</p>
-</div>
-<div class="sect2">
-<h3 id="_solution">Solution</h3>
+<h3 id="_2_solution">2. Solution</h3>
 <div class="paragraph">
 <p>We recommend that you follow the instructions from Boostrapping project and onwards to create the application step by step.</p>
 </div>
@@ -646,7 +642,87 @@ The solution is located in the 'solution' branch.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_bootstrapping_the_project">Bootstrapping the project</h3>
+<h3 id="_3_architecture">3. Architecture</h3>
+<div class="paragraph">
+<p>In this tutorial we will build a Weather System.
+This system is composed by 4 java applications.</p>
+</div>
+<div class="sect3">
+<h4 id="_temperature_sub_system">Temperature sub-system</h4>
+<div class="paragraph">
+<p>The temperature sub-system is composed by two applications:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="./images/Temperature.png" alt="Temperature.png">
+</div>
+</div>
+<div class="sect4">
+<h5 id="_temperature_loader_app">Temperature Loader App</h5>
+<div class="paragraph">
+<p>The loader application loads the temperatures for all the existing locations.
+Infinispan stores the data in the "temperature" cache.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Location: Key <code>String</code></p>
+</li>
+<li>
+<p>Temperature: Value <code>Float</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>This process runs every 5 seconds.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_temperature_monitor_app">Temperature Monitor App</h5>
+<div class="paragraph">
+<p>The monitor application monitors the temperature of a specific location. Infinispan sends a
+notification, and the application displays a message with the new temperature.</p>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_weather_sub_system">Weather sub-system</h4>
+<div class="paragraph">
+<p>The weather sub-system is composed by two applications:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="./images/Weather.png" alt="Weather.png">
+</div>
+</div>
+<div class="sect4">
+<h5 id="_weather_loader_app">Weather Loader App</h5>
+<div class="paragraph">
+<p>The loader application loads the Weather information for all the existing locations.
+Infinispan stores the data in the "weather" cache.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Location: Key <code>String</code></p>
+</li>
+<li>
+<p>Temperature: Value <code>Float</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>This process runs every 5 seconds.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_weather_finder_app">Weather Finder App</h5>
+
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_4_bootstrapping_the_project">4. Bootstrapping the project</h3>
 <div class="paragraph">
 <p><code>git clone <a href="https://github.com/infinispan/infinispan-server-tutorial.git" class="bare">https://github.com/infinispan/infinispan-server-tutorial.git</a></code></p>
 </div>
@@ -655,7 +731,16 @@ The solution is located in the 'solution' branch.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_connecting_to_the_infinispan_server_using_the_java_client">Connecting to the Infinispan Server using the Java Client</h3>
+<h3 id="_5_connecting_to_the_infinispan_server_using_the_java_client">5. Connecting to the Infinispan Server using the Java client</h3>
+<div class="paragraph">
+<p>Let&#8217;s implement the connection to the running Infinispan Server.</p>
+</div>
+<div class="sect3">
+<h4 id="_maven">Maven</h4>
+<div class="paragraph">
+<p>To connect to the Infinispan Server using the Java Client, add the hotrod client dependency to the
+<code>pom.xml</code> file.</p>
+</div>
 <div class="listingblock">
 <div class="title">pom.xml</div>
 <div class="content">
@@ -665,23 +750,62 @@ The solution is located in the 'solution' branch.</p>
 <span class="tok-nt">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
+</div>
+<div class="sect3">
+<h4 id="_implement_the_connection">Implement the connection</h4>
+<div class="paragraph">
+<p>Change the method <code>connect</code> in the <code>DataSourceConnector</code> class.</p>
+</div>
 <div class="listingblock">
-<div class="title">db.DataSourceConnector.java</div>
+<div class="title">DataSourceConnector.java</div>
 <div class="content">
 <pre class="pygments highlight"><code data-lang="java"><span></span><span class="tok-n">ConfigurationBuilder</span> <span class="tok-n">builder</span> <span class="tok-o">=</span> <span class="tok-k">new</span> <span class="tok-n">ConfigurationBuilder</span><span class="tok-o">();</span>
 
+<span class="tok-c1">// Necessary for docker 4 mac</span>
 <span class="tok-n">builder</span><span class="tok-o">.</span><span class="tok-na">clientIntelligence</span><span class="tok-o">(</span><span class="tok-n">ClientIntelligence</span><span class="tok-o">.</span><span class="tok-na">BASIC</span><span class="tok-o">);</span>
 
+<span class="tok-c1">// Define a server</span>
 <span class="tok-n">builder</span><span class="tok-o">.</span><span class="tok-na">addServer</span><span class="tok-o">()</span>
        <span class="tok-o">.</span><span class="tok-na">host</span><span class="tok-o">(</span><span class="tok-s">&quot;127.0.0.1&quot;</span><span class="tok-o">)</span>
        <span class="tok-o">.</span><span class="tok-na">port</span><span class="tok-o">(</span><span class="tok-n">ConfigurationProperties</span><span class="tok-o">.</span><span class="tok-na">DEFAULT_HOTROD_PORT</span><span class="tok-o">);</span>
 
+<span class="tok-c1">// Add the credentials you used to run the server</span>
 <span class="tok-n">builder</span><span class="tok-o">.</span><span class="tok-na">security</span><span class="tok-o">().</span><span class="tok-na">authentication</span><span class="tok-o">().</span><span class="tok-na">username</span><span class="tok-o">(</span><span class="tok-s">&quot;admin&quot;</span><span class="tok-o">).</span><span class="tok-na">password</span><span class="tok-o">(</span><span class="tok-s">&quot;pass&quot;</span><span class="tok-o">);</span></code></pre>
 </div>
 </div>
 </div>
+<div class="sect3">
+<h4 id="_health_check">Health Check</h4>
+<div class="paragraph">
+<p>Run the main class <code>org.infinispan.tutorial.client.HealthChecker</code>.
+If the connection is correct, you will see:</p>
+</div>
+<div class="listingblock">
+<div class="title">HealthChecker</div>
+<div class="content">
+<pre class="pygments highlight"><code data-lang="bash"><span></span>
+---- Connect to Infinispan ----
+INFO: ISPN004021: Infinispan version: Infinispan ...
+---- Connection count: <span class="tok-m">1</span> ----
+---- Shutdown the client ----</code></pre>
+</div>
+</div>
+</div>
+</div>
 <div class="sect2">
-<h3 id="_creating_the_temperatures_cache">Creating the 'Temperatures' cache</h3>
+<h3 id="_6_implement_the_temperature_loader">6. Implement the Temperature Loader</h3>
+<div class="paragraph">
+<p>Implementing the Temperature Loader, you will learn:
+- How to create a cache using the administration interface
+- How to read data from the cache
+- How to write data to the cache
+- How to expire cache in the cache</p>
+</div>
+<div class="sect3">
+<h4 id="_creating_the_temperature_cache">Creating the 'temperature' cache</h4>
+<div class="paragraph">
+<p>Change the method <code>getTemperatureCache</code> and get or create a cache using the administrator API.</p>
+</div>
 <div class="listingblock">
 <div class="title">db.DataSourceConnector.java</div>
 <div class="content">
@@ -690,6 +814,83 @@ The solution is located in the 'solution' branch.</p>
               <span class="tok-o">.</span><span class="tok-na">withFlags</span><span class="tok-o">(</span><span class="tok-n">CacheContainerAdmin</span><span class="tok-o">.</span><span class="tok-na">AdminFlag</span><span class="tok-o">.</span><span class="tok-na">VOLATILE</span><span class="tok-o">)</span>
               <span class="tok-o">.</span><span class="tok-na">getOrCreateCache</span><span class="tok-o">(</span><span class="tok-s">&quot;temperature&quot;</span><span class="tok-o">,</span> <span class="tok-n">DefaultTemplate</span><span class="tok-o">.</span><span class="tok-na">DIST_SYNC</span><span class="tok-o">);</span>
 <span class="tok-o">}</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_put_and_read_data_in_the_temperature_cache">Put and Read data in the 'temperature' cache</h4>
+<div class="paragraph">
+<p>Implement the <code>getForLocation</code> method in the <code>TemperatureLoader</code> service.
+If the location is not present in the cache, we fetch the value.</p>
+</div>
+<div class="paragraph">
+<p>The private method <code>fetchTemperature</code> emulates an external service call that gets 200ms to get
+the temperature for an specific location.</p>
+</div>
+<div class="listingblock">
+<div class="title">org.infinispan.tutorial.services.TemperatureLoader.java</div>
+<div class="content">
+<pre class="pygments highlight"><code data-lang="java"><span></span>   <span class="tok-nd">@Override</span>
+   <span class="tok-kd">public</span> <span class="tok-n">Float</span> <span class="tok-nf">getForLocation</span><span class="tok-o">(</span><span class="tok-n">String</span> <span class="tok-n">location</span><span class="tok-o">)</span> <span class="tok-o">{</span>
+      <span class="tok-n">Float</span> <span class="tok-n">temperature</span> <span class="tok-o">=</span> <span class="tok-n">cache</span><span class="tok-o">.</span><span class="tok-na">get</span><span class="tok-o">(</span><span class="tok-n">location</span><span class="tok-o">);</span>
+      <span class="tok-k">if</span> <span class="tok-o">(</span><span class="tok-n">temperature</span> <span class="tok-o">==</span> <span class="tok-kc">null</span><span class="tok-o">)</span> <span class="tok-o">{</span>
+         <span class="tok-n">temperature</span> <span class="tok-o">=</span> <span class="tok-n">fetchTemperature</span><span class="tok-o">(</span><span class="tok-n">location</span><span class="tok-o">);</span>
+         <span class="tok-n">cache</span><span class="tok-o">.</span><span class="tok-na">put</span><span class="tok-o">(</span><span class="tok-n">location</span><span class="tok-o">,</span> <span class="tok-n">temperature</span><span class="tok-o">);</span>
+      <span class="tok-o">}</span>
+      <span class="tok-k">return</span> <span class="tok-n">temperature</span><span class="tok-o">;</span>
+   <span class="tok-o">}</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_temperature_loading_check">Temperature Loading Check</h4>
+<div class="paragraph">
+<p>Run the <code>TemperatureLoaderApp</code> application. The first time the loading gets around 2s, the subsequents
+calls will grab the temperature from the cache making the loading method performance increase significantly.</p>
+</div>
+<div class="listingblock">
+<div class="title">org.infinispan.tutorial.services.TemperatureLoader.java</div>
+<div class="content">
+<pre class="pygments highlight"><code data-lang="java"><span></span>
+<span class="tok-o">----</span> <span class="tok-n">Connect</span> <span class="tok-n">to</span> <span class="tok-n">Infinispan</span> <span class="tok-o">----</span>
+<span class="tok-n">Jul</span> <span class="tok-mi">12</span><span class="tok-o">,</span> <span class="tok-mi">2020</span> <span class="tok-mi">2</span><span class="tok-o">:</span><span class="tok-mo">01</span><span class="tok-o">:</span><span class="tok-mo">03</span> <span class="tok-n">PM</span> <span class="tok-n">org</span><span class="tok-o">.</span><span class="tok-na">infinispan</span><span class="tok-o">.</span><span class="tok-na">client</span><span class="tok-o">.</span><span class="tok-na">hotrod</span><span class="tok-o">.</span><span class="tok-na">RemoteCacheManager</span> <span class="tok-n">actualStart</span>
+<span class="tok-nl">INFO:</span> <span class="tok-n">ISPN004021</span><span class="tok-o">:</span> <span class="tok-n">Infinispan</span> <span class="tok-n">version</span><span class="tok-o">:</span> <span class="tok-n">Infinispan</span> <span class="tok-err">&#39;</span><span class="tok-n">Corona</span> <span class="tok-n">Extra</span><span class="tok-err">&#39;</span> <span class="tok-mf">11.0.1</span><span class="tok-o">.</span><span class="tok-na">Final</span>
+<span class="tok-o">----</span> <span class="tok-n">Get</span> <span class="tok-n">or</span> <span class="tok-n">create</span> <span class="tok-n">the</span> <span class="tok-err">&#39;</span><span class="tok-n">temperature</span><span class="tok-err">&#39;</span> <span class="tok-n">cache</span> <span class="tok-o">----</span>
+<span class="tok-o">----</span> <span class="tok-n">Press</span> <span class="tok-n">any</span> <span class="tok-n">key</span> <span class="tok-n">to</span> <span class="tok-n">quit</span> <span class="tok-o">----</span>
+<span class="tok-o">----</span> <span class="tok-n">Loading</span> <span class="tok-n">information</span> <span class="tok-o">----</span>
+<span class="tok-n">Rome</span><span class="tok-o">,</span> <span class="tok-n">Italy</span> <span class="tok-o">-</span> <span class="tok-mf">22.000622</span>
+<span class="tok-n">Como</span><span class="tok-o">,</span> <span class="tok-n">Italy</span> <span class="tok-o">-</span> <span class="tok-mf">21.044369</span>
+<span class="tok-o">...</span>
+
+<span class="tok-o">----</span> <span class="tok-n">Loaded</span> <span class="tok-n">in</span> <span class="tok-mi">1762</span><span class="tok-n">ms</span> <span class="tok-o">----</span>
+<span class="tok-o">----</span> <span class="tok-n">Loading</span> <span class="tok-n">information</span> <span class="tok-o">----</span>
+<span class="tok-n">Rome</span><span class="tok-o">,</span> <span class="tok-n">Italy</span> <span class="tok-o">-</span> <span class="tok-mf">22.000622</span>
+<span class="tok-n">Como</span><span class="tok-o">,</span> <span class="tok-n">Italy</span> <span class="tok-o">-</span> <span class="tok-mf">21.044369</span>
+<span class="tok-o">...</span>
+<span class="tok-o">----</span> <span class="tok-n">Loaded</span> <span class="tok-n">in</span> <span class="tok-mi">44</span><span class="tok-n">ms</span> <span class="tok-o">----</span>
+<span class="tok-n">q</span>
+<span class="tok-o">----</span> <span class="tok-n">Shutdown</span> <span class="tok-n">the</span> <span class="tok-n">client</span> <span class="tok-o">----</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_making_the_data_expire">Making the data expire</h4>
+<div class="paragraph">
+<p>At this point, if the temperatures change, the data will stay forever unchanged. To force deletion, we will use
+expiration.</p>
+</div>
+<div class="paragraph">
+<p>Change the <code>put</code> method and make the temperature data expire every 20s.</p>
+</div>
+<div class="listingblock">
+<div class="title">org.infinispan.tutorial.services.TemperatureLoader.java</div>
+<div class="content">
+<pre class="pygments highlight"><code data-lang="java"><span></span><span class="tok-n">cache</span><span class="tok-o">.</span><span class="tok-na">put</span><span class="tok-o">(</span><span class="tok-n">location</span><span class="tok-o">,</span> <span class="tok-n">temperature</span><span class="tok-o">,</span> <span class="tok-mi">20</span><span class="tok-o">,</span> <span class="tok-n">TimeUnit</span><span class="tok-o">.</span><span class="tok-na">SECONDS</span><span class="tok-o">);</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Running the application again, you will notice that after 20 minutes, the temperature loading gets `slow'
+again.</p>
 </div>
 </div>
 </div>
@@ -740,7 +941,7 @@ The solution is located in the 'solution' branch.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-12 12:59:49 +0200
+Last updated 2020-07-12 14:07:01 +0200
 </div>
 </div>
 <style>
