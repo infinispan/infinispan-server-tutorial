@@ -135,7 +135,7 @@ Let's implement the connection to the running Infinispan Server.
 ==== Maven
 
 To connect to the Infinispan Server using the Java Client, add the hotrod client dependency to the
-`pom.xml' file.
+`pom.xml` file.
 
 .pom.xml
 [source,xml]
@@ -147,6 +147,25 @@ To connect to the Infinispan Server using the Java Client, add the hotrod client
 ----
 
 ==== Implement the connection
+
+Change the method `connect` in the `DataSourceConnector` class.
+
+.DataSourceConnector.java
+[source,java]
+----
+ConfigurationBuilder builder = new ConfigurationBuilder();
+
+// Necessary for docker 4 mac
+builder.clientIntelligence(ClientIntelligence.BASIC);
+
+// Define a server
+builder.addServer()
+       .host("127.0.0.1")
+       .port(ConfigurationProperties.DEFAULT_HOTROD_PORT);
+
+// Add the credentials you used to run the server
+builder.security().authentication().username("admin").password("pass");
+----
 
 
 ==== Health Check
@@ -165,28 +184,15 @@ INFO: ISPN004021: Infinispan version: Infinispan ...
 
 ----
 
-==== Temperature Monitor App
+=== 6. Implement the Temperature Loader
 
-Change the method "connect" in the DataSourceConnector file.
+Implementing the Temperature Loader, you will learn:
+- How to create a cache using the administration interface
+- How to read data from the cache
+- How to write data to the cache
+- How to expire cache in the cache
 
-.db.DataSourceConnector.java
-[source,java]
-----
-ConfigurationBuilder builder = new ConfigurationBuilder();
-
-// Necessary for docker 4 mac
-builder.clientIntelligence(ClientIntelligence.BASIC);
-
-// Define a server
-builder.addServer()
-       .host("127.0.0.1")
-       .port(ConfigurationProperties.DEFAULT_HOTROD_PORT);
-
-// Add the credentials you used to run the server
-builder.security().authentication().username("admin").password("pass");
-----
-
-=== Creating the 'Temperature' cache
+==== Creating the 'temperature' cache
 
 Change the method `getTemperatureCache` and get or create a cache using the administrator API.
 
@@ -200,6 +206,74 @@ public RemoteCache<String, Float> getTemperatureCache() {
 }
 
 ----
+
+==== Put and Read data in the 'temperature' cache
+
+Implement the `getForLocation` method in the `TemperatureLoader` service.
+If the location is not present in the cache, we fetch the value.
+
+The private method `fetchTemperature` emulates an external service call that gets 200ms to get
+the temperature for an specific location.
+
+.org.infinispan.tutorial.services.TemperatureLoader.java
+[source,java]
+----
+   @Override
+   public Float getForLocation(String location) {
+      Float temperature = cache.get(location);
+      if (temperature == null) {
+         temperature = fetchTemperature(location);
+         cache.put(location, temperature);
+      }
+      return temperature;
+   }
+
+----
+
+==== Temperature Loading Check
+
+Run the `TemperatureLoaderApp` application. The first time the loading gets around 2s, the subsequents
+calls will grab the temperature from the cache making the loading method performance increase significantly.
+
+.org.infinispan.tutorial.services.TemperatureLoader.java
+[source,java]
+----
+
+---- Connect to Infinispan ----
+Jul 12, 2020 2:01:03 PM org.infinispan.client.hotrod.RemoteCacheManager actualStart
+INFO: ISPN004021: Infinispan version: Infinispan 'Corona Extra' 11.0.1.Final
+---- Get or create the 'temperature' cache ----
+---- Press any key to quit ----
+---- Loading information ----
+Rome, Italy - 22.000622
+Como, Italy - 21.044369
+...
+
+---- Loaded in 1762ms ----
+---- Loading information ----
+Rome, Italy - 22.000622
+Como, Italy - 21.044369
+...
+---- Loaded in 44ms ----
+q
+---- Shutdown the client ----
+----
+
+==== Making the data expire
+
+At this point, if the temperatures change, the data will stay forever unchanged. To force deletion, we will use
+expiration.
+
+Change the `put` method and make the temperature data expire every 20s.
+
+.org.infinispan.tutorial.services.TemperatureLoader.java
+[source,java]
+----
+cache.put(location, temperature, 20, TimeUnit.SECONDS);
+----
+
+Running the application again, you will notice that after 20 minutes, the temperature loading gets `slow'
+again.
 
 === Putting data in the cache
 
