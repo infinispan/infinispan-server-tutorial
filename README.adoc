@@ -171,19 +171,18 @@ Change the method `connect` in the `DataSourceConnector` class.
 ----
 ConfigurationBuilder builder = new ConfigurationBuilder(); // <1>
 
-builder.clientIntelligence(ClientIntelligence.BASIC); //<3>
-
 builder.addServer() // <2>
        .host("127.0.0.1")
        .port(ConfigurationProperties.DEFAULT_HOTROD_PORT);
 
 builder.security().authentication().username("admin").password("pass"); //<3>
 
+builder.clientIntelligence(ClientIntelligence.BASIC); //<4>
 ----
 <1> Create a `ConfigurationBuilder`
 <2> Add the local server
-<3> Necessary for Docker for Mac
-<4> Configure the security: `admin` and `pass` credentials
+<3> Configure the security: `admin` and `pass` credentials
+<4> Necessary for Docker for Mac
 
 
 ==== Health Check
