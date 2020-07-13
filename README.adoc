@@ -650,7 +650,8 @@ Porto is now SUNNY
 
 === 10. Testing with the Infinispan Server
 
-https://www.testcontainers.org/test_framework_integration/junit_5/[Test containers] are a great way to run an Infinispan Server and use https://junit.org/junit5/[Junit 5] extension to test.
+https://www.testcontainers.org/test_framework_integration/junit_5/[Test containers] are a great way to run an Infinispan Server and
+use https://junit.org/junit5/[Junit 5] extension to test.
 
 As an example, you will add a test to verify that the temperature is correctly loaded in
 the Infinispan Server.
@@ -694,15 +695,16 @@ Create a Junit 5 Test using
 
 == What's next?
 
-This guide covered many if the stuff you need to start using the Infinispan Server.
-Infinispan integrates with Quarkus, Spring Boot and Vert.x among many other frameworks.
+If you reached this point and completed this tutorial... CONGRATULATIONS!
+This guide covered many of the knowledge you need to start using the Infinispan Server.
+Infinispan integrates with Quarkus, https://infinispan.org/infinispan-spring-boot/master/spring_boot_starter.html[Spring Boot] and Vert.x among many other frameworks.
 Grab a look to the different examples available.
 
-You deployed a local server. Go and check the Infinispan Operator Guide
+You deployed a local server. Go and check the https://infinispan.org/infinispan-operator/master/operator.html[Infinispan Operator Guide]
 to learn how to deploy and scale the server in Kubernetes/Openshift.
 
-Finally you have used the Java Hot Rod client. Grab a look to our REST API,
-and other hotrod clients to use the Infinispan Server with other programming languages.
+Finally you have used the Java Hot Rod client. Grab a look to our https://infinispan.org/docs/stable/titles/rest/rest.html[REST API],
+and other https://infinispan.org/hotrod-clients/[hotrod clients] to use the Infinispan Server with other programming languages.
 
 
 
