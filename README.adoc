@@ -350,7 +350,7 @@ CAUTION: Ensure that the client listeners are removed from the cache if you don'
 
 ==== Verify the Monitoring application
 
-`TemperatureLoaderApp` should be running, loading temperatures periodically and temperatures getting expired every 20s.
+*TemperatureLoaderApp* should be running, loading temperatures periodically and temperatures getting expired every 20s.
 
 Run *TemperatureMonitorApp*.
 
@@ -546,6 +546,7 @@ Create and run a query on the `weather` cache:
 <3> Set the `country` parameter
 <4> Execute the query and return the list
 
+*WeatherLoaderApp* should be running.
 
 Run *WeatherFinderApp* and check the output
 
@@ -588,6 +589,8 @@ a query that returns only the `city` that matches a given weather condition.
 <2> Create a query using 'Ickle'. Find every `LocationWeather` with a weather condition and return only the city.
 <3> Set the `condition` parameter
 <4> Execute the query, return the list and filter the `Object[]` to get those `String`
+
+*WeatherLoaderApp* should be running.
 
 Run *WeatherFinderApp* and check the output:
 
@@ -640,7 +643,9 @@ public void findWeatherByConditionContinuously(WeatherCondition condition) {
 CAUTION: Continuous Queries are similar to Client Listeners. Don't forget to remove the continuous queries
 when you don't need them anymore.
 
-Run `WeatherFinderApp` and check the output:
+*WeatherLoaderApp* should be running.
+
+Run *WeatherFinderApp* and check the output:
 
 .org.infinispan.tutorial.client.weather.WeatherFinderApp
 [source,bash]
@@ -711,7 +716,7 @@ Grab a look to the different examples available.
 You deployed a local server. Go and check the https://infinispan.org/infinispan-operator/master/operator.html[Infinispan Operator Guide]
 to learn how to deploy and scale the server in Kubernetes/Openshift.
 
-Finally you have used the Java Hot Rod client. Grab a look to our https://infinispan.org/docs/stable/titles/rest/rest.html[REST API],
+You have used the Java Hot Rod client. Grab a look to our https://infinispan.org/docs/stable/titles/rest/rest.html[REST API],
 and other https://infinispan.org/hotrod-clients/[hotrod clients] to use the Infinispan Server with other programming languages.
 
 
