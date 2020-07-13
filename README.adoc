@@ -220,7 +220,7 @@ If the location is not present in the cache, we fetch the value.
 The private method `fetchTemperature` emulates an external service call that gets 200ms to get
 the temperature for an specific location.
 
-.org.infinispan.tutorial.services.TemperatureLoader.java
+.org.infinispan.tutorial.services.temperature.TemperatureLoader
 [source,java]
 ----
    @Override
@@ -271,7 +271,7 @@ expiration.
 
 Change the `put` method and make the temperature data expire every 20s.
 
-.org.infinispan.tutorial.services.TemperatureLoader.java
+.org.infinispan.tutorial.services.temperature.TemperatureLoader
 [source,java]
 ----
    cache.put(location, temperature, 20, TimeUnit.SECONDS);
@@ -619,7 +619,7 @@ Create a Junit 5 Test using
    }
 ----
 
-=== What's next?
+== What's next?
 
 This guide covered many if the stuff you need to start using the Infinispan Server.
 Infinispan integrates with Quarkus, Spring Boot and Vert.x among many other frameworks.
