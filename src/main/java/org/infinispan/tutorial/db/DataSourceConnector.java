@@ -18,7 +18,14 @@ import java.util.Objects;
  */
 public class DataSourceConnector {
     private RemoteCacheManager remoteCacheManager;
-    private LocationWeatherMarshallingContext locationWeatherMarshallingContext;
+
+    public DataSourceConnector() {
+
+    }
+
+    public DataSourceConnector(RemoteCacheManager remoteCacheManager) {
+        this.remoteCacheManager = remoteCacheManager;
+    }
 
     // Step 1 - Connect to Infinispan
     public void connect() {
