@@ -155,7 +155,7 @@ To connect to the Infinispan Server using the Java Client, add the hotrod client
 
 Change the method `connect` in the `DataSourceConnector` class.
 
-.DataSourceConnector.java
+.org.infinispan.tutorial.db.DataSourceConnector
 [source,java]
 ----
 ConfigurationBuilder builder = new ConfigurationBuilder();
@@ -201,7 +201,7 @@ Implementing the Temperature Loader, you will learn:
 
 Change the method `getTemperatureCache` and get or create a cache using the administrator API.
 
-.db.DataSourceConnector.java
+.org.infinispan.tutorial.db.DataSourceConnector
 [source,java]
 ----
 public RemoteCache<String, Float> getTemperatureCache() {
@@ -240,7 +240,7 @@ the temperature for an specific location.
 Run the `TemperatureLoaderApp` application. The first time the loading gets around 2s, the subsequents
 calls will grab the temperature from the cache making the loading method performance increase significantly.
 
-.org.infinispan.tutorial.services.TemperatureLoader.java
+.org.infinispan.tutorial.services.temperature.TemperatureLoader
 [source,java]
 ----
 
@@ -365,7 +365,13 @@ when data is expired.
 === 8. Implement the Weather Loader
 
 The Weather loader application puts complex Key-Value entries in the `weather` cache. These objects need to
-be serialized to travel the network and land in the remote Infinispan Server.
+be serialized to travel over-the-wir and be stored in the Infinispan Server.
+
+The Weather data will be searchable, so the data must use https://developers.google.com/protocol-buffers[Google Protocol Buffers]
+as an encoding for both over-the-wire and storage.
+
+The usage of protobuf allows remote query to work not only for Java, but for REST,
+C# and Node.js clients.
 
 ==== Annotate the POJO LocationWeather
 
@@ -428,7 +434,7 @@ You need to build a schema using the builder API, pass the annotation POJO and a
     metadataCache.put(fileName, protoFile);
 ----
 
-==== Create the `weather` cache
+==== Create the weather cache
 
 Unlike the cache containing primitive data, to store `LocationWeather` objects we need to initialize
 the marshalling context.In this application. Do this `before` creating the `weather` cache in
@@ -488,6 +494,20 @@ Como, Italy - LocationWeather{temperature=24.495003, condition='PARTIALLY_COVERE
 
 === 9. Implement the Weather Search
 
+==== Add the maven dependency
+
+.pom.xml
+[source,xml]
+----
+    <dependency>
+        <groupId>org.infinispan</groupId>
+        <artifactId>infinispan-remote-query-client</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>org.infinispan</groupId>
+        <artifactId>infinispan-query-dsl</artifactId>
+    </dependency>
+----
 ==== Create and run a FROM query
 
 .org.infinispan.tutorial.services.weather.WeatherSearch
@@ -529,6 +549,7 @@ Como, Italy - LocationWeather{temperature=24.495003, condition='PARTIALLY_COVERE
 
 ==== Create and run a continuous query
 
+
 .org.infinispan.tutorial.services.weather.WeatherSearch
 [source,java]
 ----
@@ -551,9 +572,22 @@ public void findWeatherByConditionContinuously(WeatherCondition condition) {
    }
 ----
 
+CAUTION: Continuous Queries are similar to Client Listeners. Don't forget to remove the continuous queries
+when you don't need them anymore.
+
 === 10. Testing with the Infinispan Server
 
+https://www.testcontainers.org/test_framework_integration/junit_5/[Test containers] are a great way to run an Infinispan Server and use https://junit.org/junit5/[Junit 5] extension to test.
+
+As an example, you will add a test to verify that the temperature is correctly loaded in
+the Infinispan Server.
+
+NOTE: 2 JUnit 4 Rules are also available for out of the box testing with the Infinispan Server.
+Check `infinispan-server-testdriver-junit4` dependency.
+
 ==== Add the maven dependency
+
+Add the `infinispan-server-testdriver-junit5` maven dependency to the project.
 
 .pom.xml
 [source,xml]
@@ -568,6 +602,7 @@ public void findWeatherByConditionContinuously(WeatherCondition condition) {
 
 ==== Test using Test Containers
 
+Create a Junit 5 Test using
 .org.infinispan.tutorial.services.temperature.TemperatureLoaderTest
 [source,java]
 ----
