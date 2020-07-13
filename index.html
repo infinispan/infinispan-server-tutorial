@@ -837,13 +837,13 @@ Infinispan stores the data in the <code>weather</code> cache.</p>
 <div class="content">
 <pre class="pygments highlight"><code data-lang="java"><span></span><span class="tok-n">ConfigurationBuilder</span> <span class="tok-n">builder</span> <span class="tok-o">=</span> <span class="tok-k">new</span> <span class="tok-n">ConfigurationBuilder</span><span class="tok-o">();</span> <i class="conum" data-value="1"></i><b>(1)</b>
 
-<span class="tok-n">builder</span><span class="tok-o">.</span><span class="tok-na">clientIntelligence</span><span class="tok-o">(</span><span class="tok-n">ClientIntelligence</span><span class="tok-o">.</span><span class="tok-na">BASIC</span><span class="tok-o">);</span> <i class="conum" data-value="3"></i><b>(3)</b>
-
 <span class="tok-n">builder</span><span class="tok-o">.</span><span class="tok-na">addServer</span><span class="tok-o">()</span> <i class="conum" data-value="2"></i><b>(2)</b>
        <span class="tok-o">.</span><span class="tok-na">host</span><span class="tok-o">(</span><span class="tok-s">&quot;127.0.0.1&quot;</span><span class="tok-o">)</span>
        <span class="tok-o">.</span><span class="tok-na">port</span><span class="tok-o">(</span><span class="tok-n">ConfigurationProperties</span><span class="tok-o">.</span><span class="tok-na">DEFAULT_HOTROD_PORT</span><span class="tok-o">);</span>
 
-<span class="tok-n">builder</span><span class="tok-o">.</span><span class="tok-na">security</span><span class="tok-o">().</span><span class="tok-na">authentication</span><span class="tok-o">().</span><span class="tok-na">username</span><span class="tok-o">(</span><span class="tok-s">&quot;admin&quot;</span><span class="tok-o">).</span><span class="tok-na">password</span><span class="tok-o">(</span><span class="tok-s">&quot;pass&quot;</span><span class="tok-o">);</span> <i class="conum" data-value="3"></i><b>(3)</b></code></pre>
+<span class="tok-n">builder</span><span class="tok-o">.</span><span class="tok-na">security</span><span class="tok-o">().</span><span class="tok-na">authentication</span><span class="tok-o">().</span><span class="tok-na">username</span><span class="tok-o">(</span><span class="tok-s">&quot;admin&quot;</span><span class="tok-o">).</span><span class="tok-na">password</span><span class="tok-o">(</span><span class="tok-s">&quot;pass&quot;</span><span class="tok-o">);</span> <i class="conum" data-value="3"></i><b>(3)</b>
+
+<span class="tok-n">builder</span><span class="tok-o">.</span><span class="tok-na">clientIntelligence</span><span class="tok-o">(</span><span class="tok-n">ClientIntelligence</span><span class="tok-o">.</span><span class="tok-na">BASIC</span><span class="tok-o">);</span> <i class="conum" data-value="4"></i><b>(4)</b></code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -858,11 +858,11 @@ Infinispan stores the data in the <code>weather</code> cache.</p>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>Necessary for Docker for Mac</td>
+<td>Configure the security: <code>admin</code> and <code>pass</code> credentials</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>Configure the security: <code>admin</code> and <code>pass</code> credentials</td>
+<td>Necessary for Docker for Mac</td>
 </tr>
 </table>
 </div>
@@ -1616,7 +1616,7 @@ and other <a href="https://infinispan.org/hotrod-clients/">hotrod clients</a> to
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-14 00:18:50 +0200
+Last updated 2020-07-14 00:20:52 +0200
 </div>
 </div>
 <style>
