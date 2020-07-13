@@ -1543,6 +1543,18 @@ use <a href="https://junit.org/junit5/">Junit 5</a> extension to test.</p>
 <p>As an example, you will add a test to verify that the temperature is correctly loaded in
 the Infinispan Server.</p>
 </div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+You need <a href="https://www.docker.com/">Docker</a> for this step.
+</td>
+</tr>
+</table>
+</div>
 <div class="admonitionblock note">
 <table>
 <tr>
@@ -1576,10 +1588,10 @@ Check <code>infinispan-server-testdriver-junit4</code> dependency.
 <div class="sect3">
 <h4 id="_test_using_test_containers">Test using Test Containers</h4>
 <div class="paragraph">
-<p>Create a Junit 5 Test using
-.org.infinispan.tutorial.services.temperature.TemperatureLoaderTest</p>
+<p>Create a Junit 5 Test and use the <code>InfinispanServerExtension</code>.</p>
 </div>
 <div class="listingblock">
+<div class="title">org.infinispan.tutorial.services.temperature.TemperatureLoaderTest</div>
 <div class="content">
 <pre class="pygments highlight"><code data-lang="java"><span></span>
    <span class="tok-nd">@RegisterExtension</span>
@@ -1620,7 +1632,7 @@ and other <a href="https://infinispan.org/hotrod-clients/">hotrod clients</a> to
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-14 00:27:54 +0200
+Last updated 2020-07-14 00:32:28 +0200
 </div>
 </div>
 <style>
