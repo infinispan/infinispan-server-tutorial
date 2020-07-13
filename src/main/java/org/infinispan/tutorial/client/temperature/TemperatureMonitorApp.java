@@ -3,6 +3,10 @@ package org.infinispan.tutorial.client.temperature;
 import org.infinispan.tutorial.client.App;
 import org.infinispan.tutorial.services.temperature.TemperatureMonitor;
 
+/**
+ * Monitors changes.
+ * {@link TemperatureLoaderApp} needs to be running
+ */
 public class TemperatureMonitorApp extends App {
 
     @Override

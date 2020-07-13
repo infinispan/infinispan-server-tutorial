@@ -4,6 +4,10 @@ import org.infinispan.tutorial.client.App;
 import org.infinispan.tutorial.data.WeatherCondition;
 import org.infinispan.tutorial.services.weather.WeatherSearch;
 
+/**
+ * Use Search capabilities
+ * {@link WeatherLoaderApp} needs to be running
+ */
 public class WeatherFinderApp extends App {
 
     @Override

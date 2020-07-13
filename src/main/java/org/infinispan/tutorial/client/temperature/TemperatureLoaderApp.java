@@ -6,7 +6,7 @@ import org.infinispan.tutorial.services.temperature.TemperatureLoader;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Loads the temperatures
+ * Loads temperatures
  * Refresh every 5 seconds
  */
 public class TemperatureLoaderApp extends App {

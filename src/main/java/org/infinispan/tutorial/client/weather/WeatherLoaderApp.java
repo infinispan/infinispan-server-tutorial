@@ -6,6 +6,10 @@ import org.infinispan.tutorial.services.WeatherLoader;
 
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Loads weather
+ * Refresh every 5 seconds
+ */
 public class WeatherLoaderApp extends App {
 
     @Override
