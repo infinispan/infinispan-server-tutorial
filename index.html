@@ -500,6 +500,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_run_the_weather_loader_app">Run the Weather Loader app</a></li>
 </ul>
 </li>
+<li><a href="#_8_implement_the_weather_loader_2">8. Implement the Weather Loader</a></li>
 <li><a href="#_unit_testing_using_test_containers">Unit testing using Test Containers</a></li>
 <li><a href="#_whats_next">What&#8217;s next?</a></li>
 </ul>
@@ -544,6 +545,9 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 <li>
 <p>How to query values</p>
+</li>
+<li>
+<p>How to use the test using test containers</p>
 </li>
 </ol>
 </div>
@@ -976,8 +980,17 @@ of this tutorial.
     <span class="tok-o">}</span></code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p>CAUTION Ensure that the client listeners are removed from the cache if you don&#8217;t need them anymore.</p>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+Ensure that the client listeners are removed from the cache if you don&#8217;t need them anymore.
+</td>
+</tr>
+</table>
 </div>
 </div>
 <div class="sect3">
@@ -1142,18 +1155,7 @@ Rome, Italy - LocationWeather<span class="tok-o">{</span><span class="tok-nv">te
 Como, Italy - LocationWeather<span class="tok-o">{</span><span class="tok-nv">temperature</span><span class="tok-o">=</span><span class="tok-m">24</span>.495003, <span class="tok-nv">condition</span><span class="tok-o">=</span><span class="tok-s1">&#39;WINDLESS&#39;</span>, <span class="tok-nv">city</span><span class="tok-o">=</span><span class="tok-s1">&#39;Como&#39;</span>, <span class="tok-nv">country</span><span class="tok-o">=</span><span class="tok-s1">&#39;Italy&#39;</span><span class="tok-o">}</span>
 Basel, Switzerland - LocationWeather<span class="tok-o">{</span><span class="tok-nv">temperature</span><span class="tok-o">=</span><span class="tok-m">19</span>.795946, <span class="tok-nv">condition</span><span class="tok-o">=</span><span class="tok-s1">&#39;WINDLESS&#39;</span>, <span class="tok-nv">city</span><span class="tok-o">=</span><span class="tok-s1">&#39;Basel&#39;</span>, <span class="tok-nv">country</span><span class="tok-o">=</span><span class="tok-s1">&#39;Switzerland&#39;</span><span class="tok-o">}</span>
 Bern, Switzerland - LocationWeather<span class="tok-o">{</span><span class="tok-nv">temperature</span><span class="tok-o">=</span><span class="tok-m">20</span>.455978, <span class="tok-nv">condition</span><span class="tok-o">=</span><span class="tok-s1">&#39;WINDLESS&#39;</span>, <span class="tok-nv">city</span><span class="tok-o">=</span><span class="tok-s1">&#39;Bern&#39;</span>, <span class="tok-nv">country</span><span class="tok-o">=</span><span class="tok-s1">&#39;Switzerland&#39;</span><span class="tok-o">}</span>
-London, UK - LocationWeather<span class="tok-o">{</span><span class="tok-nv">temperature</span><span class="tok-o">=</span><span class="tok-m">8</span>.399549, <span class="tok-nv">condition</span><span class="tok-o">=</span><span class="tok-s1">&#39;FOGGY&#39;</span>, <span class="tok-nv">city</span><span class="tok-o">=</span><span class="tok-s1">&#39;London&#39;</span>, <span class="tok-nv">country</span><span class="tok-o">=</span><span class="tok-s1">&#39;UK&#39;</span><span class="tok-o">}</span>
-Newcastle, UK - LocationWeather<span class="tok-o">{</span><span class="tok-nv">temperature</span><span class="tok-o">=</span><span class="tok-m">7</span>.2848473, <span class="tok-nv">condition</span><span class="tok-o">=</span><span class="tok-s1">&#39;WINDY&#39;</span>, <span class="tok-nv">city</span><span class="tok-o">=</span><span class="tok-s1">&#39;Newcastle&#39;</span>, <span class="tok-nv">country</span><span class="tok-o">=</span><span class="tok-s1">&#39;UK&#39;</span><span class="tok-o">}</span>
-Madrid, Spain - LocationWeather<span class="tok-o">{</span><span class="tok-nv">temperature</span><span class="tok-o">=</span><span class="tok-m">11</span>.511543, <span class="tok-nv">condition</span><span class="tok-o">=</span><span class="tok-s1">&#39;SUNNY&#39;</span>, <span class="tok-nv">city</span><span class="tok-o">=</span><span class="tok-s1">&#39;Madrid&#39;</span>, <span class="tok-nv">country</span><span class="tok-o">=</span><span class="tok-s1">&#39;Spain&#39;</span><span class="tok-o">}</span>
-Bilbao, Spain - LocationWeather<span class="tok-o">{</span><span class="tok-nv">temperature</span><span class="tok-o">=</span><span class="tok-m">10</span>.426537, <span class="tok-nv">condition</span><span class="tok-o">=</span><span class="tok-s1">&#39;PARTIALLY_COVERED&#39;</span>, <span class="tok-nv">city</span><span class="tok-o">=</span><span class="tok-s1">&#39;Bilbao&#39;</span>, <span class="tok-nv">country</span><span class="tok-o">=</span><span class="tok-s1">&#39;Spain&#39;</span><span class="tok-o">}</span>
-Bucarest, Romania - LocationWeather<span class="tok-o">{</span><span class="tok-nv">temperature</span><span class="tok-o">=</span><span class="tok-m">18</span>.765896, <span class="tok-nv">condition</span><span class="tok-o">=</span><span class="tok-s1">&#39;DRY&#39;</span>, <span class="tok-nv">city</span><span class="tok-o">=</span><span class="tok-s1">&#39;Bucarest&#39;</span>, <span class="tok-nv">country</span><span class="tok-o">=</span><span class="tok-s1">&#39;Romania&#39;</span><span class="tok-o">}</span>
-Cluj-Napoca, Romania - LocationWeather<span class="tok-o">{</span><span class="tok-nv">temperature</span><span class="tok-o">=</span><span class="tok-m">9</span>.634157, <span class="tok-nv">condition</span><span class="tok-o">=</span><span class="tok-s1">&#39;DRY&#39;</span>, <span class="tok-nv">city</span><span class="tok-o">=</span><span class="tok-s1">&#39;Cluj-Napoca&#39;</span>, <span class="tok-nv">country</span><span class="tok-o">=</span><span class="tok-s1">&#39;Romania&#39;</span><span class="tok-o">}</span>
-Ottawa, Canada - LocationWeather<span class="tok-o">{</span><span class="tok-nv">temperature</span><span class="tok-o">=</span><span class="tok-m">11</span>.64571, <span class="tok-nv">condition</span><span class="tok-o">=</span><span class="tok-s1">&#39;WINDLESS&#39;</span>, <span class="tok-nv">city</span><span class="tok-o">=</span><span class="tok-s1">&#39;Ottawa&#39;</span>, <span class="tok-nv">country</span><span class="tok-o">=</span><span class="tok-s1">&#39;Canada&#39;</span><span class="tok-o">}</span>
-Toronto, Canada - LocationWeather<span class="tok-o">{</span><span class="tok-nv">temperature</span><span class="tok-o">=</span><span class="tok-m">13</span>.520051, <span class="tok-nv">condition</span><span class="tok-o">=</span><span class="tok-s1">&#39;FOGGY&#39;</span>, <span class="tok-nv">city</span><span class="tok-o">=</span><span class="tok-s1">&#39;Toronto&#39;</span>, <span class="tok-nv">country</span><span class="tok-o">=</span><span class="tok-s1">&#39;Canada&#39;</span><span class="tok-o">}</span>
-Lisbon, Portugal - LocationWeather<span class="tok-o">{</span><span class="tok-nv">temperature</span><span class="tok-o">=</span><span class="tok-m">11</span>.366248, <span class="tok-nv">condition</span><span class="tok-o">=</span><span class="tok-s1">&#39;DRY&#39;</span>, <span class="tok-nv">city</span><span class="tok-o">=</span><span class="tok-s1">&#39;Lisbon&#39;</span>, <span class="tok-nv">country</span><span class="tok-o">=</span><span class="tok-s1">&#39;Portugal&#39;</span><span class="tok-o">}</span>
-Porto, Portugal - LocationWeather<span class="tok-o">{</span><span class="tok-nv">temperature</span><span class="tok-o">=</span><span class="tok-m">8</span>.092586, <span class="tok-nv">condition</span><span class="tok-o">=</span><span class="tok-s1">&#39;FOGGY&#39;</span>, <span class="tok-nv">city</span><span class="tok-o">=</span><span class="tok-s1">&#39;Porto&#39;</span>, <span class="tok-nv">country</span><span class="tok-o">=</span><span class="tok-s1">&#39;Portugal&#39;</span><span class="tok-o">}</span>
-Raleigh, USA - LocationWeather<span class="tok-o">{</span><span class="tok-nv">temperature</span><span class="tok-o">=</span><span class="tok-m">18</span>.143414, <span class="tok-nv">condition</span><span class="tok-o">=</span><span class="tok-s1">&#39;WET&#39;</span>, <span class="tok-nv">city</span><span class="tok-o">=</span><span class="tok-s1">&#39;Raleigh&#39;</span>, <span class="tok-nv">country</span><span class="tok-o">=</span><span class="tok-s1">&#39;USA&#39;</span><span class="tok-o">}</span>
-Washington, USA - LocationWeather<span class="tok-o">{</span><span class="tok-nv">temperature</span><span class="tok-o">=</span><span class="tok-m">21</span>.916203, <span class="tok-nv">condition</span><span class="tok-o">=</span><span class="tok-s1">&#39;WINDLESS&#39;</span>, <span class="tok-nv">city</span><span class="tok-o">=</span><span class="tok-s1">&#39;Washington&#39;</span>, <span class="tok-nv">country</span><span class="tok-o">=</span><span class="tok-s1">&#39;USA&#39;</span><span class="tok-o">}</span>
+...
 ---- Loaded in 3386ms ----
 
 ---- Loading information ----
@@ -1166,9 +1168,21 @@ Como, Italy - LocationWeather<span class="tok-o">{</span><span class="tok-nv">te
 </div>
 </div>
 <div class="sect2">
+<h3 id="_8_implement_the_weather_loader_2">8. Implement the Weather Loader</h3>
+
+</div>
+<div class="sect2">
 <h3 id="_unit_testing_using_test_containers">Unit testing using Test Containers</h3>
-<div class="paragraph">
-<p>TBD</p>
+<div class="listingblock">
+<div class="title">pom.xml</div>
+<div class="content">
+<pre class="pygments highlight"><code data-lang="xml"><span></span>    <span class="tok-nt">&lt;dependency&gt;</span>
+        <span class="tok-nt">&lt;groupId&gt;</span>org.infinispan<span class="tok-nt">&lt;/groupId&gt;</span>
+        <span class="tok-nt">&lt;artifactId&gt;</span>infinispan-server-testdriver-junit5<span class="tok-nt">&lt;/artifactId&gt;</span>
+        <span class="tok-nt">&lt;version&gt;</span>${version.infinispan}<span class="tok-nt">&lt;/version&gt;</span>
+        <span class="tok-nt">&lt;scope&gt;</span>test<span class="tok-nt">&lt;/scope&gt;</span>
+    <span class="tok-nt">&lt;/dependency&gt;</span></code></pre>
+</div>
 </div>
 </div>
 <div class="sect2">
@@ -1182,7 +1196,7 @@ Como, Italy - LocationWeather<span class="tok-o">{</span><span class="tok-nv">te
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-12 16:28:55 +0200
+Last updated 2020-07-13 16:22:04 +0200
 </div>
 </div>
 <style>
