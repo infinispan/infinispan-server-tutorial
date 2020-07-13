@@ -549,6 +549,16 @@ Como, Italy - LocationWeather{temperature=24.495003, condition='PARTIALLY_COVERE
 
 ==== Create and run a continuous query
 
+https://infinispan.org/docs/stable/titles/developing/developing.html#query_continuous[Continuous Queries] allow an application to register a listener which will receive the entries
+that currently match a query filter, and will be continuously notified of any changes to the queried data set that result from further cache operations.
+
+Steps:
+
+. Create a Query: find all the locations by weather conditio (ex 'Sunny')
+. Create a Continuous Query from the cache weather
+. Create a Continuous Query Listener and print the condition
+. Match the Query and the Listener with the Continuous Query Object
+
 
 .org.infinispan.tutorial.services.weather.WeatherSearch
 [source,java]
@@ -574,6 +584,8 @@ public void findWeatherByConditionContinuously(WeatherCondition condition) {
 
 CAUTION: Continuous Queries are similar to Client Listeners. Don't forget to remove the continuous queries
 when you don't need them anymore.
+
+==== Run the
 
 === 10. Testing with the Infinispan Server
 

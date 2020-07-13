@@ -37,7 +37,7 @@ public class WeatherSearch {
       QueryFactory queryFactory = Search.getQueryFactory(weather);
 
       // Use Ickle to run the query
-      Query<LocationWeather> query = queryFactory.create("org.infinispan.tutorial.data.LocationWeather w where w.country = :country");
+      Query<LocationWeather> query = queryFactory.create("FROM org.infinispan.tutorial.data.LocationWeather w where w.country = :country");
 
       // Set the parameter value
       query.setParameter("country", country);

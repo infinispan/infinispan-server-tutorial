@@ -15,7 +15,7 @@ import static org.infinispan.query.remote.client.ProtobufMetadataManagerConstant
 public final class LocationWeatherMarshallingContext {
 
     public static void initSerializationContext(RemoteCacheManager cacheManager) {
-        System.out.println("LocationWeatherMarshallingContext - initialize the serialization context for LocationWeather class");
+        System.out.println("---- LocationWeatherMarshallingContext - initialize the serialization context for LocationWeather class ----");
         Objects.requireNonNull(cacheManager);
 
         // Get the serialization context of the client
