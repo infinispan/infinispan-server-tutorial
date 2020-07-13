@@ -483,10 +483,74 @@ Como, Italy - LocationWeather{temperature=24.495003, condition='PARTIALLY_COVERE
 
 ----
 
-=== 8. Implement the Weather Loader
+=== 9. Implement the Weather Search
 
-=== Unit testing using Test Containers
+==== Create and run a FROM query
 
+.org.infinispan.tutorial.services.weather.WeatherSearch
+[source,java]
+----
+   public List<LocationWeather> findByCountry(String country) {
+      // Get the query factory
+      QueryFactory queryFactory = Search.getQueryFactory(weather);
+
+      // Use Ickle to run the query
+      Query<LocationWeather> query = queryFactory.create("org.infinispan.tutorial.data.LocationWeather w where w.country = :country");
+
+      // Set the parameter value
+      query.setParameter("country", country);
+
+      return query.execute().list();
+   }
+----
+
+==== Create and run a SELECT query
+
+.org.infinispan.tutorial.services.weather.WeatherSearch
+[source,java]
+----
+    private Query<Object[]> createFindLocationWeatherByConditionQuery(WeatherCondition condition) {
+      // Get the query factory
+      QueryFactory queryFactory = Search.getQueryFactory(weather);
+
+      // Use Ickle to run the query
+      Query<Object[]> query = queryFactory.create("SELECT city FROM org.infinispan.tutorial.data.LocationWeather w where w.condition = :condition");
+
+      // Set the parameter value
+      query.setParameter("condition", condition.name());
+
+      return query;
+   }
+----
+
+
+==== Create and run a continuous query
+
+.org.infinispan.tutorial.services.weather.WeatherSearch
+[source,java]
+----
+public void findWeatherByConditionContinuously(WeatherCondition condition) {
+      Query query = createFindLocationWeatherByConditionQuery(condition);
+
+      ContinuousQuery<String, LocationWeather> continuousQuery = Search.getContinuousQuery(weather);
+
+      // Create the continuous query listener.
+      ContinuousQueryListener<String, Object[]> listener =
+            new ContinuousQueryListener<String, Object[]>() {
+               @Override
+               public void resultJoining(String key, Object[] data) {
+                  System.out.println(String.format("%s is now %s", data[0], condition));
+               }
+            };
+
+      // And the listener corresponding the query to the continuous query
+      continuousQuery.addContinuousQueryListener(query, listener);
+   }
+----
+
+=== 10. Testing with the Infinispan Server
+
+==== Add the maven dependency
 
 .pom.xml
 [source,xml]
@@ -499,8 +563,35 @@ Como, Italy - LocationWeather{temperature=24.495003, condition='PARTIALLY_COVERE
     </dependency>
 ----
 
+==== Test using Test Containers
+
+.org.infinispan.tutorial.services.temperature.TemperatureLoaderTest
+[source,java]
+----
+
+   @RegisterExtension
+   static InfinispanServerExtension infinispanServerExtension = InfinispanServerExtensionBuilder.server();
+
+   @Test
+   public void loadLocationTemperature() {
+      DataSourceConnector dataSourceConnector = new DataSourceConnector(infinispanServerExtension.hotrod().createRemoteCacheManager());
+      TemperatureLoader temperatureLoader = new TemperatureLoader(dataSourceConnector);
+      Float temperatureLoaderForLocation = temperatureLoader.getForLocation(WeatherLoader.LOCATIONS[0]);
+      assertNotNull(temperatureLoaderForLocation);
+   }
+----
+
 === What's next?
 
-This guide covered ...
+This guide covered many if the stuff you need to start using the Infinispan Server.
+Infinispan integrates with Quarkus, Spring Boot and Vert.x among many other frameworks.
+Grab a look to the different examples available.
+
+You deployed a local server. Go and check the Infinispan Operator Guide
+to learn how to deploy and scale the server in Kubernetes/Openshift.
+
+Finally you have used the Java Hot Rod client. Grab a look to our REST API,
+and other hotrod clients to use the Infinispan Server with other programming languages.
+
 
 
