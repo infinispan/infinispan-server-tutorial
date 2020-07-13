@@ -53,7 +53,7 @@ public class DataSourceConnector {
         // Get the cache, create it if needed with an existing template name
        return remoteCacheManager.administration()
               .withFlags(CacheContainerAdmin.AdminFlag.VOLATILE)
-              .getOrCreateCache("temperature", DefaultTemplate.DIST_SYNC);
+              .getOrCreateCache("temperature", "example.PROTOBUF_DIST");
     }
     // Step - Get or create a Queryable Cache
 
@@ -68,7 +68,7 @@ public class DataSourceConnector {
         // Get the cache, create it if needed with an existing template name
        return remoteCacheManager.administration()
               .withFlags(CacheContainerAdmin.AdminFlag.VOLATILE)
-              .getOrCreateCache("weather", DefaultTemplate.DIST_SYNC);
+              .getOrCreateCache("weather", "example.PROTOBUF_DIST");
     }
 
     public void shutdown() {

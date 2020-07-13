@@ -17,6 +17,7 @@ After completing this guide, you will know:
 . How client listeners work
 . How to put and read non primitive Java Objects
 . How to query values
+. How to use the test using test containers
 
 === 0. Prerequisites
 
@@ -330,7 +331,7 @@ of this tutorial.
     }
 ----
 
-CAUTION Ensure that the client listeners are removed from the cache if you don't need them anymore.
+CAUTION: Ensure that the client listeners are removed from the cache if you don't need them anymore.
 
 ==== Verify the Monitoring application
 
@@ -471,18 +472,7 @@ Rome, Italy - LocationWeather{temperature=17.252243, condition='SUNNY', city='Ro
 Como, Italy - LocationWeather{temperature=24.495003, condition='WINDLESS', city='Como', country='Italy'}
 Basel, Switzerland - LocationWeather{temperature=19.795946, condition='WINDLESS', city='Basel', country='Switzerland'}
 Bern, Switzerland - LocationWeather{temperature=20.455978, condition='WINDLESS', city='Bern', country='Switzerland'}
-London, UK - LocationWeather{temperature=8.399549, condition='FOGGY', city='London', country='UK'}
-Newcastle, UK - LocationWeather{temperature=7.2848473, condition='WINDY', city='Newcastle', country='UK'}
-Madrid, Spain - LocationWeather{temperature=11.511543, condition='SUNNY', city='Madrid', country='Spain'}
-Bilbao, Spain - LocationWeather{temperature=10.426537, condition='PARTIALLY_COVERED', city='Bilbao', country='Spain'}
-Bucarest, Romania - LocationWeather{temperature=18.765896, condition='DRY', city='Bucarest', country='Romania'}
-Cluj-Napoca, Romania - LocationWeather{temperature=9.634157, condition='DRY', city='Cluj-Napoca', country='Romania'}
-Ottawa, Canada - LocationWeather{temperature=11.64571, condition='WINDLESS', city='Ottawa', country='Canada'}
-Toronto, Canada - LocationWeather{temperature=13.520051, condition='FOGGY', city='Toronto', country='Canada'}
-Lisbon, Portugal - LocationWeather{temperature=11.366248, condition='DRY', city='Lisbon', country='Portugal'}
-Porto, Portugal - LocationWeather{temperature=8.092586, condition='FOGGY', city='Porto', country='Portugal'}
-Raleigh, USA - LocationWeather{temperature=18.143414, condition='WET', city='Raleigh', country='USA'}
-Washington, USA - LocationWeather{temperature=21.916203, condition='WINDLESS', city='Washington', country='USA'}
+...
 ---- Loaded in 3386ms ----
 
 ---- Loading information ----
@@ -493,9 +483,21 @@ Como, Italy - LocationWeather{temperature=24.495003, condition='PARTIALLY_COVERE
 
 ----
 
+=== 8. Implement the Weather Loader
+
 === Unit testing using Test Containers
 
-TBD
+
+.pom.xml
+[source,xml]
+----
+    <dependency>
+        <groupId>org.infinispan</groupId>
+        <artifactId>infinispan-server-testdriver-junit5</artifactId>
+        <version>${version.infinispan}</version>
+        <scope>test</scope>
+    </dependency>
+----
 
 === What's next?
 
