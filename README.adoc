@@ -440,7 +440,6 @@ You need to build a schema using the builder API, pass the annotation POJO and a
     RemoteCache<String, String> metadataCache =
             cacheManager.getCache(PROTOBUF_METADATA_CACHE_NAME); //<5>
 
-    // Define the new schema on the server too
     metadataCache.put(fileName, protoFile); //<6>
 ----
 <1> Get the serialization context of the client
@@ -572,13 +571,10 @@ a query that returns only the `city` that matches a given weather condition.
     }
 
     private Query<Object[]> createFindLocationWeatherByConditionQuery(WeatherCondition condition) {
-      // Get the query factory
       QueryFactory queryFactory = Search.getQueryFactory(weather); //<1>
 
-      // Use Ickle to run the query
       Query<Object[]> query = queryFactory.create("SELECT city FROM org.infinispan.tutorial.data.LocationWeather w where w.condition = :condition"); //<2>
 
-      // Set the parameter value
       query.setParameter("condition", condition.name()); //<3>
 
       return query;
@@ -622,12 +618,11 @@ public void findWeatherByConditionContinuously(WeatherCondition condition) {
 
       ContinuousQuery<String, LocationWeather> continuousQuery = Search.getContinuousQuery(weather); // <2>
 
-      // Create the continuous query listener.
       ContinuousQueryListener<String, Object[]> listener =
-            new ContinuousQueryListener<String, Object[]>() {
+            new ContinuousQueryListener<String, Object[]>() { //<3>
                @Override
                public void resultJoining(String key, Object[] data) {
-                  System.out.println(String.format("%s is now %s", data[0], condition)); //<3>
+                  System.out.println(String.format("%s is now %s", data[0], condition));
                }
             };
 
