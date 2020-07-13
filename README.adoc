@@ -510,6 +510,14 @@ Como, Italy - LocationWeather{temperature=24.495003, condition='PARTIALLY_COVERE
 ----
 ==== Create and run a FROM query
 
+To create and run query on the `weather` cache:
+
+. Get the `QueryFactory` from the cache
+. Create a query using 'Ickle'. Find every `LocationWeather` in a country.
+. Set the `country` parameter
+. Execute the query and return the list
+
+
 .org.infinispan.tutorial.services.weather.WeatherSearch
 [source,java]
 ----
@@ -518,7 +526,7 @@ Como, Italy - LocationWeather{temperature=24.495003, condition='PARTIALLY_COVERE
       QueryFactory queryFactory = Search.getQueryFactory(weather);
 
       // Use Ickle to run the query
-      Query<LocationWeather> query = queryFactory.create("org.infinispan.tutorial.data.LocationWeather w where w.country = :country");
+      Query<LocationWeather> query = queryFactory.create("FROM org.infinispan.tutorial.data.LocationWeather w where w.country = :country");
 
       // Set the parameter value
       query.setParameter("country", country);
@@ -527,11 +535,34 @@ Como, Italy - LocationWeather{temperature=24.495003, condition='PARTIALLY_COVERE
    }
 ----
 
+Run the `WeatherFinderApp` and check the output
+
+.org.infinispan.tutorial.client.weather.WeatherFinderApp
+[source,bash]
+----
+---- Get or create the 'weather' cache ----
+Spain: [LocationWeather{temperature=6.2846804, condition='CLOUDY',city='Bilbao', country='Spain'},
+LocationWeather{temperature=18.044653, condition='SUNNY', city='Madrid', country='Spain'}]
+----
+
 ==== Create and run a SELECT query
+
+Sometimes we won't need every field of an object. In the following example, create and run
+a query that returns only the `city` that matches a given weather condition.
+
+. Get the `QueryFactory` from the cache
+. Create a query using 'Ickle'. Find every `LocationWeather` with a weather condition and return only the city.
+. Set the `condition` parameter
+. Execute the query, return the list and filter the `Object[]` to get those `String`
 
 .org.infinispan.tutorial.services.weather.WeatherSearch
 [source,java]
 ----
+    public List<String> findByCondition(WeatherCondition condition) {
+      Query<Object[]> query = createFindLocationWeatherByConditionQuery(condition);
+      return query.execute().list().stream().map(data -> (String) data[0]).collect(Collectors.toList());
+    }
+
     private Query<Object[]> createFindLocationWeatherByConditionQuery(WeatherCondition condition) {
       // Get the query factory
       QueryFactory queryFactory = Search.getQueryFactory(weather);
@@ -546,6 +577,22 @@ Como, Italy - LocationWeather{temperature=24.495003, condition='PARTIALLY_COVERE
    }
 ----
 
+Run the `WeatherFinderApp` and check the output:
+
+.org.infinispan.tutorial.client.weather.WeatherFinderApp
+[source,bash]
+----
+SUNNY: [Madrid]
+CLOUDY: [Lisbon, Bilbao, Newcastle, Como]
+RAINY: [Cluj-Napoca]
+PARTIALLY_COVERED: [Toronto, Bern]
+HUMID: []
+WINDY: []
+FOGGY: [Washington, Porto, Rome]
+WINDLESS: [London, Raleigh]
+DRY: [Ottawa]
+WET: [Basel, Bucarest]
+----
 
 ==== Create and run a continuous query
 
@@ -585,7 +632,21 @@ public void findWeatherByConditionContinuously(WeatherCondition condition) {
 CAUTION: Continuous Queries are similar to Client Listeners. Don't forget to remove the continuous queries
 when you don't need them anymore.
 
-==== Run the
+Run the `WeatherFinderApp` and check the output:
+
+.org.infinispan.tutorial.client.weather.WeatherFinderApp
+[source,bash]
+----
+---- Press any key to quit ----
+Madrid is now SUNNY
+Bilbao is now SUNNY
+Toronto is now SUNNY
+Newcastle is now SUNNY
+Cluj-Napoca is now SUNNY
+Porto is now SUNNY
+...
+----
+
 
 === 10. Testing with the Infinispan Server
 
