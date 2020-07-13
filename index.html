@@ -1212,6 +1212,25 @@ Como, Italy - LocationWeather<span class="tok-o">{</span><span class="tok-nv">te
 </div>
 <div class="sect3">
 <h4 id="_create_and_run_a_from_query">Create and run a FROM query</h4>
+<div class="paragraph">
+<p>To create and run query on the <code>weather</code> cache:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Get the <code>QueryFactory</code> from the cache</p>
+</li>
+<li>
+<p>Create a query using 'Ickle'. Find every <code>LocationWeather</code> in a country.</p>
+</li>
+<li>
+<p>Set the <code>country</code> parameter</p>
+</li>
+<li>
+<p>Execute the query and return the list</p>
+</li>
+</ol>
+</div>
 <div class="listingblock">
 <div class="title">org.infinispan.tutorial.services.weather.WeatherSearch</div>
 <div class="content">
@@ -1220,7 +1239,7 @@ Como, Italy - LocationWeather<span class="tok-o">{</span><span class="tok-nv">te
       <span class="tok-n">QueryFactory</span> <span class="tok-n">queryFactory</span> <span class="tok-o">=</span> <span class="tok-n">Search</span><span class="tok-o">.</span><span class="tok-na">getQueryFactory</span><span class="tok-o">(</span><span class="tok-n">weather</span><span class="tok-o">);</span>
 
       <span class="tok-c1">// Use Ickle to run the query</span>
-      <span class="tok-n">Query</span><span class="tok-o">&lt;</span><span class="tok-n">LocationWeather</span><span class="tok-o">&gt;</span> <span class="tok-n">query</span> <span class="tok-o">=</span> <span class="tok-n">queryFactory</span><span class="tok-o">.</span><span class="tok-na">create</span><span class="tok-o">(</span><span class="tok-s">&quot;org.infinispan.tutorial.data.LocationWeather w where w.country = :country&quot;</span><span class="tok-o">);</span>
+      <span class="tok-n">Query</span><span class="tok-o">&lt;</span><span class="tok-n">LocationWeather</span><span class="tok-o">&gt;</span> <span class="tok-n">query</span> <span class="tok-o">=</span> <span class="tok-n">queryFactory</span><span class="tok-o">.</span><span class="tok-na">create</span><span class="tok-o">(</span><span class="tok-s">&quot;FROM org.infinispan.tutorial.data.LocationWeather w where w.country = :country&quot;</span><span class="tok-o">);</span>
 
       <span class="tok-c1">// Set the parameter value</span>
       <span class="tok-n">query</span><span class="tok-o">.</span><span class="tok-na">setParameter</span><span class="tok-o">(</span><span class="tok-s">&quot;country&quot;</span><span class="tok-o">,</span> <span class="tok-n">country</span><span class="tok-o">);</span>
@@ -1229,13 +1248,49 @@ Como, Italy - LocationWeather<span class="tok-o">{</span><span class="tok-nv">te
    <span class="tok-o">}</span></code></pre>
 </div>
 </div>
+<div class="paragraph">
+<p>Run the <code>WeatherFinderApp</code> and check the output</p>
+</div>
+<div class="listingblock">
+<div class="title">org.infinispan.tutorial.client.weather.WeatherFinderApp</div>
+<div class="content">
+<pre class="pygments highlight"><code data-lang="bash"><span></span>---- Get or create the <span class="tok-s1">&#39;weather&#39;</span> cache ----
+Spain: <span class="tok-o">[</span>LocationWeather<span class="tok-o">{</span><span class="tok-nv">temperature</span><span class="tok-o">=</span><span class="tok-m">6</span>.2846804, <span class="tok-nv">condition</span><span class="tok-o">=</span><span class="tok-s1">&#39;CLOUDY&#39;</span>,city<span class="tok-o">=</span><span class="tok-s1">&#39;Bilbao&#39;</span>, <span class="tok-nv">country</span><span class="tok-o">=</span><span class="tok-s1">&#39;Spain&#39;</span><span class="tok-o">}</span>,
+LocationWeather<span class="tok-o">{</span><span class="tok-nv">temperature</span><span class="tok-o">=</span><span class="tok-m">18</span>.044653, <span class="tok-nv">condition</span><span class="tok-o">=</span><span class="tok-s1">&#39;SUNNY&#39;</span>, <span class="tok-nv">city</span><span class="tok-o">=</span><span class="tok-s1">&#39;Madrid&#39;</span>, <span class="tok-nv">country</span><span class="tok-o">=</span><span class="tok-s1">&#39;Spain&#39;</span><span class="tok-o">}]</span></code></pre>
+</div>
+</div>
 </div>
 <div class="sect3">
 <h4 id="_create_and_run_a_select_query">Create and run a SELECT query</h4>
+<div class="paragraph">
+<p>Sometimes we won&#8217;t need every field of an object. In the following example, create and run
+a query that returns only the <code>city</code> that matches a given weather condition.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Get the <code>QueryFactory</code> from the cache</p>
+</li>
+<li>
+<p>Create a query using 'Ickle'. Find every <code>LocationWeather</code> with a weather condition and return only the city.</p>
+</li>
+<li>
+<p>Set the <code>condition</code> parameter</p>
+</li>
+<li>
+<p>Execute the query, return the list and filter the <code>Object[]</code> to get those <code>String</code></p>
+</li>
+</ol>
+</div>
 <div class="listingblock">
 <div class="title">org.infinispan.tutorial.services.weather.WeatherSearch</div>
 <div class="content">
-<pre class="pygments highlight"><code data-lang="java"><span></span>    <span class="tok-kd">private</span> <span class="tok-n">Query</span><span class="tok-o">&lt;</span><span class="tok-n">Object</span><span class="tok-o">[]&gt;</span> <span class="tok-nf">createFindLocationWeatherByConditionQuery</span><span class="tok-o">(</span><span class="tok-n">WeatherCondition</span> <span class="tok-n">condition</span><span class="tok-o">)</span> <span class="tok-o">{</span>
+<pre class="pygments highlight"><code data-lang="java"><span></span>    <span class="tok-kd">public</span> <span class="tok-n">List</span><span class="tok-o">&lt;</span><span class="tok-n">String</span><span class="tok-o">&gt;</span> <span class="tok-nf">findByCondition</span><span class="tok-o">(</span><span class="tok-n">WeatherCondition</span> <span class="tok-n">condition</span><span class="tok-o">)</span> <span class="tok-o">{</span>
+      <span class="tok-n">Query</span><span class="tok-o">&lt;</span><span class="tok-n">Object</span><span class="tok-o">[]&gt;</span> <span class="tok-n">query</span> <span class="tok-o">=</span> <span class="tok-n">createFindLocationWeatherByConditionQuery</span><span class="tok-o">(</span><span class="tok-n">condition</span><span class="tok-o">);</span>
+      <span class="tok-k">return</span> <span class="tok-n">query</span><span class="tok-o">.</span><span class="tok-na">execute</span><span class="tok-o">().</span><span class="tok-na">list</span><span class="tok-o">().</span><span class="tok-na">stream</span><span class="tok-o">().</span><span class="tok-na">map</span><span class="tok-o">(</span><span class="tok-n">data</span> <span class="tok-o">-&gt;</span> <span class="tok-o">(</span><span class="tok-n">String</span><span class="tok-o">)</span> <span class="tok-n">data</span><span class="tok-o">[</span><span class="tok-mi">0</span><span class="tok-o">]).</span><span class="tok-na">collect</span><span class="tok-o">(</span><span class="tok-n">Collectors</span><span class="tok-o">.</span><span class="tok-na">toList</span><span class="tok-o">());</span>
+    <span class="tok-o">}</span>
+
+    <span class="tok-kd">private</span> <span class="tok-n">Query</span><span class="tok-o">&lt;</span><span class="tok-n">Object</span><span class="tok-o">[]&gt;</span> <span class="tok-nf">createFindLocationWeatherByConditionQuery</span><span class="tok-o">(</span><span class="tok-n">WeatherCondition</span> <span class="tok-n">condition</span><span class="tok-o">)</span> <span class="tok-o">{</span>
       <span class="tok-c1">// Get the query factory</span>
       <span class="tok-n">QueryFactory</span> <span class="tok-n">queryFactory</span> <span class="tok-o">=</span> <span class="tok-n">Search</span><span class="tok-o">.</span><span class="tok-na">getQueryFactory</span><span class="tok-o">(</span><span class="tok-n">weather</span><span class="tok-o">);</span>
 
@@ -1249,9 +1304,50 @@ Como, Italy - LocationWeather<span class="tok-o">{</span><span class="tok-nv">te
    <span class="tok-o">}</span></code></pre>
 </div>
 </div>
+<div class="paragraph">
+<p>Run the <code>WeatherFinderApp</code> and check the output:</p>
+</div>
+<div class="listingblock">
+<div class="title">org.infinispan.tutorial.client.weather.WeatherFinderApp</div>
+<div class="content">
+<pre class="pygments highlight"><code data-lang="bash"><span></span>SUNNY: <span class="tok-o">[</span>Madrid<span class="tok-o">]</span>
+CLOUDY: <span class="tok-o">[</span>Lisbon, Bilbao, Newcastle, Como<span class="tok-o">]</span>
+RAINY: <span class="tok-o">[</span>Cluj-Napoca<span class="tok-o">]</span>
+PARTIALLY_COVERED: <span class="tok-o">[</span>Toronto, Bern<span class="tok-o">]</span>
+HUMID: <span class="tok-o">[]</span>
+WINDY: <span class="tok-o">[]</span>
+FOGGY: <span class="tok-o">[</span>Washington, Porto, Rome<span class="tok-o">]</span>
+WINDLESS: <span class="tok-o">[</span>London, Raleigh<span class="tok-o">]</span>
+DRY: <span class="tok-o">[</span>Ottawa<span class="tok-o">]</span>
+WET: <span class="tok-o">[</span>Basel, Bucarest<span class="tok-o">]</span></code></pre>
+</div>
+</div>
 </div>
 <div class="sect3">
 <h4 id="_create_and_run_a_continuous_query">Create and run a continuous query</h4>
+<div class="paragraph">
+<p><a href="https://infinispan.org/docs/stable/titles/developing/developing.html#query_continuous">Continuous Queries</a> allow an application to register a listener which will receive the entries
+that currently match a query filter, and will be continuously notified of any changes to the queried data set that result from further cache operations.</p>
+</div>
+<div class="paragraph">
+<p>Steps:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Create a Query: find all the locations by weather conditio (ex 'Sunny')</p>
+</li>
+<li>
+<p>Create a Continuous Query from the cache weather</p>
+</li>
+<li>
+<p>Create a Continuous Query Listener and print the condition</p>
+</li>
+<li>
+<p>Match the Query and the Listener with the Continuous Query Object</p>
+</li>
+</ol>
+</div>
 <div class="listingblock">
 <div class="title">org.infinispan.tutorial.services.weather.WeatherSearch</div>
 <div class="content">
@@ -1286,6 +1382,22 @@ when you don&#8217;t need them anymore.
 </td>
 </tr>
 </table>
+</div>
+<div class="paragraph">
+<p>Run the <code>WeatherFinderApp</code> and check the output:</p>
+</div>
+<div class="listingblock">
+<div class="title">org.infinispan.tutorial.client.weather.WeatherFinderApp</div>
+<div class="content">
+<pre class="pygments highlight"><code data-lang="bash"><span></span>---- Press any key to quit ----
+Madrid is now SUNNY
+Bilbao is now SUNNY
+Toronto is now SUNNY
+Newcastle is now SUNNY
+Cluj-Napoca is now SUNNY
+Porto is now SUNNY
+...</code></pre>
+</div>
 </div>
 </div>
 </div>
@@ -1374,7 +1486,7 @@ and other hotrod clients to use the Infinispan Server with other programming lan
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-13 20:47:22 +0200
+Last updated 2020-07-13 23:15:03 +0200
 </div>
 </div>
 <style>
