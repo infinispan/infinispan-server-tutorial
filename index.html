@@ -514,9 +514,9 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_test_using_test_containers">Test using Test Containers</a></li>
 </ul>
 </li>
-<li><a href="#_whats_next">What&#8217;s next?</a></li>
 </ul>
 </li>
+<li><a href="#_whats_next">What&#8217;s next?</a></li>
 </ul>
 </div>
 </div>
@@ -862,7 +862,7 @@ If the location is not present in the cache, we fetch the value.</p>
 the temperature for an specific location.</p>
 </div>
 <div class="listingblock">
-<div class="title">org.infinispan.tutorial.services.TemperatureLoader.java</div>
+<div class="title">org.infinispan.tutorial.services.temperature.TemperatureLoader</div>
 <div class="content">
 <pre class="pygments highlight"><code data-lang="java"><span></span>   <span class="tok-nd">@Override</span>
    <span class="tok-kd">public</span> <span class="tok-n">Float</span> <span class="tok-nf">getForLocation</span><span class="tok-o">(</span><span class="tok-n">String</span> <span class="tok-n">location</span><span class="tok-o">)</span> <span class="tok-o">{</span>
@@ -917,7 +917,7 @@ expiration.</p>
 <p>Change the <code>put</code> method and make the temperature data expire every 20s.</p>
 </div>
 <div class="listingblock">
-<div class="title">org.infinispan.tutorial.services.TemperatureLoader.java</div>
+<div class="title">org.infinispan.tutorial.services.temperature.TemperatureLoader</div>
 <div class="content">
 <pre class="pygments highlight"><code data-lang="java"><span></span>   <span class="tok-n">cache</span><span class="tok-o">.</span><span class="tok-na">put</span><span class="tok-o">(</span><span class="tok-n">location</span><span class="tok-o">,</span> <span class="tok-n">temperature</span><span class="tok-o">,</span> <span class="tok-mi">20</span><span class="tok-o">,</span> <span class="tok-n">TimeUnit</span><span class="tok-o">.</span><span class="tok-na">SECONDS</span><span class="tok-o">);</span></code></pre>
 </div>
@@ -1351,8 +1351,11 @@ Check <code>infinispan-server-testdriver-junit4</code> dependency.
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_whats_next">What&#8217;s next?</h3>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_whats_next">What&#8217;s next?</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>This guide covered many if the stuff you need to start using the Infinispan Server.
 Infinispan integrates with Quarkus, Spring Boot and Vert.x among many other frameworks.
@@ -1369,10 +1372,9 @@ and other hotrod clients to use the Infinispan Server with other programming lan
 </div>
 </div>
 </div>
-</div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-13 19:48:15 +0200
+Last updated 2020-07-13 20:47:01 +0200
 </div>
 </div>
 <style>
