@@ -496,7 +496,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_annotate_the_pojo_locationweather">Annotate the POJO LocationWeather</a></li>
 <li><a href="#_configure_the_marshalling_context">Configure the marshalling context</a></li>
 <li><a href="#_create_the_weather_cache">Create the weather cache</a></li>
-<li><a href="#_run_the_weather_loader_app">Run the Weather Loader app</a></li>
+<li><a href="#_run_weather_loader_app">Run Weather Loader app</a></li>
 </ul>
 </li>
 <li><a href="#_9_implement_the_weather_search">9. Implement the Weather Search</a>
@@ -870,11 +870,11 @@ Infinispan stores the data in the <code>weather</code> cache.</p>
 <div class="sect3">
 <h4 id="_health_check">Health Check</h4>
 <div class="paragraph">
-<p>Run the main class <code>org.infinispan.tutorial.client.HealthChecker</code>.
+<p>Run <strong>HealthChecker</strong>.
 If the connection is correct, you will see:</p>
 </div>
 <div class="listingblock">
-<div class="title">HealthChecker</div>
+<div class="title">org.infinispan.tutorial.client.HealthChecker</div>
 <div class="content">
 <pre class="pygments highlight"><code data-lang="bash"><span></span>
 ---- Connect to Infinispan ----
@@ -961,7 +961,10 @@ the temperature for a specific location.
 <div class="sect3">
 <h4 id="_temperature_loading_check">Temperature Loading Check</h4>
 <div class="paragraph">
-<p>Run the <code>TemperatureLoaderApp</code> application. The first time the loading gets around 2s, the subsequents
+<p>Run <strong>TemperatureLoaderApp</strong>.</p>
+</div>
+<div class="paragraph">
+<p>The first time the loading gets around 2s, the subsequents
 calls will grab the temperature from the cache making the loading method performance increase significantly.</p>
 </div>
 <div class="listingblock">
@@ -1086,18 +1089,7 @@ Use the async API to get the value and display the temperature corresponding to 
 The example above filters the events in the listener for the example. These events can be also filtered
 server side. For this, an <a href="https://infinispan.org/docs/stable/titles/hotrod_java/hotrod_java.html#filtering_events">event filter</a>
 can be created and deployed in the server. This functionality is out of the scope of this tutorial.
-</td>
-</tr>
-</table>
-</div>
-<div class="admonitionblock caution">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-caution" title="Caution"></i>
-</td>
-<td class="content">
-Ensure that the client listeners are removed from the cache if you don&#8217;t need them anymore.
+CAUTION: Ensure that the client listeners are removed from the cache if you don&#8217;t need them anymore.
 </td>
 </tr>
 </table>
@@ -1109,7 +1101,7 @@ Ensure that the client listeners are removed from the cache if you don&#8217;t n
 <p><code>TemperatureLoaderApp</code> should be running, loading temperatures periodically and temperatures getting expired every 20s.</p>
 </div>
 <div class="paragraph">
-<p>Run the <code>TemperatureMonitorApp</code>.</p>
+<p>Run <strong>TemperatureMonitorApp</strong>.</p>
 </div>
 <div class="paragraph">
 <p>You should see a message for the current temperature of the chosen location.
@@ -1272,7 +1264,7 @@ the <code>getWeatherCache</code> method.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_run_the_weather_loader_app">Run the Weather Loader app</h4>
+<h4 id="_run_weather_loader_app">Run Weather Loader app</h4>
 <div class="paragraph">
 <p>The code loading the data into the cache is available in the
 <code>org.infinispan.tutorial.services.weather.FullWeatherLoader</code>.
@@ -1280,8 +1272,8 @@ The code is very similar to the code you already implemented in the <code>Temper
 code anything else at this point.</p>
 </div>
 <div class="paragraph">
-<p>Run the <code>WeatherLoaderApp</code> application. If everything works, the data should be loading and you should
-get the resulting logs.</p>
+<p>Run <strong>WeatherLoaderApp</strong>.
+If everything works, the data should be loading and you should get the resulting logs.</p>
 </div>
 <div class="listingblock">
 <div class="title">org.infinispan.tutorial.client.weather.WeatherLoaderApp</div>
@@ -1369,7 +1361,7 @@ Como, Italy - LocationWeather<span class="tok-o">{</span><span class="tok-nv">te
 </table>
 </div>
 <div class="paragraph">
-<p>Run the <strong>WeatherFinderApp</strong> and check the output</p>
+<p>Run <strong>WeatherFinderApp</strong> and check the output</p>
 </div>
 <div class="listingblock">
 <div class="title">org.infinispan.tutorial.client.weather.WeatherFinderApp</div>
@@ -1429,7 +1421,7 @@ a query that returns only the <code>city</code> that matches a given weather con
 </table>
 </div>
 <div class="paragraph">
-<p>Run the <strong>WeatherFinderApp</strong> and check the output:</p>
+<p>Run <strong>WeatherFinderApp</strong> and check the output:</p>
 </div>
 <div class="listingblock">
 <div class="title">org.infinispan.tutorial.client.weather.WeatherFinderApp</div>
@@ -1508,7 +1500,7 @@ when you don&#8217;t need them anymore.
 </table>
 </div>
 <div class="paragraph">
-<p>Run the <code>WeatherFinderApp</code> and check the output:</p>
+<p>Run <code>WeatherFinderApp</code> and check the output:</p>
 </div>
 <div class="listingblock">
 <div class="title">org.infinispan.tutorial.client.weather.WeatherFinderApp</div>
@@ -1612,7 +1604,7 @@ and other <a href="https://infinispan.org/hotrod-clients/">hotrod clients</a> to
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-14 00:13:50 +0200
+Last updated 2020-07-14 00:17:03 +0200
 </div>
 </div>
 <style>
