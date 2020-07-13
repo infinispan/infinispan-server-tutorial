@@ -664,8 +664,11 @@ use https://junit.org/junit5/[Junit 5] extension to test.
 As an example, you will add a test to verify that the temperature is correctly loaded in
 the Infinispan Server.
 
+WARNING: You need https://www.docker.com/[Docker] for this step.
+
 NOTE: 2 JUnit 4 Rules are also available for out of the box testing with the Infinispan Server.
 Check `infinispan-server-testdriver-junit4` dependency.
+
 
 ==== Add the maven dependency
 
@@ -684,7 +687,8 @@ Add the `infinispan-server-testdriver-junit5` maven dependency to the project.
 
 ==== Test using Test Containers
 
-Create a Junit 5 Test using
+Create a Junit 5 Test and use the `InfinispanServerExtension`.
+
 .org.infinispan.tutorial.services.temperature.TemperatureLoaderTest
 [source,java]
 ----
