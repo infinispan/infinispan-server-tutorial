@@ -1220,7 +1220,6 @@ You need to build a schema using the builder API, pass the annotation POJO and a
     <span class="tok-n">RemoteCache</span><span class="tok-o">&lt;</span><span class="tok-n">String</span><span class="tok-o">,</span> <span class="tok-n">String</span><span class="tok-o">&gt;</span> <span class="tok-n">metadataCache</span> <span class="tok-o">=</span>
             <span class="tok-n">cacheManager</span><span class="tok-o">.</span><span class="tok-na">getCache</span><span class="tok-o">(</span><span class="tok-n">PROTOBUF_METADATA_CACHE_NAME</span><span class="tok-o">);</span> <i class="conum" data-value="5"></i><b>(5)</b>
 
-    <span class="tok-c1">// Define the new schema on the server too</span>
     <span class="tok-n">metadataCache</span><span class="tok-o">.</span><span class="tok-na">put</span><span class="tok-o">(</span><span class="tok-n">fileName</span><span class="tok-o">,</span> <span class="tok-n">protoFile</span><span class="tok-o">);</span> <i class="conum" data-value="6"></i><b>(6)</b></code></pre>
 </div>
 </div>
@@ -1402,13 +1401,10 @@ a query that returns only the <code>city</code> that matches a given weather con
     <span class="tok-o">}</span>
 
     <span class="tok-kd">private</span> <span class="tok-n">Query</span><span class="tok-o">&lt;</span><span class="tok-n">Object</span><span class="tok-o">[]&gt;</span> <span class="tok-nf">createFindLocationWeatherByConditionQuery</span><span class="tok-o">(</span><span class="tok-n">WeatherCondition</span> <span class="tok-n">condition</span><span class="tok-o">)</span> <span class="tok-o">{</span>
-      <span class="tok-c1">// Get the query factory</span>
       <span class="tok-n">QueryFactory</span> <span class="tok-n">queryFactory</span> <span class="tok-o">=</span> <span class="tok-n">Search</span><span class="tok-o">.</span><span class="tok-na">getQueryFactory</span><span class="tok-o">(</span><span class="tok-n">weather</span><span class="tok-o">);</span> <i class="conum" data-value="1"></i><b>(1)</b>
 
-      <span class="tok-c1">// Use Ickle to run the query</span>
       <span class="tok-n">Query</span><span class="tok-o">&lt;</span><span class="tok-n">Object</span><span class="tok-o">[]&gt;</span> <span class="tok-n">query</span> <span class="tok-o">=</span> <span class="tok-n">queryFactory</span><span class="tok-o">.</span><span class="tok-na">create</span><span class="tok-o">(</span><span class="tok-s">&quot;SELECT city FROM org.infinispan.tutorial.data.LocationWeather w where w.condition = :condition&quot;</span><span class="tok-o">);</span> <i class="conum" data-value="2"></i><b>(2)</b>
 
-      <span class="tok-c1">// Set the parameter value</span>
       <span class="tok-n">query</span><span class="tok-o">.</span><span class="tok-na">setParameter</span><span class="tok-o">(</span><span class="tok-s">&quot;condition&quot;</span><span class="tok-o">,</span> <span class="tok-n">condition</span><span class="tok-o">.</span><span class="tok-na">name</span><span class="tok-o">());</span> <i class="conum" data-value="3"></i><b>(3)</b>
 
       <span class="tok-k">return</span> <span class="tok-n">query</span><span class="tok-o">;</span>
@@ -1471,12 +1467,11 @@ that currently match a query filter, and will be continuously notified of any ch
 
       <span class="tok-n">ContinuousQuery</span><span class="tok-o">&lt;</span><span class="tok-n">String</span><span class="tok-o">,</span> <span class="tok-n">LocationWeather</span><span class="tok-o">&gt;</span> <span class="tok-n">continuousQuery</span> <span class="tok-o">=</span> <span class="tok-n">Search</span><span class="tok-o">.</span><span class="tok-na">getContinuousQuery</span><span class="tok-o">(</span><span class="tok-n">weather</span><span class="tok-o">);</span> <i class="conum" data-value="2"></i><b>(2)</b>
 
-      <span class="tok-c1">// Create the continuous query listener.</span>
       <span class="tok-n">ContinuousQueryListener</span><span class="tok-o">&lt;</span><span class="tok-n">String</span><span class="tok-o">,</span> <span class="tok-n">Object</span><span class="tok-o">[]&gt;</span> <span class="tok-n">listener</span> <span class="tok-o">=</span>
-            <span class="tok-k">new</span> <span class="tok-n">ContinuousQueryListener</span><span class="tok-o">&lt;</span><span class="tok-n">String</span><span class="tok-o">,</span> <span class="tok-n">Object</span><span class="tok-o">[]&gt;()</span> <span class="tok-o">{</span>
+            <span class="tok-k">new</span> <span class="tok-n">ContinuousQueryListener</span><span class="tok-o">&lt;</span><span class="tok-n">String</span><span class="tok-o">,</span> <span class="tok-n">Object</span><span class="tok-o">[]&gt;()</span> <span class="tok-o">{</span> <i class="conum" data-value="3"></i><b>(3)</b>
                <span class="tok-nd">@Override</span>
                <span class="tok-kd">public</span> <span class="tok-kt">void</span> <span class="tok-nf">resultJoining</span><span class="tok-o">(</span><span class="tok-n">String</span> <span class="tok-n">key</span><span class="tok-o">,</span> <span class="tok-n">Object</span><span class="tok-o">[]</span> <span class="tok-n">data</span><span class="tok-o">)</span> <span class="tok-o">{</span>
-                  <span class="tok-n">System</span><span class="tok-o">.</span><span class="tok-na">out</span><span class="tok-o">.</span><span class="tok-na">println</span><span class="tok-o">(</span><span class="tok-n">String</span><span class="tok-o">.</span><span class="tok-na">format</span><span class="tok-o">(</span><span class="tok-s">&quot;%s is now %s&quot;</span><span class="tok-o">,</span> <span class="tok-n">data</span><span class="tok-o">[</span><span class="tok-mi">0</span><span class="tok-o">],</span> <span class="tok-n">condition</span><span class="tok-o">));</span> <i class="conum" data-value="3"></i><b>(3)</b>
+                  <span class="tok-n">System</span><span class="tok-o">.</span><span class="tok-na">out</span><span class="tok-o">.</span><span class="tok-na">println</span><span class="tok-o">(</span><span class="tok-n">String</span><span class="tok-o">.</span><span class="tok-na">format</span><span class="tok-o">(</span><span class="tok-s">&quot;%s is now %s&quot;</span><span class="tok-o">,</span> <span class="tok-n">data</span><span class="tok-o">[</span><span class="tok-mi">0</span><span class="tok-o">],</span> <span class="tok-n">condition</span><span class="tok-o">));</span>
                <span class="tok-o">}</span>
             <span class="tok-o">};</span>
 
@@ -1625,7 +1620,7 @@ and other <a href="https://infinispan.org/hotrod-clients/">hotrod clients</a> to
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-14 00:25:10 +0200
+Last updated 2020-07-14 00:27:54 +0200
 </div>
 </div>
 <style>
