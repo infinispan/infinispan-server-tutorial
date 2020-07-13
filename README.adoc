@@ -66,7 +66,7 @@ Provide a `USER` and `PASS`.
 Open a navigator in `http://localhost:11222/'. The welcome page of the Infinispan Server
 should be displayed.
 
-Click on the `Go to the console` button, enter the credentials `admin` and `pass` and
+Click on *Go to the console*, enter the credentials `admin` and `pass` and
 display the Web Console.
 The console is a pure Javascript application built on top of the Infinispan Server REST API.
 
@@ -205,6 +205,7 @@ INFO: ISPN004021: Infinispan version: Infinispan ...
 === 6. Implement the Temperature Loader
 
 Implementing the Temperature Loader, you will learn:
+
 - How to create a cache using the administration interface
 - How to read data from the cache
 - How to write data to the cache
