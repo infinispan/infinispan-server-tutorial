@@ -17,7 +17,7 @@ After completing this guide, you will know:
 . How client listeners work
 . How to put and read non primitive Java Objects
 . How to query values
-. How to use the test using test containers
+. How to use the out of the box testing utility with Junit 5 and test containers
 
 === 0. Prerequisites
 
