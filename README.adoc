@@ -188,10 +188,10 @@ builder.security().authentication().username("admin").password("pass"); //<3>
 
 ==== Health Check
 
-Run the main class `org.infinispan.tutorial.client.HealthChecker`.
+Run *HealthChecker*.
 If the connection is correct, you will see:
 
-.HealthChecker
+.org.infinispan.tutorial.client.HealthChecker
 [source,bash]
 ----
 
@@ -250,7 +250,9 @@ the temperature for a specific location.
 
 ==== Temperature Loading Check
 
-Run the `TemperatureLoaderApp` application. The first time the loading gets around 2s, the subsequents
+Run *TemperatureLoaderApp*.
+
+The first time the loading gets around 2s, the subsequents
 calls will grab the temperature from the cache making the loading method performance increase significantly.
 
 .org.infinispan.tutorial.services.temperature.TemperatureLoader
@@ -343,7 +345,6 @@ Use the async API to get the value and display the temperature corresponding to 
 TIP: The example above filters the events in the listener for the example. These events can be also filtered
 server side. For this, an https://infinispan.org/docs/stable/titles/hotrod_java/hotrod_java.html#filtering_events[event filter]
 can be created and deployed in the server. This functionality is out of the scope of this tutorial.
-
 CAUTION: Ensure that the client listeners are removed from the cache if you don't need them anymore.
 
 
@@ -351,7 +352,7 @@ CAUTION: Ensure that the client listeners are removed from the cache if you don'
 
 `TemperatureLoaderApp` should be running, loading temperatures periodically and temperatures getting expired every 20s.
 
-Run the `TemperatureMonitorApp`.
+Run *TemperatureMonitorApp*.
 
 You should see a message for the current temperature of the chosen location.
 You should get notifications of new temperatures every 20s.
@@ -470,15 +471,15 @@ the `getWeatherCache` method.
     }
 ----
 
-==== Run the Weather Loader app
+==== Run Weather Loader app
 
 The code loading the data into the cache is available in the
 `org.infinispan.tutorial.services.weather.FullWeatherLoader`.
 The code is very similar to the code you already implemented in the `TemperatureLoader` so you won't
 code anything else at this point.
 
-Run the `WeatherLoaderApp` application. If everything works, the data should be loading and you should
-get the resulting logs.
+Run *WeatherLoaderApp*.
+If everything works, the data should be loading and you should get the resulting logs.
 
 .org.infinispan.tutorial.client.weather.WeatherLoaderApp
 [source,bash]
@@ -546,7 +547,7 @@ Create and run a query on the `weather` cache:
 <4> Execute the query and return the list
 
 
-Run the *WeatherFinderApp* and check the output
+Run *WeatherFinderApp* and check the output
 
 .org.infinispan.tutorial.client.weather.WeatherFinderApp
 [source,bash]
@@ -588,7 +589,7 @@ a query that returns only the `city` that matches a given weather condition.
 <3> Set the `condition` parameter
 <4> Execute the query, return the list and filter the `Object[]` to get those `String`
 
-Run the *WeatherFinderApp* and check the output:
+Run *WeatherFinderApp* and check the output:
 
 .org.infinispan.tutorial.client.weather.WeatherFinderApp
 [source,bash]
@@ -639,7 +640,7 @@ public void findWeatherByConditionContinuously(WeatherCondition condition) {
 CAUTION: Continuous Queries are similar to Client Listeners. Don't forget to remove the continuous queries
 when you don't need them anymore.
 
-Run the `WeatherFinderApp` and check the output:
+Run `WeatherFinderApp` and check the output:
 
 .org.infinispan.tutorial.client.weather.WeatherFinderApp
 [source,bash]
