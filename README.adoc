@@ -341,8 +341,8 @@ Use the async API to get the value and display the temperature corresponding to 
 <4> Add the client listener to the cache
 
 TIP: The example above filters the events in the listener for the example. These events can be also filtered
-server side. For this, an event can be created and deployed in the server. This functionality is out of the scope
-of this tutorial.
+server side. For this, an https://infinispan.org/docs/stable/titles/hotrod_java/hotrod_java.html#filtering_events[event filter]
+can be created and deployed in the server. This functionality is out of the scope of this tutorial.
 
 CAUTION: Ensure that the client listeners are removed from the cache if you don't need them anymore.
 
