@@ -932,6 +932,34 @@ INFO: ISPN004021: Infinispan version: Infinispan ...
 <span class="tok-o">}</span></code></pre>
 </div>
 </div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<code>example.PROTOBUF_DIST</code> is a template that is shipped with the Infinispan Server.
+Protostream marshaller is configured for Key-Value pairs in this template.
+For now, just notice that this marshaller is mandatory to perform operations across multiple, such as the
+Hotrod client or the REST API that may display JSON data.
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+Display the configuration of the <code>example.PROTOBUF_DIST</code> template in the
+<a href="https://localhost:11222/console">Infinispan Web Console</a>
+</td>
+</tr>
+</table>
+</div>
 </div>
 <div class="sect3">
 <h4 id="_put_and_read_temperature_data">Put and Read temperature data</h4>
@@ -1035,6 +1063,18 @@ To force deletion, you will use expiration.</p>
 <div class="paragraph">
 <p>Running the application again, you will notice that after 20 seconds, the temperature loading gets <code>slow</code>
 again.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+Give a try to the <a href="https://localhost:11222/console">Infinispan Web Console</a> and get and put values.
+</td>
+</tr>
+</table>
 </div>
 </div>
 </div>
@@ -1321,9 +1361,9 @@ the <code>getWeatherCache</code> method.</p>
 <i class="fa icon-caution" title="Caution"></i>
 </td>
 <td class="content">
-<code>example.PROTOBUF_DIST</code> is a template that is shipped with the Infinispan Server. Protostream marshalling
-is configured for the Key and the Value in this template. This is mandatory to perform search from different clients, such
-as the hotrod client or the Infinispan Web Console that uses the Infinispan REST API.
+<code>example.PROTOBUF_DIST</code> is a template that is shipped with the Infinispan Server.
+Protostream marshaller is configured for the Key-Value pairs in the cache.
+This mashaller is mandatory to perform search from different clients.
 </td>
 </tr>
 </table>
@@ -1688,7 +1728,7 @@ and other <a href="https://infinispan.org/hotrod-clients/">hotrod clients</a> to
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-15 12:21:48 +0200
+Last updated 2020-07-15 12:50:40 +0200
 </div>
 </div>
 <style>
