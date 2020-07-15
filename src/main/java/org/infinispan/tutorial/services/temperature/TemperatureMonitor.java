@@ -1,10 +1,9 @@
 package org.infinispan.tutorial.services.temperature;
 
 import org.infinispan.client.hotrod.RemoteCache;
-import org.infinispan.client.hotrod.annotation.ClientCacheEntryCreated;
-import org.infinispan.client.hotrod.annotation.ClientListener;
-import org.infinispan.client.hotrod.event.ClientCacheEntryCreatedEvent;
 import org.infinispan.tutorial.db.DataSourceConnector;
+
+import java.util.Objects;
 
 public class TemperatureMonitor {
    private final RemoteCache<String, Float> cache;
@@ -14,10 +13,11 @@ public class TemperatureMonitor {
    }
 
    public Float getTemperatureForLocation(String location) {
+      Objects.requireNonNull(cache, "'temperature' cache is not correctly initialized. "
+            + "Check DataSourceConnector - getTemperatureCache method");
       return cache.get(location);
    }
 
-   @ClientListener
    public class TemperatureChangesListener {
       private String location;
 
@@ -25,14 +25,7 @@ public class TemperatureMonitor {
          this.location = location;
       }
 
-      @ClientCacheEntryCreated
-      public void created(ClientCacheEntryCreatedEvent event) {
-         if(event.getKey().equals(location)) {
-            cache.getAsync(location)
-                  .whenComplete((temperature, ex) ->
-                  System.out.printf(">> Location %s Temperature %s", location, temperature));
-         }
-      }
+      // STEP Implement a Client Listener sub-steps 1-2-3
    }
 
    /**
@@ -43,7 +36,8 @@ public class TemperatureMonitor {
    public void monitorLocation(String location) {
       System.out.println("---- Start monitoring temperature changes for " + location + " ----\n");
       TemperatureChangesListener temperatureChangesListener = new TemperatureChangesListener(location);
-      cache.addClientListener(temperatureChangesListener);
+
+      // STEP Implement a Client Listener - sub-step 4
    }
 
 }

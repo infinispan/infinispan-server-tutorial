@@ -6,6 +6,7 @@ import org.infinispan.tutorial.data.WeatherCondition;
 import org.infinispan.tutorial.db.DataSourceConnector;
 import org.infinispan.tutorial.services.WeatherLoader;
 
+import java.util.Objects;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
@@ -18,12 +19,14 @@ public class FullWeatherLoader implements WeatherLoader<LocationWeather> {
 
    public FullWeatherLoader(DataSourceConnector dataSourceConnector) {
       cache = dataSourceConnector.getWeatherCache();
+      verifyWeatherCache();
       cache.clear();
       random = new Random();
    }
 
    @Override
    public LocationWeather getForLocation(String location) {
+      verifyWeatherCache();
       LocationWeather weather = cache.get(location);
 
       if (weather == null) {
@@ -34,6 +37,11 @@ public class FullWeatherLoader implements WeatherLoader<LocationWeather> {
          cache.put(location, weather);
       }
       return weather;
+   }
+
+   private void verifyWeatherCache() {
+      Objects.requireNonNull(cache,
+            "'weather' cache is not correctly initialized. " + "Check DataSourceConnector - getWeatherCache method");
    }
 
    private LocationWeather fetchWeather(String location) {

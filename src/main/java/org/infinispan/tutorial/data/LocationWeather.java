@@ -1,22 +1,18 @@
 package org.infinispan.tutorial.data;
 
-import org.infinispan.protostream.annotations.ProtoField;
-
 /**
  * Annotated with Protostream
  */
 public class LocationWeather {
 
-   @ProtoField(number = 1, defaultValue = "0.0")
+   //STEP Annotate the POJO LocationWeather
+
    float temperature;
 
-   @ProtoField(number = 2)
    String condition;
 
-   @ProtoField(number = 3)
    String city;
 
-   @ProtoField(number = 4)
    String country;
 
    public LocationWeather() {

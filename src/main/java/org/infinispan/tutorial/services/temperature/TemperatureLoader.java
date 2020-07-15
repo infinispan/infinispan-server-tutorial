@@ -4,6 +4,7 @@ import org.infinispan.client.hotrod.RemoteCache;
 import org.infinispan.tutorial.db.DataSourceConnector;
 import org.infinispan.tutorial.services.WeatherLoader;
 
+import java.util.Objects;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
@@ -17,21 +18,21 @@ public class TemperatureLoader implements WeatherLoader<Float> {
 
    public TemperatureLoader(DataSourceConnector dataSourceConnector) {
       cache = dataSourceConnector.getTemperatureCache();
+      Objects.requireNonNull(cache, "'temperature' cache is not correctly initialized. "
+            + "Check DataSourceConnector - getTemperatureCache method");
       cache.clear();
       random = new Random();
    }
 
    @Override
    public Float getForLocation(String location) {
-      Float temperature = cache.get(location);
-      if (temperature == null) {
-         temperature = fetchTemperature(location);
-         cache.put(location, temperature, 20, TimeUnit.SECONDS);
-      }
-      return temperature;
+      // STEP Put and Read temperature data
+      // FOLLOW UP STEP Making the data expire (lifespan)
+
+      return fetchTemperature();
    }
 
-   private Float fetchTemperature(String location) {
+   private Float fetchTemperature() {
       try {
          TimeUnit.MILLISECONDS.sleep(100);
       } catch (InterruptedException e) {}
