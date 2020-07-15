@@ -52,9 +52,9 @@ If you are using Docker, use the Infinispan Server docker image to run a standal
 ==== Option 2: Download the server
 
 . Go to the infinispan https://infinispan.org/download/#stable[downloads] and download the server
-. From the installation directory create a user using the Command Line Interface (CLI)
-`./bin/cli.sh user create`
-. Enter `admin` as principal and `pass` for the credentials
+. From the installation directory create `admin` user with the `pass` password  using the Command Line Interface (CLI)
++
+`./bin/cli.sh user create admin -p pass`
 . Run the server
 `./bin/server.sh`
 
