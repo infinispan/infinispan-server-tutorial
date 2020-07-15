@@ -447,7 +447,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_0_prerequisites">0. Prerequisites</a></li>
 <li><a href="#_1_run_an_infinispan_server_locally">1. Run an Infinispan Server locally</a>
 <ul class="sectlevel3">
-<li><a href="#_option_1_use_docker_recommended_way">Option 1: Use Docker (recommended way)</a></li>
+<li><a href="#_option_1_use_a_linux_container_recommended_way">Option 1: Use a Linux Container (recommended way)</a></li>
 <li><a href="#_option_2_download_the_server">Option 2: Download the server</a></li>
 <li><a href="#_check_the_server_is_correctly_running">Check the Server is correctly running</a></li>
 </ul>
@@ -469,7 +469,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 </ul>
 </li>
-<li><a href="#_4_bootstrapping_the_project">4. Bootstrapping the project</a></li>
+<li><a href="#bootstrapping-project">4. Bootstrapping the project</a></li>
 <li><a href="#_5_connecting_to_the_infinispan_server_using_the_java_client">5. Connecting to the Infinispan Server using the Java Client</a>
 <ul class="sectlevel3">
 <li><a href="#_add_the_maven_dependency">Add the maven dependency</a></li>
@@ -628,12 +628,9 @@ other values.
 </table>
 </div>
 <div class="sect3">
-<h4 id="_option_1_use_docker_recommended_way">Option 1: Use Docker (recommended way)</h4>
+<h4 id="_option_1_use_a_linux_container_recommended_way">Option 1: Use a Linux Container (recommended way)</h4>
 <div class="paragraph">
-<p>Use the Infinispan Server docker image to run a standalone infinispan server.</p>
-</div>
-<div class="paragraph">
-<p>Provide a <code>USER</code> and <code>PASS</code>.</p>
+<p>If you are using Docker, use the Infinispan Server docker image to run a standalone infinispan server.</p>
 </div>
 <div class="paragraph">
 <p><code>docker run -it -p 11222:11222 -e USER="admin" -e PASS="pass" infinispan/server:11.0</code></p>
@@ -651,7 +648,7 @@ other values.
 <code>./bin/cli.sh user create</code></p>
 </li>
 <li>
-<p>Enter <code>admin</code> and <code>pass</code> for the credentials</p>
+<p>Enter <code>admin</code> as principal and <code>pass</code> for the credentials</p>
 </li>
 <li>
 <p>Run the server
@@ -663,13 +660,11 @@ other values.
 <div class="sect3">
 <h4 id="_check_the_server_is_correctly_running">Check the Server is correctly running</h4>
 <div class="paragraph">
-<p>Open a navigator in `http://localhost:11222/'. The welcome page of the Infinispan Server
-should be displayed.</p>
+<p>Open a navigator in <a href="http://localhost:11222/">http://localhost:11222/</a>.
+The welcome page of the Infinispan Server should be displayed.</p>
 </div>
 <div class="paragraph">
-<p>Click on <strong>Go to the console</strong>, enter the credentials <code>admin</code> and <code>pass</code> and
-display the Web Console.
-The console is a pure Javascript application built on top of the Infinispan Server REST API.</p>
+<p>Click on <strong>Go to the console</strong>, log with <code>admin</code>/<code>pass</code> and display the Web Console.</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -681,7 +676,7 @@ The console is a pure Javascript application built on top of the Infinispan Serv
 <div class="sect2">
 <h3 id="_2_solution">2. Solution</h3>
 <div class="paragraph">
-<p>We recommend that you follow the instructions from Boostrapping project and onwards
+<p>We recommend that you follow the instructions from <a href="#bootstrapping-project">4. Bootstrapping the project</a> and onwards
 to create the application step by step.</p>
 </div>
 <div class="paragraph">
@@ -798,7 +793,7 @@ Infinispan stores the data in the <code>weather</code> cache.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_4_bootstrapping_the_project">4. Bootstrapping the project</h3>
+<h3 id="bootstrapping-project">4. Bootstrapping the project</h3>
 <div class="paragraph">
 <p><code>git clone <a href="https://github.com/infinispan/infinispan-server-tutorial.git" class="bare">https://github.com/infinispan/infinispan-server-tutorial.git</a></code></p>
 </div>
@@ -1633,7 +1628,7 @@ and other <a href="https://infinispan.org/hotrod-clients/">hotrod clients</a> to
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-14 00:36:30 +0200
+Last updated 2020-07-15 10:59:45 +0200
 </div>
 </div>
 <style>
