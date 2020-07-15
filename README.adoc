@@ -43,11 +43,9 @@ Before coding anything, first learn how to run an Infinispan Server locally.
 NOTE: Security is active by default. In this tutorial you will use `admin` and `pass` credentials, but feel free to use any
 other values.
 
-==== Option 1: Use Docker (recommended way)
+==== Option 1: Use a Linux Container (recommended way)
 
-Use the Infinispan Server docker image to run a standalone infinispan server.
-
-Provide a `USER` and `PASS`.
+If you are using Docker, use the Infinispan Server docker image to run a standalone infinispan server.
 
 `docker run -it -p 11222:11222 -e USER="admin" -e PASS="pass" infinispan/server:11.0`
 
@@ -56,26 +54,24 @@ Provide a `USER` and `PASS`.
 . Go to the infinispan https://infinispan.org/download/#stable[downloads] and download the server
 . From the installation directory create a user using the Command Line Interface (CLI)
 `./bin/cli.sh user create`
-. Enter `admin` and `pass` for the credentials
+. Enter `admin` as principal and `pass` for the credentials
 . Run the server
 `./bin/server.sh`
 
 
 ==== Check the Server is correctly running
 
-Open a navigator in `http://localhost:11222/'. The welcome page of the Infinispan Server
-should be displayed.
+Open a navigator in http://localhost:11222/[http://localhost:11222/].
+The welcome page of the Infinispan Server should be displayed.
 
-Click on *Go to the console*, enter the credentials `admin` and `pass` and
-display the Web Console.
-The console is a pure Javascript application built on top of the Infinispan Server REST API.
+Click on *Go to the console*, log with `admin`/`pass` and display the Web Console.
 
 image::welcomeConsole.png[Welcome to the console]
 
 
 === 2. Solution
 
-We recommend that you follow the instructions from Boostrapping project and onwards
+We recommend that you follow the instructions from <<bootstrapping-project>> and onwards
 to create the application step by step.
 
 However, you can go right to the completed example.
@@ -138,6 +134,7 @@ This process runs every 5 seconds.
 
 Uses Infinispan Search capabilities to perform text search and continuous queries.
 
+[#bootstrapping-project]
 === 4. Bootstrapping the project
 
 `git clone https://github.com/infinispan/infinispan-server-tutorial.git`
