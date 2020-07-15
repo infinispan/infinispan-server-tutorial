@@ -150,6 +150,8 @@ Int his step you will establish the connection to the already running Infinispan
 To connect to the Infinispan Server using the Java Client, add the HotRod client dependency to the
 `pom.xml` file.
 
+NOTE: The dependency is already present in the `pom.xml' file
+
 .pom.xml
 [source,xml]
 ----
@@ -175,11 +177,14 @@ builder.addServer() // <2>
 builder.security().authentication().username("admin").password("pass"); //<3>
 
 builder.clientIntelligence(ClientIntelligence.BASIC); //<4>
+
+remoteCacheManager = new RemoteCacheManager(builder.build()); //<5>
 ----
 <1> Create a `ConfigurationBuilder`
 <2> Add the local server
 <3> Configure the security: `admin` and `pass` credentials
 <4> Necessary for Docker for Mac
+<5> Create a `RemoteCacheManager` with the configuration
 
 
 ==== Health Check
@@ -215,7 +220,7 @@ Modify the method `getTemperatureCache` and use the `getOrCreateCache` method to
 [source,java]
 ----
 public RemoteCache<String, Float> getTemperatureCache() {
-   return remoteCacheManager.administration().getOrCreateCache("temperature", DefaultTemplate.DIST_SYNC);
+   return remoteCacheManager.administration().getOrCreateCache("temperature", "example.PROTOBUF_DIST");
 }
 ----
 
@@ -245,7 +250,7 @@ the temperature for a specific location.
 <2> Fetch the value if it's not already present in the cache
 <3> Put the value in the cache
 
-==== Temperature Loading Check
+==== Verify the temperature loader application
 
 Run *TemperatureLoaderApp*.
 
@@ -300,7 +305,7 @@ https://infinispan.org/docs/stable/titles/hotrod_java/hotrod_java.html#creating_
 The application will display notifications with temperature changes happening in a
 given location.
 
-==== Implement a Client Listener
+==== Implement and use a Client Listener
 
 At the time of this writing, client listeners do not bring the value of the key in the receiving event.
 Use the async API to get the value and display the temperature corresponding to the key.
@@ -345,7 +350,7 @@ can be created and deployed in the server. This functionality is out of the scop
 CAUTION: Ensure that the client listeners are removed from the cache if you don't need them anymore.
 
 
-==== Verify the Monitoring application
+==== Verify the temperature monitoring application
 
 *TemperatureLoaderApp* should be running, loading temperatures periodically and temperatures getting expired every 20s.
 
@@ -382,6 +387,21 @@ as an encoding for both over-the-wire and storage.
 
 The usage of protobuf allows remote query to work not only for Java, but for REST,
 C# and Node.js clients.
+
+==== Add the maven dependencies
+
+.pom.xml
+[source,xml]
+----
+    <dependency>
+        <groupId>org.infinispan</groupId>
+        <artifactId>infinispan-remote-query-client</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>org.infinispan</groupId>
+        <artifactId>infinispan-query-dsl</artifactId>
+    </dependency>
+----
 
 ==== Annotate the POJO LocationWeather
 
@@ -457,17 +477,24 @@ the `getWeatherCache` method.
 [source,java]
 ----
     public RemoteCache<String, LocationWeather> getWeatherCache() {
+        System.out.println("--- Get or Create a queryable weather cache ---");
         Objects.requireNonNull(remoteCacheManager);
 
-        LocationWeatherMarshallingContext.initSerializationContext(remoteCacheManager);
+        LocationWeatherMarshallingContext.initSerializationContext(remoteCacheManager); // <1>
 
-        System.out.println("--- Get or Create a queryable weather cache ---");
-
-        ...
+        return remoteCacheManager.administration()
+              .getOrCreateCache("weather", "example.PROTOBUF_DIST"); // <2>
     }
 ----
+<1> Initialize the serialization context
+<2> Get or create the cache
 
-==== Run Weather Loader app
+CAUTION: `example.PROTOBUF_DIST` is a template that is shipped with the Infinispan Server. Protostream marshalling
+is configured for the Key and the Value in this template. This is mandatory to perform search from different clients, such
+as the hotrod client or the Infinispan Web Console that uses the Infinispan REST API.
+
+
+==== Verify the weather loader application
 
 The code loading the data into the cache is available in the
 `org.infinispan.tutorial.services.weather.FullWeatherLoader`.
@@ -506,20 +533,12 @@ Como, Italy - LocationWeather{temperature=24.495003, condition='PARTIALLY_COVERE
 
 === 9. Implement the Weather Search
 
-==== Add the maven dependency
+After completing this section, you will know:
 
-.pom.xml
-[source,xml]
-----
-    <dependency>
-        <groupId>org.infinispan</groupId>
-        <artifactId>infinispan-remote-query-client</artifactId>
-    </dependency>
-    <dependency>
-        <groupId>org.infinispan</groupId>
-        <artifactId>infinispan-query-dsl</artifactId>
-    </dependency>
-----
+* How to create and run a FROM query
+* How to create and run a SELECT query
+* How to use a query, and run it continuously
+
 ==== Create and run a FROM query
 
 Create and run a query on the `weather` cache:
@@ -630,7 +649,7 @@ public void findWeatherByConditionContinuously(WeatherCondition condition) {
 <1> Create a Query: find all the locations by weather condition (ex 'Sunny')
 <2> Create a Continuous Query from the cache weather
 <3> Create a Continuous Query Listener and print the condition
-<4> Match the Query and the Listener with the Continuous Query Object
+<4> Match the query and the listener in the Continuous Query Object
 
 CAUTION: Continuous Queries are similar to Client Listeners. Don't forget to remove the continuous queries
 when you don't need them anymore.
@@ -715,6 +734,3 @@ to learn how to deploy and scale the server in https://kubernetes.io[Kubernetes]
 
 You have used the Java Hot Rod client. Grab a look to our https://infinispan.org/docs/stable/titles/rest/rest.html[REST API],
 and other https://infinispan.org/hotrod-clients/[hotrod clients] to use the Infinispan Server with other programming languages.
-
-
-
