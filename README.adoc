@@ -224,6 +224,14 @@ public RemoteCache<String, Float> getTemperatureCache() {
 }
 ----
 
+WARNING: `example.PROTOBUF_DIST` is a template that is shipped with the Infinispan Server.
+Protostream marshaller is configured for Key-Value pairs in this template.
+For now, just notice that this marshaller is mandatory to perform operations across multiple, such as the
+Hotrod client or the REST API that may display JSON data.
+
+TIP: Display the configuration of the `example.PROTOBUF_DIST` template in the
+https://localhost:11222/console[Infinispan Web Console]
+
 ==== Put and Read temperature data
 
 Implement `getForLocation` method in the `TemperatureLoader` service.
@@ -296,6 +304,9 @@ Modify `put` method call and make the temperature data expire every 20s.
 
 Running the application again, you will notice that after 20 seconds, the temperature loading gets `slow`
 again.
+
+
+TIP: Give a try to the https://localhost:11222/console[Infinispan Web Console] and get and put values.
 
 === 7. Implement the Temperature Monitor
 
@@ -489,9 +500,9 @@ the `getWeatherCache` method.
 <1> Initialize the serialization context
 <2> Get or create the cache
 
-CAUTION: `example.PROTOBUF_DIST` is a template that is shipped with the Infinispan Server. Protostream marshalling
-is configured for the Key and the Value in this template. This is mandatory to perform search from different clients, such
-as the hotrod client or the Infinispan Web Console that uses the Infinispan REST API.
+CAUTION: `example.PROTOBUF_DIST` is a template that is shipped with the Infinispan Server.
+Protostream marshaller is configured for the Key-Value pairs in the cache.
+This mashaller is mandatory to perform search from different clients.
 
 
 ==== Verify the weather loader application
