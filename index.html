@@ -644,11 +644,10 @@ other values.
 <p>Go to the infinispan <a href="https://infinispan.org/download/#stable">downloads</a> and download the server</p>
 </li>
 <li>
-<p>From the installation directory create a user using the Command Line Interface (CLI)
-<code>./bin/cli.sh user create</code></p>
-</li>
-<li>
-<p>Enter <code>admin</code> as principal and <code>pass</code> for the credentials</p>
+<p>From the installation directory create <code>admin</code> user with the <code>pass</code> password  using the Command Line Interface (CLI)</p>
+<div class="paragraph">
+<p><code>./bin/cli.sh user create admin -p pass</code></p>
+</div>
 </li>
 <li>
 <p>Run the server
@@ -1728,7 +1727,7 @@ and other <a href="https://infinispan.org/hotrod-clients/">hotrod clients</a> to
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-15 12:50:40 +0200
+Last updated 2020-07-17 15:21:35 +0200
 </div>
 </div>
 <style>
