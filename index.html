@@ -448,7 +448,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_1_run_an_infinispan_server_locally">1. Run an Infinispan Server locally</a>
 <ul class="sectlevel3">
 <li><a href="#_option_1_use_a_linux_container_recommended_way">Option 1: Use a Linux Container (recommended way)</a>
-<ul class="sectlevel5">
+<ul class="sectlevel4">
 <li><a href="#_podman">Podman</a></li>
 <li><a href="#_docker">Docker</a></li>
 </ul>
@@ -638,14 +638,14 @@ other values.
 <p>If you are using <a href="https://podman.io/">Podman</a> or <a href="https://www.docker.com/">Docker</a>,
 use the Infinispan Server image to run a standalone server.</p>
 </div>
-<div class="sect5">
-<h6 id="_podman">Podman</h6>
+<div class="sect4">
+<h5 id="_podman">Podman</h5>
 <div class="paragraph">
-<p><code>podman run -it -e USER="don" -e PASS="testme" quay.io/infinispan/server:11.0</code></p>
+<p><code>podman run -it -e USER="admin" -e PASS="pass" quay.io/infinispan/server:11.0</code></p>
 </div>
 </div>
-<div class="sect5">
-<h6 id="_docker">Docker</h6>
+<div class="sect4">
+<h5 id="_docker">Docker</h5>
 <div class="paragraph">
 <p><code>docker run -it -p 11222:11222 -e USER="admin" -e PASS="pass" infinispan/server:11.0</code></p>
 </div>
@@ -1742,7 +1742,7 @@ and other <a href="https://infinispan.org/hotrod-clients/">hotrod clients</a> to
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-17 15:46:06 +0200
+Last updated 2020-07-17 15:48:04 +0200
 </div>
 </div>
 <style>
