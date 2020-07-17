@@ -37,7 +37,7 @@ running mvn --version.
 
 Before coding anything, first learn how to run an Infinispan Server locally.
 
-* Using Docker
+* Using a Linux containers (Docker, Podman...)
 * Downloading and running the server
 
 NOTE: Security is active by default. In this tutorial you will use `admin` and `pass` credentials, but feel free to use any
@@ -45,9 +45,17 @@ other values.
 
 ==== Option 1: Use a Linux Container (recommended way)
 
-If you are using Docker, use the Infinispan Server docker image to run a standalone infinispan server.
+If you are using https://podman.io/[Podman] or https://www.docker.com/[Docker],
+use the Infinispan Server image to run a standalone server.
+
+====== Podman
+
+`podman run -it -e USER="don" -e PASS="testme" quay.io/infinispan/server:11.0`
+
+====== Docker
 
 `docker run -it -p 11222:11222 -e USER="admin" -e PASS="pass" infinispan/server:11.0`
+
 
 ==== Option 2: Download the server
 
@@ -150,7 +158,7 @@ Int his step you will establish the connection to the already running Infinispan
 To connect to the Infinispan Server using the Java Client, add the HotRod client dependency to the
 `pom.xml` file.
 
-NOTE: The dependency is already present in the `pom.xml' file
+NOTE: The dependency is already present in the `pom.xml` file
 
 .pom.xml
 [source,xml]
