@@ -153,12 +153,17 @@ In the `master` branch you will have the minimum code and all the place holders 
 
 Int his step you will establish the connection to the already running Infinispan Server.
 
-==== Add the maven dependency
+==== Add the maven dependencies
 
 To connect to the Infinispan Server using the Java Client, add the HotRod client dependency to the
 `pom.xml` file.
+We add 3 dependencies that are needed for all the tutorial:
 
-NOTE: The dependency is already present in the `pom.xml` file
+* https://infinispan.org/docs/stable/titles/hotrod_java/hotrod_java.html[Client Hotrod]
+* Remote query client - to perform queries
+* Query DSL - the Query API
+
+NOTE: These dependencies are already present in the `pom.xml` file.
 
 .pom.xml
 [source,xml]
@@ -166,6 +171,14 @@ NOTE: The dependency is already present in the `pom.xml` file
 <dependency>
     <groupId>org.infinispan</groupId>
     <artifactId>infinispan-client-hotrod</artifactId>
+</dependency>
+<dependency>
+    <groupId>org.infinispan</groupId>
+    <artifactId>infinispan-query-dsl</artifactId>
+</dependency>
+<dependency>
+    <groupId>org.infinispan</groupId>
+    <artifactId>infinispan-remote-query-client</artifactId>
 </dependency>
 ----
 
@@ -255,7 +268,7 @@ the temperature for a specific location.
    public Float getForLocation(String location) {
       Float temperature = cache.get(location); //<1>
       if (temperature == null) {
-         temperature = fetchTemperature(location); //<2>
+         temperature = fetchTemperature(); //<2>
          cache.put(location, temperature); //<3>
       }
       return temperature;
@@ -406,21 +419,6 @@ as an encoding for both over-the-wire and storage.
 
 The usage of protobuf allows remote query to work not only for Java, but for REST,
 C# and Node.js clients.
-
-==== Add the maven dependencies
-
-.pom.xml
-[source,xml]
-----
-    <dependency>
-        <groupId>org.infinispan</groupId>
-        <artifactId>infinispan-remote-query-client</artifactId>
-    </dependency>
-    <dependency>
-        <groupId>org.infinispan</groupId>
-        <artifactId>infinispan-query-dsl</artifactId>
-    </dependency>
-----
 
 ==== Annotate the POJO LocationWeather
 
