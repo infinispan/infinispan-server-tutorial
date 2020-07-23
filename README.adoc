@@ -6,164 +6,174 @@
 
 image::infinispan_logo.svg[Infinispan Logo]
 
-== Client Server Tutorial
-After completing this guide, you will know:
+== Infinispan Remote Weather App Tutorial
 
-. How to run the Infinispan Server locally
-. How to connect to the Infinispan Server web console
-. How to create caches in the Infinispan Server
-. How to put and read primitive data
-. How expiration works
-. How client listeners work
-. How to put and read non primitive Java Objects
-. How to query values
-. How to use the out of the box testing utility with Junit 5 and test containers
+Learn how to use Infinispan from the Console and remote Hot Rod clients. This
+tutorial includes Java applications that use Infinispan capabilities to provide
+services for a searchable weather monitoring system.
 
-=== 0. Prerequisites
+=== Objectives
 
-To complete this guide, you need:
+By completing this tutorial, you will learn how to:
 
-- 25 minutes
-- an IDE
-- JDK 8 or 11+ installed
-- Apache Maven 3.6.2.+
+. Run Infinispan Server.
+. Access and use the Infinispan Console.
+. Create Infinispan caches.
+. Read and write data as primitive types and Java objects.
+. Add lifespans to entries so data expires.
+. Deploy client listeners to get event notifications.
+. Search the data store for specific values.
+. Use out-of-the-box testing with Junit 5 for verification.
 
-TIP: Verify Maven is using the Java you expect
-If you have multiple JDK’s installed it is not certain Maven will pick up the expected
-java and you could end up with unexpected results. You can verify which JDK Maven uses by
-running mvn --version.
+=== Prerequisites
 
-=== 1. Run an Infinispan Server locally
+To complete this tutorial, you need:
 
-Before coding anything, first learn how to run an Infinispan Server locally.
+- Approximately 25 to 30 minutes
+- IDE such as Intellij
+- JDK 8 or JDK 11 or later
+- Apache Maven 3.6.2 or later
+- https://www.docker.com/[Docker] or https://podman.io/[Podman]
 
-* Using a Linux containers (Docker, Podman...)
-* Downloading and running the server
+[TIP]
+====
+Run `mvn --version` to verify that Maven uses the correct JDK if you have
+multiple Java versions installed.
+====
 
-NOTE: Security is active by default. In this tutorial you will use `admin` and `pass` credentials, but feel free to use any
-other values.
+=== Weather System Architecture
 
-==== Option 1: Use a Linux Container (recommended way)
+This tutorial builds a Weather System with the following Java applications:
 
-If you are using https://podman.io/[Podman] or https://www.docker.com/[Docker],
-use the Infinispan Server image to run a standalone server.
+. `TemperatureLoaderApp`
+. `TemperatureMonitorApp`
+. `WeatherLoaderApp`
+. `WeatherFinderApp`
 
-===== Podman
+==== Temperature Subsystem
 
-`podman run -it -e USER="admin" -e PASS="pass" quay.io/infinispan/server:11.0`
-
-===== Docker
-
-`docker run -it -p 11222:11222 -e USER="admin" -e PASS="pass" infinispan/server:11.0`
-
-
-==== Option 2: Download the server
-
-. Go to the infinispan https://infinispan.org/download/#stable[downloads] and download the server
-. From the installation directory create `admin` user with the `pass` password  using the Command Line Interface (CLI)
-+
-`./bin/cli.sh user create admin -p pass`
-. Run the server
-`./bin/server.sh`
-
-
-==== Check the Server is correctly running
-
-Open a navigator in http://localhost:11222/[http://localhost:11222/].
-The welcome page of the Infinispan Server should be displayed.
-
-Click on *Go to the console*, log with `admin`/`pass` and display the Web Console.
-
-image::welcomeConsole.png[Welcome to the console]
-
-
-=== 2. Solution
-
-We recommend that you follow the instructions from <<bootstrapping-project>> and onwards
-to create the application step by step.
-
-However, you can go right to the completed example.
-
-Download an archive or clone the git repository:
-
-`git clone https://github.com/infinispan/infinispan-server-tutorial.git`
-
-The solution is located in the `solution` branch.
-
-=== 3. Architecture
-
-In this tutorial we will build a Weather System containing 4 java applications:
-
-. TemperatureLoaderApp
-. TemperatureMonitorApp
-. WeatherLoaderApp
-. WeatherFinderApp
-
-Next sections explain the system in detail.
-
-==== Temperature sub-system
-
-The temperature sub-system is composed by two main services:
+The Temperature Loader and Temperature Monitor applications comprise the temperature subsystem, as shown below:
 
 image::Temperature.png[Temperature.png]
 
 ===== Temperature Loader
 
-Loads the temperatures for all the existing locations.
-Infinispan stores the data in the `temperature` cache.
+This application loads temperatures for geographic locations and runs every five seconds. Infinispan stores that data in the `temperature` cache as follows:
 
 - Location: Key `String`
 - Temperature: Value `Float`
 
-This process runs every 5 seconds.
-
 ===== Temperature Monitor
 
-Monitors the temperature of a specific location. Infinispan sends a
-notification, and the application displays a message with every new temperature.
+This application monitors the temperature of each location. Infinispan sends notifications when temperatures change and the application displays each new temperature.
 
-==== Weather sub-system
+==== Weather Subsystem
 
-The weather sub-system is composed by two main services:
+The Weather Loader and Weather Finder applications comprise the weather  subsystem, as shown below:
 
 image::Weather.png[Weather.png]
 
 ===== Weather Loader
 
-Loads the weather information for all the existing locations.
-Infinispan stores the data in the `weather` cache.
+This application loads weather information for geographic locations and runs every five seconds. Infinispan stores that data in the `weather` cache as follows:
 
 - Location: Key `String`
 - Weather: Value `LocationWeather` (temperature, condition, city, country)
 
-This process runs every 5 seconds.
+===== Weather Finder
 
-===== Weather Search
+This application uses Infinispan Search capabilities to perform text search and continuous queries.
 
-Uses Infinispan Search capabilities to perform text search and continuous queries.
+//Step 1
+=== Starting Infinispan Server
 
-[#bootstrapping-project]
-=== 4. Bootstrapping the project
+Before you start coding fun stuff, you need to start Infinispan Server. For
+this tutorial, you need a locally running server instance.
 
-`git clone https://github.com/infinispan/infinispan-server-tutorial.git`
+You can do one of the following:
 
-In the `master` branch you will have the minimum code and all the place holders to complete this tutorial.
+* Pull the container image and run with https://www.docker.com/[Docker] or https://podman.io/[Podman].
+* Download the server distribution and extract it to your filesystem.
 
-=== 5. Connecting to the Infinispan Server using the Java Client
+.Credentials
+By default, Infinispan Server requires user authentication. This tutorial uses
+`admin` and `pass` credentials but you can use any username and password.
 
-Int his step you will establish the connection to the already running Infinispan Server.
+==== Running the Container Image
 
-==== Add the maven dependencies
+The easiest way to run Infinispan Server locally is to pull the container image.
 
-To connect to the Infinispan Server using the Java Client, add the HotRod client dependency to the
-`pom.xml` file.
-We add 3 dependencies that are needed for all the tutorial:
+* Podman
++
+`podman run --net=host -p 11222:11222 -e USER="admin" -e PASS="pass" quay.io/infinispan/server:11.0`
 
-* https://infinispan.org/docs/stable/titles/hotrod_java/hotrod_java.html[Client Hotrod]
-* Remote query client - to perform queries
-* Query DSL - the Query API
+* Docker
++
+`docker run -it -p 11222:11222 -e USER="admin" -e PASS="pass" infinispan/server:11.0`
 
-NOTE: These dependencies are already present in the `pom.xml` file.
+==== Running the Server Distribution
+
+Infinispan Server comes as a bare metal distribution that you can run locally.
+
+. Download the server distribution from https://infinispan.org/download/#stable[Infinispan Downloads] and extract it.
+. Open a terminal window in the resulting directory. This is `$ISPN_HOME`.
+. Add credentials.
++
+[source,bash,options="nowrap"]
+----
+$ ./bin/cli.sh user create admin -p pass
+----
++
+. Run Infinispan Server.
++
+[source,bash,options="nowrap"]
+----
+$ ./bin/server.sh
+----
+
+//Step 2
+=== Accessing the Infinispan Console
+
+Open http://localhost:11222/[http://localhost:11222/] in any browser.
+
+You'll see the *Welcome to Infinispan Server* page.
+
+image::welcomeConsole.png[Welcome to the console]
+
+To start using the Infinispan Console, do the following:
+
+. Select *Go to the console*.
+. Enter your credentials (`admin`/`pass`).
+
+//Step 3
+=== Getting the Weather Application
+
+You can create the Weather Application yourself going step by step or you can skip ahead and use the complete solution.
+
+* Bootstrap the project.
++
+You'll find the code for each application and placeholder comments for each step in this tutorial on the `master` branch.
++
+`git clone -b master https://github.com/infinispan/infinispan-server-tutorial.git`
+
+* Use the complete solution.
++
+If you just want to see the Weather System in action, use the completed example on the `solution` branch.
++
+`git clone -b solution https://github.com/infinispan/infinispan-server-tutorial.git`
+
+//Step 4
+=== Establishing Remote Connections
+
+Connect to your locally running Infinispan Server from a Hot Rod Java client.
+
+==== Add Dependencies
+
+Open the `pom.xml` file for this project and confirm that the following dependencies are available:
+
+* `infinispan-client-hotrod` adds the https://infinispan.org/docs/stable/titles/hotrod_java/hotrod_java.html[Java Hot Rod Client].
+* `infinispan-query-dsl` adds the Infinispan Search API.
+* `infinispan-remote-query-client` adds a remote search client.
 
 .pom.xml
 [source,xml]
@@ -182,9 +192,9 @@ NOTE: These dependencies are already present in the `pom.xml` file.
 </dependency>
 ----
 
-==== Implement the connection
+==== Create a Remote Connection
 
-Change the method `connect` in the `DataSourceConnector` class.
+Update the `connect()` method in the `DataSourceConnector` class as follows:
 
 .org.infinispan.tutorial.db.DataSourceConnector
 [source,java]
@@ -201,19 +211,18 @@ builder.clientIntelligence(ClientIntelligence.BASIC); //<4>
 
 remoteCacheManager = new RemoteCacheManager(builder.build()); //<5>
 ----
-<1> Create a `ConfigurationBuilder`
-<2> Add the local server
-<3> Configure the security: `admin` and `pass` credentials
-<4> Necessary for Docker for Mac
-<5> Create a `RemoteCacheManager` with the configuration
+<1> Creates a `ConfigurationBuilder`
+<2> Adds the location of your locally running server.
+<3> Configures authentication.
+<4> Uses `BASIC` Hot Rod client intelligence. This is required to use Docker with a Mac.
+<5> Creates a `RemoteCacheManager` with the configuration.
 
+==== Test the Connection
 
-==== Health Check
+Run `HealthChecker` to make sure your connection is successful.
 
-Run *HealthChecker*.
-If the connection is correct, you will see:
+You should see the following messages:
 
-.org.infinispan.tutorial.client.HealthChecker
 [source,bash]
 ----
 
@@ -224,42 +233,39 @@ INFO: ISPN004021: Infinispan version: Infinispan ...
 
 ----
 
-=== 6. Implement the Temperature Loader
+//Step 5
+=== Implementing Temperature Loader
 
-Implementing the Temperature Loader, you will learn:
+In this section of the tutorial, you implement the Temperature Loader application and learn how to:
 
-- How to create a cache using the administration interface
-- How to read data from the cache
-- How to write data to the cache
-- How to expire cache in the cache
+- Create caches from the Console.
+- Read data from the cache.
+- Write data to the cache.
+- Expire entries in the cache.
 
-==== Creating the 'temperature' cache
+==== Create a Temperature Cache
 
-Modify the method `getTemperatureCache` and use the `getOrCreateCache` method to create the `temperature` cache.
+Update the `getTemperatureCache()` method in the `DataSourceConnector` class to invoke `getOrCreateCache()` as follows:
 
 .org.infinispan.tutorial.db.DataSourceConnector
 [source,java]
 ----
 public RemoteCache<String, Float> getTemperatureCache() {
-   return remoteCacheManager.administration().getOrCreateCache("temperature", "example.PROTOBUF_DIST");
+   return remoteCacheManager.administration().getOrCreateCache("temperature", "example.PROTOBUF_DIST"); //<1>
 }
 ----
+<1> Adds a cache named `temperature` that uses the `example.PROTOBUF_DIST` configuration template.
++
+This template uses Protobuf encoding for keys and values so that you can operate on data from different clients. You can
 
-WARNING: `example.PROTOBUF_DIST` is a template that is shipped with the Infinispan Server.
-Protostream marshaller is configured for Key-Value pairs in this template.
-For now, just notice that this marshaller is mandatory to perform operations across multiple, such as the
-Hotrod client or the REST API that may display JSON data.
+[TIP]
+====
+View the configuration for the `example.PROTOBUF_DIST` template from the Console at https://localhost:11222/console/container/default/configurations/[localhost:11222/console/container/default/configurations/]
+====
 
-TIP: Display the configuration of the `example.PROTOBUF_DIST` template in the
-https://localhost:11222/console[Infinispan Web Console]
+==== Put and Read Temperature Data
 
-==== Put and Read temperature data
-
-Implement `getForLocation` method in the `TemperatureLoader` service.
-If the location is not present in the cache, fetch the value.
-
-NOTE: The private method `fetchTemperature` emulates an external service call that gets 200ms to get
-the temperature for a specific location.
+Implement the `getForLocation()` method in the `TemperatureLoader` service as follows:
 
 .org.infinispan.tutorial.services.temperature.TemperatureLoader
 [source,java]
@@ -275,23 +281,27 @@ the temperature for a specific location.
    }
 
 ----
-<1> Get the value with the `location` key
-<2> Fetch the value if it's not already present in the cache
-<3> Put the value in the cache
+<1> Get the value for the `location` key.
+<2> Fetches the value if it does not exist in the cache.
++
+The private `fetchTemperature()` method emulates an external service call that takes 200ms to retrieve the temperature for a geographic location.
++
+<3> Adds the value to the `temperature` cache.
 
-==== Verify the temperature loader application
+==== Verify Temperature Loader
 
-Run *TemperatureLoaderApp*.
+Run `TemperatureLoaderApp` to check that it adds temperature data.
 
-The first time the loading gets around 2s, the subsequents
-calls will grab the temperature from the cache making the loading method performance increase significantly.
+The first time the application runs, it takes about two seconds to load data. Subsequent calls retrieve the temperature from the cache, which increases performance.
 
-.org.infinispan.tutorial.services.temperature.TemperatureLoader
+You should see messages such as the following:
+
+.org.infinispan.tutorial.client.temperature.TemperatureLoaderApp
 [source,java]
 ----
 
 ---- Connect to Infinispan ----
-Jul 12, 2020 2:01:03 PM org.infinispan.client.hotrod.RemoteCacheManager actualStart
+<timestamp> org.infinispan.client.hotrod.RemoteCacheManager actualStart
 INFO: ISPN004021: Infinispan version: Infinispan 'Corona Extra' 11.0.1.Final
 ---- Get or create the 'temperature' cache ----
 ---- Press any key to quit ----
@@ -308,14 +318,14 @@ Como, Italy - 21.044369
 ---- Loaded in 44ms ----
 q
 ---- Shutdown the client ----
+
 ----
 
-==== Making the data expire
+==== Expiring Data
 
-At this point, if the temperatures changes, the data will stay forever unchanged.
-To force deletion, you will use expiration.
+At this point, data in the cache remains the same, even if temperatures at the locations change. You can use expiration to remove data after a period of time so that the Temperature Loader fetches new data for the `temperature` cache.
 
-Modify `put` method call and make the temperature data expire every 20s.
+Update the `put()` method in the `TemperatureLoader` class so data expires after 20 seconds as follows:
 
 .org.infinispan.tutorial.services.temperature.TemperatureLoader
 [source,java]
@@ -323,24 +333,20 @@ Modify `put` method call and make the temperature data expire every 20s.
    cache.put(location, temperature, 20, TimeUnit.SECONDS);
 ----
 
-Running the application again, you will notice that after 20 seconds, the temperature loading gets `slow`
-again.
+Run the `TemperatureLoaderApp` class again. After 20 seconds you should notice that temperature loading performance decreases because the service needs to fetch data again.
 
+//Step 6
+=== Implementing Temperature Monitor
 
-TIP: Give a try to the https://localhost:11222/console[Infinispan Web Console] and get and put values.
+In this section of the tutorial, you implement the Temperature Monitor application and learn how to use https://infinispan.org/docs/stable/titles/hotrod_java/hotrod_java.html#creating_event_listeners[Infinispan Client Listeners].
 
-=== 7. Implement the Temperature Monitor
+These client listeners enable the Temperator Monitor application to display notifications about temperature changes that happen for each location.
 
-Implementing the Temperature Monitor, you will learn how to use
-https://infinispan.org/docs/stable/titles/hotrod_java/hotrod_java.html#creating_event_listeners[Infinispan Client Listeners].
+==== Create a Client Listener
 
-The application will display notifications with temperature changes happening in a
-given location.
+At present, client listeners do not include values of keys in receiving events. For this reason, you use the Async API to get the value and display the temperature that corresponds to the key.
 
-==== Implement and use a Client Listener
-
-At the time of this writing, client listeners do not bring the value of the key in the receiving event.
-Use the async API to get the value and display the temperature corresponding to the key.
+Update the `TemperatureMonitor` service as follows:
 
 .org.infinispan.tutorial.services.TemperatureMonitor
 [source,java]
@@ -371,32 +377,33 @@ Use the async API to get the value and display the temperature corresponding to 
         cache.addClientListener(temperatureChangesListener); //<4>
     }
 ----
-<1> Use `@ClientListener` to make the `TemperatureChangesListener` an Infinispan Client Listener.
-<2> Use `@ClientCacheEntryCreated` to get a notification every time a new cache entry is created.
-<3> Filter the location with the key, get the value using the async call and print the new value
-<4> Add the client listener to the cache
+<1> Annotates `TemperatureChangesListener` with `@ClientListener` to make it an Infinispan Client Listener.
+<2> Uses the `@ClientCacheEntryCreated` annotation to get notifications every time data is added to the `temperature` cache.
+<3> Filters locations by key and gets values using the async call and then prints the new values.
+<4> Adds the client listener to the cache.
 
-TIP: The example above filters the events in the listener for the example. These events can be also filtered
-server side. For this, an https://infinispan.org/docs/stable/titles/hotrod_java/hotrod_java.html#filtering_events[event filter]
-can be created and deployed in the server. This functionality is out of the scope of this tutorial.
-CAUTION: Ensure that the client listeners are removed from the cache if you don't need them anymore.
+[TIP]
+====
+The preceding example filters events in the listener. However, these events can also be filtered server-side with an https://infinispan.org/docs/stable/titles/hotrod_java/hotrod_java.html#filtering_events[event filter]. However, you must create the filter and deploy it to Infinispan Server, which is beyond the scope of this tutorial.
+====
 
+[IMPORTANT]
+====
+Always remove client listeners from caches when you no longer need them.
+====
 
-==== Verify the temperature monitoring application
+==== Verify Temperature Monitor
 
-*TemperatureLoaderApp* should be running, loading temperatures periodically and temperatures getting expired every 20s.
+Make sure that `TemperatureLoaderApp` is running and then run `TemperatureMonitorApp`.
 
-Run *TemperatureMonitorApp*.
-
-You should see a message for the current temperature of the chosen location.
-You should get notifications of new temperatures every 20s.
+You should see a message that displays the current temperature of a location and then get notifications for new temperatures every 20 seconds.
 
 .org.infinispan.tutorial.client.temperature.TemperatureMonitorApp
 [source,bash]
 ----
 
 ---- Connect to Infinispan ----
-Jul 12, 2020 3:48:22 PM org.infinispan.client.hotrod.RemoteCacheManager actualStart
+<timestamp> org.infinispan.client.hotrod.RemoteCacheManager actualStart
 INFO: ISPN004021: Infinispan version: Infinispan 'Corona Extra' 11.0.1.Final
 ---- Get or create the 'temperature' cache ----
 Temperature 14.185611 for Bilbao, Spain
@@ -406,23 +413,25 @@ Temperature 14.185611 for Bilbao, Spain
 >> Location Bilbao, Spain Temperature 24.784744
 ----
 
-TIP: Change the expiration values to get more notifications. Use `@ClientCacheEntryExpired` to get notifications
-when data is expired.
+[TIP]
+====
+Change the expiration values to get more notifications. Use `@ClientCacheEntryExpired` to get notifications when data expires.
+====
 
-=== 8. Implement the Weather Loader
+//Step 7
+=== Implementing Weather Loader
 
-The Weather loader application puts complex Key-Value entries in the `weather` cache. These objects need to
-be serialized to travel over-the-wir and be stored in the Infinispan Server.
+In this section of the tutorial, you implement the Weather Loader application and learn how to:
 
-The Weather data will be searchable, so the data must use https://developers.google.com/protocol-buffers[Google Protocol Buffers]
-as an encoding for both over-the-wire and storage.
+- Add complex key/value entries to a cache.
+- Serialize Java objects so they can be transmitted to Infinispan Server.
+- Use https://developers.google.com/protocol-buffers[Protobuf] encoding for searchable data so you perform remote queries from Hot Rod Java clients as well as REST clients and other Hot Rod clients such as C# and Node.js.
 
-The usage of protobuf allows remote query to work not only for Java, but for REST,
-C# and Node.js clients.
+==== Annotate the LocationWeather POJO
 
-==== Annotate the POJO LocationWeather
+Infinispan uses https://github.com/infinispan/protostream[Protostream] to serialize data to byte.
 
-The default data serializer used by Infinispan is https://github.com/infinispan/protostream[Protostream].
+Add the `@ProtoField` annotation to `LocationWeather` as follows:
 
 .org.infinispan.tutorial.data.LocationWeather
 [source,java]
@@ -444,14 +453,11 @@ The default data serializer used by Infinispan is https://github.com/infinispan/
 
 ----
 
-==== Configure the marshalling context
+==== Configure the Serialization Context
 
-Infinispan needs to know wich protobuf schema use to marshall the previously annotated class.
-You can provide a protobuf descriptor file or the descriptor file be created based on the annotations
-you previously used in the POJO.
+To marshall the annotated `LocationWeather` class, Infinispan requires a Protobuf schema. You can either provide a Protobuf descriptor file or create a descriptor file from the annotations you added to the POJO.
 
-In the `LocationWeatherMarshallingContext`, we will add the schema to the Protobuf cache in infinispan.
-You need to build a schema using the builder API, pass the annotation POJO and add the schema to the cache.
+In `LocationWeatherMarshallingContext`, you add the schema to the Protobuf cache in Infinispan and then build a Protobuf schema using the builder API. You then pass the annotated POJO and add the schema to the cache as follows:
 
 .org.infinispan.tutorial.db.LocationWeatherMarshallingContext
 [source,java]
@@ -476,19 +482,16 @@ You need to build a schema using the builder API, pass the annotation POJO and a
 
     metadataCache.put(fileName, protoFile); //<6>
 ----
-<1> Get the serialization context of the client
-<2> Use ProtoSchemaBuilder to define a Protobuf schema on the client
-<3> Use the annotated class
-<4> The package is used in the queries
-<5> Retrieve the metadata cache, where all the schemas are stores in Infinispan
-<6> Store the schema
+<1> Gets the serialization context of the client.
+<2> Uses `ProtoSchemaBuilder` to define a Protobuf schema on the client.
+<3> Used the annotated class.
+<4> Names package used in queries.
+<5> Retrieves the metadata cache that stores all Protobuf schemas.
+<6> Adds the schema to the cache.
 
+==== Create a Weather Cache
 
-==== Create the weather cache
-
-Unlike the cache containing primitive data, to store `LocationWeather` objects we need to initialize
-the marshalling context.In this application. Do this *before* creating the `weather` cache in
-the `getWeatherCache` method.
+In this step, you create a `weather` cache that can store `LocationWeather` objects. First you must initialize the marshalling context in the application and then create the cache, as follows:
 
 .org.infinispan.tutorial.db.DataSourceConnector
 [source,java]
@@ -503,30 +506,23 @@ the `getWeatherCache` method.
               .getOrCreateCache("weather", "example.PROTOBUF_DIST"); // <2>
     }
 ----
-<1> Initialize the serialization context
-<2> Get or create the cache
+<1> Initializes the serialization context.
+<2> Creates the `weather` cache.
 
-CAUTION: `example.PROTOBUF_DIST` is a template that is shipped with the Infinispan Server.
-Protostream marshaller is configured for the Key-Value pairs in the cache.
-This mashaller is mandatory to perform search from different clients.
+==== Verify Weather Loader
 
+The code that loads data into the `weather` cache is located in the `org.infinispan.tutorial.services.weather.FullWeatherLoader`. Because this service is similar to the code you implemented for the `TemperatureLoader` service, you don't need to do anything else.
 
-==== Verify the weather loader application
+Run `WeatherLoaderApp` to check that it loads weather data.
 
-The code loading the data into the cache is available in the
-`org.infinispan.tutorial.services.weather.FullWeatherLoader`.
-The code is very similar to the code you already implemented in the `TemperatureLoader` so you won't
-code anything else at this point.
-
-Run *WeatherLoaderApp*.
-If everything works, the data should be loading and you should get the resulting logs.
+You should see messages that indicate the `weather` cache is created and weather information is added for different locations:
 
 .org.infinispan.tutorial.client.weather.WeatherLoaderApp
 [source,bash]
 ----
 
 ---- Connect to Infinispan ----
-Jul 12, 2020 4:11:42 PM org.infinispan.client.hotrod.RemoteCacheManager actualStart
+<timestamp> org.infinispan.client.hotrod.RemoteCacheManager actualStart
 INFO: ISPN004021: Infinispan version: Infinispan 'Corona Extra' 11.0.1.Final
 LocationWeatherMarshallingContext - initialize the serialization context for LocationWeather class
 ---- Get or create the 'weather' cache ----
@@ -548,17 +544,18 @@ Como, Italy - LocationWeather{temperature=24.495003, condition='PARTIALLY_COVERE
 
 ----
 
-=== 9. Implement the Weather Search
+//Step 8
+=== Implementing Weather Finder
 
-After completing this section, you will know:
+In this section of the tutorial, you learn how to:
 
-* How to create and run a FROM query
-* How to create and run a SELECT query
-* How to use a query, and run it continuously
+* Create and run FROM queries.
+* Create and run SELECT queries.
+* Perform continuous queries.
 
-==== Create and run a FROM query
+==== Create a FROM Query
 
-Create and run a query on the `weather` cache:
+Create a FROM query on values in the `weather` cache as follows:
 
 .org.infinispan.tutorial.services.weather.WeatherSearch
 [source,java]
@@ -573,14 +570,16 @@ Create and run a query on the `weather` cache:
       return query.execute().list(); // <4>
    }
 ----
-<1> Get the `QueryFactory` from the cache
-<2> Create a query using 'Ickle'. Find every `LocationWeather` in a country.
-<3> Set the `country` parameter
-<4> Execute the query and return the list
+<1> Gets the `QueryFactory` from the cache.
+<2> Creates a FROM query using the Ickle query language. This query finds each `LocationWeather` in a country.
+<3> Sets the `country` parameter.
+<4> Executes the query and returns the list.
 
-*WeatherLoaderApp* should be running.
+==== Run the FROM Query
 
-Run *WeatherFinderApp* and check the output
+Make sure `WeatherLoaderApp` is running and then run `WeatherFinderApp`.
+
+You should see output such as the following:
 
 .org.infinispan.tutorial.client.weather.WeatherFinderApp
 [source,bash]
@@ -590,10 +589,9 @@ Spain: [LocationWeather{temperature=6.2846804, condition='CLOUDY',city='Bilbao',
 LocationWeather{temperature=18.044653, condition='SUNNY', city='Madrid', country='Spain'}]
 ----
 
-==== Create and run a SELECT query
+==== Create a SELECT Query
 
-Sometimes we won't need every field of an object. In the following example, create and run
-a query that returns only the `city` that matches a given weather condition.
+For some queries, you don't want every field for an object. In this example, you create and run a query that returns only the `city` that matches a given weather condition.
 
 .org.infinispan.tutorial.services.weather.WeatherSearch
 [source,java]
@@ -614,14 +612,16 @@ a query that returns only the `city` that matches a given weather condition.
    }
 ----
 
-<1> Get the `QueryFactory` from the cache
-<2> Create a query using 'Ickle'. Find every `LocationWeather` with a weather condition and return only the city.
-<3> Set the `condition` parameter
-<4> Execute the query, return the list and filter the `Object[]` to get those `String`
+<1> Gets the `QueryFactory` from the cache.
+<2> Creates a SELECT query using the Ickle query language. This query finds every `LocationWeather` with a weather condition and returns only the city.
+<3> Sets the `condition` parameter.
+<4> Executes the query, returns the list, and filters the `Object[]` to get the `String` results.
 
-*WeatherLoaderApp* should be running.
+==== Run the SELECT Query
 
-Run *WeatherFinderApp* and check the output:
+Make sure `WeatherLoaderApp` is running and then run `WeatherFinderApp`.
+
+You should see output such as the following:
 
 .org.infinispan.tutorial.client.weather.WeatherFinderApp
 [source,bash]
@@ -638,10 +638,9 @@ DRY: [Ottawa]
 WET: [Basel, Bucarest]
 ----
 
-==== Create and run a continuous query
+==== Create a Continuous Query
 
-https://infinispan.org/docs/stable/titles/developing/developing.html#query_continuous[Continuous Queries] allow an application to register a listener which will receive the entries
-that currently match a query filter, and will be continuously notified of any changes to the queried data set that result from further cache operations.
+https://infinispan.org/docs/stable/titles/developing/developing.html#query_continuous[Continuous Queries] allow applications to register listeners that receive the entries matching a query filter. In this way, applications are continuously notified of changes to the queried data set.
 
 .org.infinispan.tutorial.services.weather.WeatherSearch
 [source,java]
@@ -663,17 +662,21 @@ public void findWeatherByConditionContinuously(WeatherCondition condition) {
    }
 ----
 
-<1> Create a Query: find all the locations by weather condition (ex 'Sunny')
-<2> Create a Continuous Query from the cache weather
-<3> Create a Continuous Query Listener and print the condition
-<4> Match the query and the listener in the Continuous Query Object
+<1> Creates a query that finds all locations with a certain weather condition; for example, 'Sunny'.
+<2> Creates a continuous query on the `weather` cache.
+<3> Creates a continuous query listener and prints the condition.
+<4> Matches the query and the listener in the `ContinuousQuery` object
 
-CAUTION: Continuous Queries are similar to Client Listeners. Don't forget to remove the continuous queries
-when you don't need them anymore.
+[IMPORTANT]
+====
+Always remove continuous queries when you no longer need them.
+====
 
-*WeatherLoaderApp* should be running.
+==== Run the Continuous Query
 
-Run *WeatherFinderApp* and check the output:
+Make sure `WeatherLoaderApp` is running and then run `WeatherFinderApp`.
+
+You should see output such as the following:
 
 .org.infinispan.tutorial.client.weather.WeatherFinderApp
 [source,bash]
@@ -688,24 +691,22 @@ Porto is now SUNNY
 ...
 ----
 
+//Step 9
+=== Testing Infinispan Server
 
-=== 10. Testing with the Infinispan Server
+https://www.testcontainers.org/test_framework_integration/junit_5/[Test containers] are a great way to run an Infinispan Server and test with a https://junit.org/junit5/[Junit 5] extension.
 
-https://www.testcontainers.org/test_framework_integration/junit_5/[Test containers] are a great way to run an Infinispan Server and
-use https://junit.org/junit5/[Junit 5] extension to test.
+This section of the tutorial provides an example test that verifies the temperatures loaded in Infinispan Server are correct.
 
-As an example, you will add a test to verify that the temperature is correctly loaded in
-the Infinispan Server.
+[IMPORTAT]
+====
+You need https://www.docker.com/[Docker] for this part of the tutorial.
+====
 
-WARNING: You need https://www.docker.com/[Docker] for this step.
+==== Add Dependencies
 
-NOTE: 2 JUnit 4 Rules are also available for out of the box testing with the Infinispan Server.
-Check `infinispan-server-testdriver-junit4` dependency.
+Open the `pom.xml` file for this project and add the `infinispan-server-testdriver-junit5` dependency as follows:
 
-
-==== Add the maven dependency
-
-Add the `infinispan-server-testdriver-junit5` maven dependency to the project.
 
 .pom.xml
 [source,xml]
@@ -718,7 +719,12 @@ Add the `infinispan-server-testdriver-junit5` maven dependency to the project.
     </dependency>
 ----
 
-==== Test using Test Containers
+[NOTE]
+====
+JUnit 4 rules are also available for out-of-the-box testing with Infinispan Server. Check the `infinispan-server-testdriver-junit4` dependency.
+====
+
+==== Using Test Containers
 
 Create a Junit 5 Test and use the `InfinispanServerExtension`.
 
@@ -738,16 +744,20 @@ Create a Junit 5 Test and use the `InfinispanServerExtension`.
    }
 ----
 
-== What's next?
+== What's Next?
 
-If you reached this point and completed this tutorial... *CONGRATULATIONS!*
-This guide covered many of the knowledge you need to start using the Infinispan Server.
-Infinispan integrates with https://quarkus.io/[Quarkus], https://infinispan.org/infinispan-spring-boot/master/spring_boot_starter.html[Spring Boot]
-and https://vertx.io/[Vert.x] among many other frameworks.
-Grab a look to the https://github.com/infinispan-demos[demos available].
+Congratulations on completing this tutorial!
 
-You deployed a local server. Go and check the https://infinispan.org/infinispan-operator/master/operator.html[Infinispan Operator Guide]
-to learn how to deploy and scale the server in https://kubernetes.io[Kubernetes] / https://www.openshift.com/[Openshift].
+You should now be well on your way with using the Infinispan Server. Here are some more things to help you keep learning:
 
-You have used the Java Hot Rod client. Grab a look to our https://infinispan.org/docs/stable/titles/rest/rest.html[REST API],
-and other https://infinispan.org/hotrod-clients/[hotrod clients] to use the Infinispan Server with other programming languages.
+.Infinispan Integrations
+
+https://quarkus.io/[Quarkus], https://infinispan.org/infinispan-spring-boot/master/spring_boot_starter.html[Spring Boot], https://vertx.io/[Vert.x] and other frameworks are featured in the https://github.com/infinispan-demos[Infinispan demos].
+
+.Kubernetes Operator
+
+Visit the https://infinispan.org/infinispan-operator/master/operator.html[Infinispan Operator Guide] and learn how to deploy and scale Infinispan on https://kubernetes.io[Kubernetes] or https://www.openshift.com/[OpenShift].
+
+.Remote Clients
+
+Try the https://infinispan.org/docs/stable/titles/rest/rest.html[Infinispan REST API] and check out different https://infinispan.org/hotrod-clients/[Hot Rod clients] to use Infinispan with other programming languages.
