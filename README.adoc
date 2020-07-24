@@ -199,23 +199,18 @@ Update the `connect()` method in the `DataSourceConnector` class as follows:
 .org.infinispan.tutorial.db.DataSourceConnector
 [source,java]
 ----
-ConfigurationBuilder builder = new ConfigurationBuilder(); // <1>
+ConfigurationBuilder builder = new ConfigurationBuilder(); //<1>
 
-builder.addServer() // <2>
-       .host("127.0.0.1")
-       .port(ConfigurationProperties.DEFAULT_HOTROD_PORT);
+builder.uri("hotrod://admin:pass@localhost:11222"); //<2>
 
-builder.security().authentication().username("admin").password("pass"); //<3>
+builder.clientIntelligence(ClientIntelligence.BASIC); //<3>
 
-builder.clientIntelligence(ClientIntelligence.BASIC); //<4>
-
-remoteCacheManager = new RemoteCacheManager(builder.build()); //<5>
+remoteCacheManager = new RemoteCacheManager(builder.build()); //<4>
 ----
 <1> Creates a `ConfigurationBuilder`
-<2> Adds the location of your locally running server.
-<3> Configures authentication.
-<4> Uses `BASIC` Hot Rod client intelligence. This is required to use Docker with a Mac.
-<5> Creates a `RemoteCacheManager` with the configuration.
+<2> HotRod URI connection (server, port and credentials)
+<3> Uses `BASIC` Hot Rod client intelligence. This is required to use Docker with a Mac.
+<4> Creates a `RemoteCacheManager` with the configuration.
 
 ==== Test the Connection
 
