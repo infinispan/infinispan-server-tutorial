@@ -882,15 +882,11 @@ this tutorial, you need a locally running server instance.</p>
 <div class="content">
 <pre class="pygments highlight"><code data-lang="java"><span></span><span class="tok-n">ConfigurationBuilder</span> <span class="tok-n">builder</span> <span class="tok-o">=</span> <span class="tok-k">new</span> <span class="tok-n">ConfigurationBuilder</span><span class="tok-o">();</span> <i class="conum" data-value="1"></i><b>(1)</b>
 
-<span class="tok-n">builder</span><span class="tok-o">.</span><span class="tok-na">addServer</span><span class="tok-o">()</span> <i class="conum" data-value="2"></i><b>(2)</b>
-       <span class="tok-o">.</span><span class="tok-na">host</span><span class="tok-o">(</span><span class="tok-s">&quot;127.0.0.1&quot;</span><span class="tok-o">)</span>
-       <span class="tok-o">.</span><span class="tok-na">port</span><span class="tok-o">(</span><span class="tok-n">ConfigurationProperties</span><span class="tok-o">.</span><span class="tok-na">DEFAULT_HOTROD_PORT</span><span class="tok-o">);</span>
+<span class="tok-n">builder</span><span class="tok-o">.</span><span class="tok-na">uri</span><span class="tok-o">(</span><span class="tok-s">&quot;hotrod://admin:pass@localhost:11222&quot;</span><span class="tok-o">);</span> <i class="conum" data-value="2"></i><b>(2)</b>
 
-<span class="tok-n">builder</span><span class="tok-o">.</span><span class="tok-na">security</span><span class="tok-o">().</span><span class="tok-na">authentication</span><span class="tok-o">().</span><span class="tok-na">username</span><span class="tok-o">(</span><span class="tok-s">&quot;admin&quot;</span><span class="tok-o">).</span><span class="tok-na">password</span><span class="tok-o">(</span><span class="tok-s">&quot;pass&quot;</span><span class="tok-o">);</span> <i class="conum" data-value="3"></i><b>(3)</b>
+<span class="tok-n">builder</span><span class="tok-o">.</span><span class="tok-na">clientIntelligence</span><span class="tok-o">(</span><span class="tok-n">ClientIntelligence</span><span class="tok-o">.</span><span class="tok-na">BASIC</span><span class="tok-o">);</span> <i class="conum" data-value="3"></i><b>(3)</b>
 
-<span class="tok-n">builder</span><span class="tok-o">.</span><span class="tok-na">clientIntelligence</span><span class="tok-o">(</span><span class="tok-n">ClientIntelligence</span><span class="tok-o">.</span><span class="tok-na">BASIC</span><span class="tok-o">);</span> <i class="conum" data-value="4"></i><b>(4)</b>
-
-<span class="tok-n">remoteCacheManager</span> <span class="tok-o">=</span> <span class="tok-k">new</span> <span class="tok-n">RemoteCacheManager</span><span class="tok-o">(</span><span class="tok-n">builder</span><span class="tok-o">.</span><span class="tok-na">build</span><span class="tok-o">());</span> <i class="conum" data-value="5"></i><b>(5)</b></code></pre>
+<span class="tok-n">remoteCacheManager</span> <span class="tok-o">=</span> <span class="tok-k">new</span> <span class="tok-n">RemoteCacheManager</span><span class="tok-o">(</span><span class="tok-n">builder</span><span class="tok-o">.</span><span class="tok-na">build</span><span class="tok-o">());</span> <i class="conum" data-value="4"></i><b>(4)</b></code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -901,18 +897,14 @@ this tutorial, you need a locally running server instance.</p>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>Adds the location of your locally running server.</td>
+<td>HotRod URI connection (server, port and credentials)</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>Configures authentication.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="4"></i><b>4</b></td>
 <td>Uses <code>BASIC</code> Hot Rod client intelligence. This is required to use Docker with a Mac.</td>
 </tr>
 <tr>
-<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
 <td>Creates a <code>RemoteCacheManager</code> with the configuration.</td>
 </tr>
 </table>
@@ -1727,7 +1719,7 @@ Porto is now SUNNY
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-24 12:08:13 +0200
+Last updated 2020-07-24 14:56:50 +0200
 </div>
 </div>
 <style>
