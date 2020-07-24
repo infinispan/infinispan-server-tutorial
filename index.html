@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.10">
-<title>Client Server Tutorial</title>
+<title>Infinispan Remote Weather App Tutorial</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /* Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
@@ -442,84 +442,82 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
-<li><a href="#_client_server_tutorial">Client Server Tutorial</a>
+<li><a href="#_infinispan_remote_weather_app_tutorial">Infinispan Remote Weather App Tutorial</a>
 <ul class="sectlevel2">
-<li><a href="#_0_prerequisites">0. Prerequisites</a></li>
-<li><a href="#_1_run_an_infinispan_server_locally">1. Run an Infinispan Server locally</a>
+<li><a href="#_objectives">Objectives</a></li>
+<li><a href="#_prerequisites">Prerequisites</a></li>
+<li><a href="#_weather_system_architecture">Weather System Architecture</a>
 <ul class="sectlevel3">
-<li><a href="#_option_1_use_a_linux_container_recommended_way">Option 1: Use a Linux Container (recommended way)</a>
-<ul class="sectlevel4">
-<li><a href="#_podman">Podman</a></li>
-<li><a href="#_docker">Docker</a></li>
-</ul>
-</li>
-<li><a href="#_option_2_download_the_server">Option 2: Download the server</a></li>
-<li><a href="#_check_the_server_is_correctly_running">Check the Server is correctly running</a></li>
-</ul>
-</li>
-<li><a href="#_2_solution">2. Solution</a></li>
-<li><a href="#_3_architecture">3. Architecture</a>
-<ul class="sectlevel3">
-<li><a href="#_temperature_sub_system">Temperature sub-system</a>
+<li><a href="#_temperature_subsystem">Temperature Subsystem</a>
 <ul class="sectlevel4">
 <li><a href="#_temperature_loader">Temperature Loader</a></li>
 <li><a href="#_temperature_monitor">Temperature Monitor</a></li>
 </ul>
 </li>
-<li><a href="#_weather_sub_system">Weather sub-system</a>
+<li><a href="#_weather_subsystem">Weather Subsystem</a>
 <ul class="sectlevel4">
 <li><a href="#_weather_loader">Weather Loader</a></li>
-<li><a href="#_weather_search">Weather Search</a></li>
+<li><a href="#_weather_finder">Weather Finder</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#bootstrapping-project">4. Bootstrapping the project</a></li>
-<li><a href="#_5_connecting_to_the_infinispan_server_using_the_java_client">5. Connecting to the Infinispan Server using the Java Client</a>
+<li><a href="#_starting_infinispan_server">Starting Infinispan Server</a>
 <ul class="sectlevel3">
-<li><a href="#_add_the_maven_dependencies">Add the maven dependencies</a></li>
-<li><a href="#_implement_the_connection">Implement the connection</a></li>
-<li><a href="#_health_check">Health Check</a></li>
+<li><a href="#_running_the_container_image">Running the Container Image</a></li>
+<li><a href="#_running_the_server_distribution">Running the Server Distribution</a></li>
 </ul>
 </li>
-<li><a href="#_6_implement_the_temperature_loader">6. Implement the Temperature Loader</a>
+<li><a href="#_accessing_the_infinispan_console">Accessing the Infinispan Console</a></li>
+<li><a href="#_getting_the_weather_application">Getting the Weather Application</a></li>
+<li><a href="#_establishing_remote_connections">Establishing Remote Connections</a>
 <ul class="sectlevel3">
-<li><a href="#_creating_the_temperature_cache">Creating the 'temperature' cache</a></li>
-<li><a href="#_put_and_read_temperature_data">Put and Read temperature data</a></li>
-<li><a href="#_verify_the_temperature_loader_application">Verify the temperature loader application</a></li>
-<li><a href="#_making_the_data_expire">Making the data expire</a></li>
+<li><a href="#_add_dependencies">Add Dependencies</a></li>
+<li><a href="#_create_a_remote_connection">Create a Remote Connection</a></li>
+<li><a href="#_test_the_connection">Test the Connection</a></li>
 </ul>
 </li>
-<li><a href="#_7_implement_the_temperature_monitor">7. Implement the Temperature Monitor</a>
+<li><a href="#_implementing_temperature_loader">Implementing Temperature Loader</a>
 <ul class="sectlevel3">
-<li><a href="#_implement_and_use_a_client_listener">Implement and use a Client Listener</a></li>
-<li><a href="#_verify_the_temperature_monitoring_application">Verify the temperature monitoring application</a></li>
+<li><a href="#_create_a_temperature_cache">Create a Temperature Cache</a></li>
+<li><a href="#_put_and_read_temperature_data">Put and Read Temperature Data</a></li>
+<li><a href="#_verify_temperature_loader">Verify Temperature Loader</a></li>
+<li><a href="#_expiring_data">Expiring Data</a></li>
 </ul>
 </li>
-<li><a href="#_8_implement_the_weather_loader">8. Implement the Weather Loader</a>
+<li><a href="#_implementing_temperature_monitor">Implementing Temperature Monitor</a>
 <ul class="sectlevel3">
-<li><a href="#_annotate_the_pojo_locationweather">Annotate the POJO LocationWeather</a></li>
-<li><a href="#_configure_the_marshalling_context">Configure the marshalling context</a></li>
-<li><a href="#_create_the_weather_cache">Create the weather cache</a></li>
-<li><a href="#_verify_the_weather_loader_application">Verify the weather loader application</a></li>
+<li><a href="#_create_a_client_listener">Create a Client Listener</a></li>
+<li><a href="#_verify_temperature_monitor">Verify Temperature Monitor</a></li>
 </ul>
 </li>
-<li><a href="#_9_implement_the_weather_search">9. Implement the Weather Search</a>
+<li><a href="#_implementing_weather_loader">Implementing Weather Loader</a>
 <ul class="sectlevel3">
-<li><a href="#_create_and_run_a_from_query">Create and run a FROM query</a></li>
-<li><a href="#_create_and_run_a_select_query">Create and run a SELECT query</a></li>
-<li><a href="#_create_and_run_a_continuous_query">Create and run a continuous query</a></li>
+<li><a href="#_annotate_the_locationweather_pojo">Annotate the LocationWeather POJO</a></li>
+<li><a href="#_configure_the_serialization_context">Configure the Serialization Context</a></li>
+<li><a href="#_create_a_weather_cache">Create a Weather Cache</a></li>
+<li><a href="#_verify_weather_loader">Verify Weather Loader</a></li>
 </ul>
 </li>
-<li><a href="#_10_testing_with_the_infinispan_server">10. Testing with the Infinispan Server</a>
+<li><a href="#_implementing_weather_finder">Implementing Weather Finder</a>
 <ul class="sectlevel3">
-<li><a href="#_add_the_maven_dependency">Add the maven dependency</a></li>
-<li><a href="#_test_using_test_containers">Test using Test Containers</a></li>
+<li><a href="#_create_a_from_query">Create a FROM Query</a></li>
+<li><a href="#_run_the_from_query">Run the FROM Query</a></li>
+<li><a href="#_create_a_select_query">Create a SELECT Query</a></li>
+<li><a href="#_run_the_select_query">Run the SELECT Query</a></li>
+<li><a href="#_create_a_continuous_query">Create a Continuous Query</a></li>
+<li><a href="#_run_the_continuous_query">Run the Continuous Query</a></li>
+</ul>
+</li>
+<li><a href="#_testing_infinispan_server">Testing Infinispan Server</a>
+<ul class="sectlevel3">
+<li><a href="#_add_dependencies_2">Add Dependencies</a></li>
+<li><a href="#_using_test_containers">Using Test Containers</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#_whats_next">What&#8217;s next?</a></li>
+<li><a href="#_whats_next">What&#8217;s Next?</a></li>
 </ul>
 </div>
 </div>
@@ -530,60 +528,68 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 </div>
 <div class="sect1">
-<h2 id="_client_server_tutorial">Client Server Tutorial</h2>
+<h2 id="_infinispan_remote_weather_app_tutorial">Infinispan Remote Weather App Tutorial</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>After completing this guide, you will know:</p>
+<p>Learn how to use Infinispan from the Console and remote Hot Rod clients. This
+tutorial includes Java applications that use Infinispan capabilities to provide
+services for a searchable weather monitoring system.</p>
+</div>
+<div class="sect2">
+<h3 id="_objectives">Objectives</h3>
+<div class="paragraph">
+<p>By completing this tutorial, you will learn how to:</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>How to run the Infinispan Server locally</p>
+<p>Run Infinispan Server.</p>
 </li>
 <li>
-<p>How to connect to the Infinispan Server web console</p>
+<p>Access and use the Infinispan Console.</p>
 </li>
 <li>
-<p>How to create caches in the Infinispan Server</p>
+<p>Create Infinispan caches.</p>
 </li>
 <li>
-<p>How to put and read primitive data</p>
+<p>Read and write data as primitive types and Java objects.</p>
 </li>
 <li>
-<p>How expiration works</p>
+<p>Add lifespans to entries so data expires.</p>
 </li>
 <li>
-<p>How client listeners work</p>
+<p>Deploy client listeners to get event notifications.</p>
 </li>
 <li>
-<p>How to put and read non primitive Java Objects</p>
+<p>Search the data store for specific values.</p>
 </li>
 <li>
-<p>How to query values</p>
-</li>
-<li>
-<p>How to use the out of the box testing utility with Junit 5 and test containers</p>
+<p>Use out-of-the-box testing with Junit 5 for verification.</p>
 </li>
 </ol>
 </div>
+</div>
 <div class="sect2">
-<h3 id="_0_prerequisites">0. Prerequisites</h3>
+<h3 id="_prerequisites">Prerequisites</h3>
 <div class="paragraph">
-<p>To complete this guide, you need:</p>
+<p>To complete this tutorial, you need:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>25 minutes</p>
+<p>Approximately 25 to 30 minutes</p>
 </li>
 <li>
-<p>an IDE</p>
+<p>IDE such as Intellij</p>
 </li>
 <li>
-<p>JDK 8 or 11+ installed</p>
+<p>JDK 8 or JDK 11 or later</p>
 </li>
 <li>
-<p>Apache Maven 3.6.2.+</p>
+<p>Apache Maven 3.6.2 or later</p>
+</li>
+<li>
+<p><a href="https://www.docker.com/">Docker</a> or <a href="https://podman.io/">Podman</a></p>
 </li>
 </ul>
 </div>
@@ -594,145 +600,40 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <i class="fa icon-tip" title="Tip"></i>
 </td>
 <td class="content">
-Verify Maven is using the Java you expect
-If you have multiple JDK’s installed it is not certain Maven will pick up the expected
-java and you could end up with unexpected results. You can verify which JDK Maven uses by
-running mvn --version.
+<div class="paragraph">
+<p>Run <code>mvn --version</code> to verify that Maven uses the correct JDK if you have
+multiple Java versions installed.</p>
+</div>
 </td>
 </tr>
 </table>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_1_run_an_infinispan_server_locally">1. Run an Infinispan Server locally</h3>
+<h3 id="_weather_system_architecture">Weather System Architecture</h3>
 <div class="paragraph">
-<p>Before coding anything, first learn how to run an Infinispan Server locally.</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Using a Linux containers (Docker, Podman&#8230;&#8203;)</p>
-</li>
-<li>
-<p>Downloading and running the server</p>
-</li>
-</ul>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-Security is active by default. In this tutorial you will use <code>admin</code> and <code>pass</code> credentials, but feel free to use any
-other values.
-</td>
-</tr>
-</table>
-</div>
-<div class="sect3">
-<h4 id="_option_1_use_a_linux_container_recommended_way">Option 1: Use a Linux Container (recommended way)</h4>
-<div class="paragraph">
-<p>If you are using <a href="https://podman.io/">Podman</a> or <a href="https://www.docker.com/">Docker</a>,
-use the Infinispan Server image to run a standalone server.</p>
-</div>
-<div class="sect4">
-<h5 id="_podman">Podman</h5>
-<div class="paragraph">
-<p><code>podman run -it -e USER="admin" -e PASS="pass" quay.io/infinispan/server:11.0</code></p>
-</div>
-</div>
-<div class="sect4">
-<h5 id="_docker">Docker</h5>
-<div class="paragraph">
-<p><code>docker run -it -p 11222:11222 -e USER="admin" -e PASS="pass" infinispan/server:11.0</code></p>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_option_2_download_the_server">Option 2: Download the server</h4>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Go to the infinispan <a href="https://infinispan.org/download/#stable">downloads</a> and download the server</p>
-</li>
-<li>
-<p>From the installation directory create <code>admin</code> user with the <code>pass</code> password  using the Command Line Interface (CLI)</p>
-<div class="paragraph">
-<p><code>./bin/cli.sh user create admin -p pass</code></p>
-</div>
-</li>
-<li>
-<p>Run the server
-<code>./bin/server.sh</code></p>
-</li>
-</ol>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_check_the_server_is_correctly_running">Check the Server is correctly running</h4>
-<div class="paragraph">
-<p>Open a navigator in <a href="http://localhost:11222/">http://localhost:11222/</a>.
-The welcome page of the Infinispan Server should be displayed.</p>
-</div>
-<div class="paragraph">
-<p>Click on <strong>Go to the console</strong>, log with <code>admin</code>/<code>pass</code> and display the Web Console.</p>
-</div>
-<div class="imageblock">
-<div class="content">
-<img src="./images/welcomeConsole.png" alt="Welcome to the console">
-</div>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_2_solution">2. Solution</h3>
-<div class="paragraph">
-<p>We recommend that you follow the instructions from <a href="#bootstrapping-project">4. Bootstrapping the project</a> and onwards
-to create the application step by step.</p>
-</div>
-<div class="paragraph">
-<p>However, you can go right to the completed example.</p>
-</div>
-<div class="paragraph">
-<p>Download an archive or clone the git repository:</p>
-</div>
-<div class="paragraph">
-<p><code>git clone <a href="https://github.com/infinispan/infinispan-server-tutorial.git" class="bare">https://github.com/infinispan/infinispan-server-tutorial.git</a></code></p>
-</div>
-<div class="paragraph">
-<p>The solution is located in the <code>solution</code> branch.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_3_architecture">3. Architecture</h3>
-<div class="paragraph">
-<p>In this tutorial we will build a Weather System containing 4 java applications:</p>
+<p>This tutorial builds a Weather System with the following Java applications:</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>TemperatureLoaderApp</p>
+<p><code>TemperatureLoaderApp</code></p>
 </li>
 <li>
-<p>TemperatureMonitorApp</p>
+<p><code>TemperatureMonitorApp</code></p>
 </li>
 <li>
-<p>WeatherLoaderApp</p>
+<p><code>WeatherLoaderApp</code></p>
 </li>
 <li>
-<p>WeatherFinderApp</p>
+<p><code>WeatherFinderApp</code></p>
 </li>
 </ol>
 </div>
-<div class="paragraph">
-<p>Next sections explain the system in detail.</p>
-</div>
 <div class="sect3">
-<h4 id="_temperature_sub_system">Temperature sub-system</h4>
+<h4 id="_temperature_subsystem">Temperature Subsystem</h4>
 <div class="paragraph">
-<p>The temperature sub-system is composed by two main services:</p>
+<p>The Temperature Loader and Temperature Monitor applications comprise the temperature subsystem, as shown below:</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -742,8 +643,7 @@ to create the application step by step.</p>
 <div class="sect4">
 <h5 id="_temperature_loader">Temperature Loader</h5>
 <div class="paragraph">
-<p>Loads the temperatures for all the existing locations.
-Infinispan stores the data in the <code>temperature</code> cache.</p>
+<p>This application loads temperatures for geographic locations and runs every five seconds. Infinispan stores that data in the <code>temperature</code> cache as follows:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -755,22 +655,18 @@ Infinispan stores the data in the <code>temperature</code> cache.</p>
 </li>
 </ul>
 </div>
-<div class="paragraph">
-<p>This process runs every 5 seconds.</p>
-</div>
 </div>
 <div class="sect4">
 <h5 id="_temperature_monitor">Temperature Monitor</h5>
 <div class="paragraph">
-<p>Monitors the temperature of a specific location. Infinispan sends a
-notification, and the application displays a message with every new temperature.</p>
+<p>This application monitors the temperature of each location. Infinispan sends notifications when temperatures change and the application displays each new temperature.</p>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_weather_sub_system">Weather sub-system</h4>
+<h4 id="_weather_subsystem">Weather Subsystem</h4>
 <div class="paragraph">
-<p>The weather sub-system is composed by two main services:</p>
+<p>The Weather Loader and Weather Finder applications comprise the weather  subsystem, as shown below:</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -780,8 +676,7 @@ notification, and the application displays a message with every new temperature.
 <div class="sect4">
 <h5 id="_weather_loader">Weather Loader</h5>
 <div class="paragraph">
-<p>Loads the weather information for all the existing locations.
-Infinispan stores the data in the <code>weather</code> cache.</p>
+<p>This application loads weather information for geographic locations and runs every five seconds. Infinispan stores that data in the <code>weather</code> cache as follows:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -793,63 +688,171 @@ Infinispan stores the data in the <code>weather</code> cache.</p>
 </li>
 </ul>
 </div>
-<div class="paragraph">
-<p>This process runs every 5 seconds.</p>
-</div>
 </div>
 <div class="sect4">
-<h5 id="_weather_search">Weather Search</h5>
+<h5 id="_weather_finder">Weather Finder</h5>
 <div class="paragraph">
-<p>Uses Infinispan Search capabilities to perform text search and continuous queries.</p>
+<p>This application uses Infinispan Search capabilities to perform text search and continuous queries.</p>
 </div>
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="bootstrapping-project">4. Bootstrapping the project</h3>
+<h3 id="_starting_infinispan_server">Starting Infinispan Server</h3>
 <div class="paragraph">
-<p><code>git clone <a href="https://github.com/infinispan/infinispan-server-tutorial.git" class="bare">https://github.com/infinispan/infinispan-server-tutorial.git</a></code></p>
+<p>Before you start coding fun stuff, you need to start Infinispan Server. For
+this tutorial, you need a locally running server instance.</p>
 </div>
 <div class="paragraph">
-<p>In the <code>master</code> branch you will have the minimum code and all the place holders to complete this tutorial.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_5_connecting_to_the_infinispan_server_using_the_java_client">5. Connecting to the Infinispan Server using the Java Client</h3>
-<div class="paragraph">
-<p>Int his step you will establish the connection to the already running Infinispan Server.</p>
-</div>
-<div class="sect3">
-<h4 id="_add_the_maven_dependencies">Add the maven dependencies</h4>
-<div class="paragraph">
-<p>To connect to the Infinispan Server using the Java Client, add the HotRod client dependency to the
-<code>pom.xml</code> file.
-We add 3 dependencies that are needed for all the tutorial:</p>
+<p>You can do one of the following:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p><a href="https://infinispan.org/docs/stable/titles/hotrod_java/hotrod_java.html">Client Hotrod</a></p>
+<p>Pull the container image and run with <a href="https://www.docker.com/">Docker</a> or <a href="https://podman.io/">Podman</a>.</p>
 </li>
 <li>
-<p>Remote query client - to perform queries</p>
-</li>
-<li>
-<p>Query DSL - the Query API</p>
+<p>Download the server distribution and extract it to your filesystem.</p>
 </li>
 </ul>
 </div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-These dependencies are already present in the <code>pom.xml</code> file.
-</td>
-</tr>
-</table>
+<div class="paragraph">
+<div class="title">Credentials</div>
+<p>By default, Infinispan Server requires user authentication. This tutorial uses
+<code>admin</code> and <code>pass</code> credentials but you can use any username and password.</p>
+</div>
+<div class="sect3">
+<h4 id="_running_the_container_image">Running the Container Image</h4>
+<div class="paragraph">
+<p>The easiest way to run Infinispan Server locally is to pull the container image.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Podman</p>
+<div class="paragraph">
+<p><code>podman run --net=host -p 11222:11222 -e USER="admin" -e PASS="pass" quay.io/infinispan/server:11.0</code></p>
+</div>
+</li>
+<li>
+<p>Docker</p>
+<div class="paragraph">
+<p><code>docker run -it -p 11222:11222 -e USER="admin" -e PASS="pass" infinispan/server:11.0</code></p>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_running_the_server_distribution">Running the Server Distribution</h4>
+<div class="paragraph">
+<p>Infinispan Server comes as a bare metal distribution that you can run locally.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Download the server distribution from <a href="https://infinispan.org/download/#stable">Infinispan Downloads</a> and extract it.</p>
+</li>
+<li>
+<p>Open a terminal window in the resulting directory. This is <code>$ISPN_HOME</code>.</p>
+</li>
+<li>
+<p>Add credentials.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight nowrap"><code data-lang="bash"><span></span>$ ./bin/cli.sh user create admin -p pass</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Run Infinispan Server.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight nowrap"><code data-lang="bash"><span></span>$ ./bin/server.sh</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_accessing_the_infinispan_console">Accessing the Infinispan Console</h3>
+<div class="paragraph">
+<p>Open <a href="http://localhost:11222/">http://localhost:11222/</a> in any browser.</p>
+</div>
+<div class="paragraph">
+<p>You&#8217;ll see the <strong>Welcome to Infinispan Server</strong> page.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="./images/welcomeConsole.png" alt="Welcome to the console">
+</div>
+</div>
+<div class="paragraph">
+<p>To start using the Infinispan Console, do the following:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Select <strong>Go to the console</strong>.</p>
+</li>
+<li>
+<p>Enter your credentials (<code>admin</code>/<code>pass</code>).</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_getting_the_weather_application">Getting the Weather Application</h3>
+<div class="paragraph">
+<p>You can create the Weather Application yourself going step by step or you can skip ahead and use the complete solution.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Bootstrap the project.</p>
+<div class="paragraph">
+<p>You&#8217;ll find the code for each application and placeholder comments for each step in this tutorial on the <code>master</code> branch.</p>
+</div>
+<div class="paragraph">
+<p><code>git clone -b master <a href="https://github.com/infinispan/infinispan-server-tutorial.git" class="bare">https://github.com/infinispan/infinispan-server-tutorial.git</a></code></p>
+</div>
+</li>
+<li>
+<p>Use the complete solution.</p>
+<div class="paragraph">
+<p>If you just want to see the Weather System in action, use the completed example on the <code>solution</code> branch.</p>
+</div>
+<div class="paragraph">
+<p><code>git clone -b solution <a href="https://github.com/infinispan/infinispan-server-tutorial.git" class="bare">https://github.com/infinispan/infinispan-server-tutorial.git</a></code></p>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_establishing_remote_connections">Establishing Remote Connections</h3>
+<div class="paragraph">
+<p>Connect to your locally running Infinispan Server from a Hot Rod Java client.</p>
+</div>
+<div class="sect3">
+<h4 id="_add_dependencies">Add Dependencies</h4>
+<div class="paragraph">
+<p>Open the <code>pom.xml</code> file for this project and confirm that the following dependencies are available:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>infinispan-client-hotrod</code> adds the <a href="https://infinispan.org/docs/stable/titles/hotrod_java/hotrod_java.html">Java Hot Rod Client</a>.</p>
+</li>
+<li>
+<p><code>infinispan-query-dsl</code> adds the Infinispan Search API.</p>
+</li>
+<li>
+<p><code>infinispan-remote-query-client</code> adds a remote search client.</p>
+</li>
+</ul>
 </div>
 <div class="listingblock">
 <div class="title">pom.xml</div>
@@ -870,9 +873,9 @@ These dependencies are already present in the <code>pom.xml</code> file.
 </div>
 </div>
 <div class="sect3">
-<h4 id="_implement_the_connection">Implement the connection</h4>
+<h4 id="_create_a_remote_connection">Create a Remote Connection</h4>
 <div class="paragraph">
-<p>Change the method <code>connect</code> in the <code>DataSourceConnector</code> class.</p>
+<p>Update the <code>connect()</code> method in the <code>DataSourceConnector</code> class as follows:</p>
 </div>
 <div class="listingblock">
 <div class="title">org.infinispan.tutorial.db.DataSourceConnector</div>
@@ -894,35 +897,36 @@ These dependencies are already present in the <code>pom.xml</code> file.
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Create a <code>ConfigurationBuilder</code></td>
+<td>Creates a <code>ConfigurationBuilder</code></td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>Add the local server</td>
+<td>Adds the location of your locally running server.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>Configure the security: <code>admin</code> and <code>pass</code> credentials</td>
+<td>Configures authentication.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>Necessary for Docker for Mac</td>
+<td>Uses <code>BASIC</code> Hot Rod client intelligence. This is required to use Docker with a Mac.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="5"></i><b>5</b></td>
-<td>Create a <code>RemoteCacheManager</code> with the configuration</td>
+<td>Creates a <code>RemoteCacheManager</code> with the configuration.</td>
 </tr>
 </table>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_health_check">Health Check</h4>
+<h4 id="_test_the_connection">Test the Connection</h4>
 <div class="paragraph">
-<p>Run <strong>HealthChecker</strong>.
-If the connection is correct, you will see:</p>
+<p>Run <code>HealthChecker</code> to make sure your connection is successful.</p>
+</div>
+<div class="paragraph">
+<p>You should see the following messages:</p>
 </div>
 <div class="listingblock">
-<div class="title">org.infinispan.tutorial.client.HealthChecker</div>
 <div class="content">
 <pre class="pygments highlight"><code data-lang="bash"><span></span>
 ---- Connect to Infinispan ----
@@ -934,51 +938,47 @@ INFO: ISPN004021: Infinispan version: Infinispan ...
 </div>
 </div>
 <div class="sect2">
-<h3 id="_6_implement_the_temperature_loader">6. Implement the Temperature Loader</h3>
+<h3 id="_implementing_temperature_loader">Implementing Temperature Loader</h3>
 <div class="paragraph">
-<p>Implementing the Temperature Loader, you will learn:</p>
+<p>In this section of the tutorial, you implement the Temperature Loader application and learn how to:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>How to create a cache using the administration interface</p>
+<p>Create caches from the Console.</p>
 </li>
 <li>
-<p>How to read data from the cache</p>
+<p>Read data from the cache.</p>
 </li>
 <li>
-<p>How to write data to the cache</p>
+<p>Write data to the cache.</p>
 </li>
 <li>
-<p>How to expire cache in the cache</p>
+<p>Expire entries in the cache.</p>
 </li>
 </ul>
 </div>
 <div class="sect3">
-<h4 id="_creating_the_temperature_cache">Creating the 'temperature' cache</h4>
+<h4 id="_create_a_temperature_cache">Create a Temperature Cache</h4>
 <div class="paragraph">
-<p>Modify the method <code>getTemperatureCache</code> and use the <code>getOrCreateCache</code> method to create the <code>temperature</code> cache.</p>
+<p>Update the <code>getTemperatureCache()</code> method in the <code>DataSourceConnector</code> class to invoke <code>getOrCreateCache()</code> as follows:</p>
 </div>
 <div class="listingblock">
 <div class="title">org.infinispan.tutorial.db.DataSourceConnector</div>
 <div class="content">
 <pre class="pygments highlight"><code data-lang="java"><span></span><span class="tok-kd">public</span> <span class="tok-n">RemoteCache</span><span class="tok-o">&lt;</span><span class="tok-n">String</span><span class="tok-o">,</span> <span class="tok-n">Float</span><span class="tok-o">&gt;</span> <span class="tok-nf">getTemperatureCache</span><span class="tok-o">()</span> <span class="tok-o">{</span>
-   <span class="tok-k">return</span> <span class="tok-n">remoteCacheManager</span><span class="tok-o">.</span><span class="tok-na">administration</span><span class="tok-o">().</span><span class="tok-na">getOrCreateCache</span><span class="tok-o">(</span><span class="tok-s">&quot;temperature&quot;</span><span class="tok-o">,</span> <span class="tok-s">&quot;example.PROTOBUF_DIST&quot;</span><span class="tok-o">);</span>
+   <span class="tok-k">return</span> <span class="tok-n">remoteCacheManager</span><span class="tok-o">.</span><span class="tok-na">administration</span><span class="tok-o">().</span><span class="tok-na">getOrCreateCache</span><span class="tok-o">(</span><span class="tok-s">&quot;temperature&quot;</span><span class="tok-o">,</span> <span class="tok-s">&quot;example.PROTOBUF_DIST&quot;</span><span class="tok-o">);</span> <i class="conum" data-value="1"></i><b>(1)</b>
 <span class="tok-o">}</span></code></pre>
 </div>
 </div>
-<div class="admonitionblock warning">
+<div class="colist arabic">
 <table>
 <tr>
-<td class="icon">
-<i class="fa icon-warning" title="Warning"></i>
-</td>
-<td class="content">
-<code>example.PROTOBUF_DIST</code> is a template that is shipped with the Infinispan Server.
-Protostream marshaller is configured for Key-Value pairs in this template.
-For now, just notice that this marshaller is mandatory to perform operations across multiple, such as the
-Hotrod client or the REST API that may display JSON data.
-</td>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Adds a cache named <code>temperature</code> that uses the <code>example.PROTOBUF_DIST</code> configuration template.
+<div class="paragraph">
+<p>This template uses Protobuf encoding for keys and values so that you can operate on data from different clients. You can</p>
+</div></td>
 </tr>
 </table>
 </div>
@@ -989,31 +989,18 @@ Hotrod client or the REST API that may display JSON data.
 <i class="fa icon-tip" title="Tip"></i>
 </td>
 <td class="content">
-Display the configuration of the <code>example.PROTOBUF_DIST</code> template in the
-<a href="https://localhost:11222/console">Infinispan Web Console</a>
+<div class="paragraph">
+<p>View the configuration for the <code>example.PROTOBUF_DIST</code> template from the Console at <a href="https://localhost:11222/console/container/default/configurations/">localhost:11222/console/container/default/configurations/</a></p>
+</div>
 </td>
 </tr>
 </table>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_put_and_read_temperature_data">Put and Read temperature data</h4>
+<h4 id="_put_and_read_temperature_data">Put and Read Temperature Data</h4>
 <div class="paragraph">
-<p>Implement <code>getForLocation</code> method in the <code>TemperatureLoader</code> service.
-If the location is not present in the cache, fetch the value.</p>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-The private method <code>fetchTemperature</code> emulates an external service call that gets 200ms to get
-the temperature for a specific location.
-</td>
-</tr>
-</table>
+<p>Implement the <code>getForLocation()</code> method in the <code>TemperatureLoader</code> service as follows:</p>
 </div>
 <div class="listingblock">
 <div class="title">org.infinispan.tutorial.services.temperature.TemperatureLoader</div>
@@ -1033,34 +1020,39 @@ the temperature for a specific location.
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Get the value with the <code>location</code> key</td>
+<td>Get the value for the <code>location</code> key.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>Fetch the value if it&#8217;s not already present in the cache</td>
+<td>Fetches the value if it does not exist in the cache.
+<div class="paragraph">
+<p>The private <code>fetchTemperature()</code> method emulates an external service call that takes 200ms to retrieve the temperature for a geographic location.</p>
+</div></td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>Put the value in the cache</td>
+<td>Adds the value to the <code>temperature</code> cache.</td>
 </tr>
 </table>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_verify_the_temperature_loader_application">Verify the temperature loader application</h4>
+<h4 id="_verify_temperature_loader">Verify Temperature Loader</h4>
 <div class="paragraph">
-<p>Run <strong>TemperatureLoaderApp</strong>.</p>
+<p>Run <code>TemperatureLoaderApp</code> to check that it adds temperature data.</p>
 </div>
 <div class="paragraph">
-<p>The first time the loading gets around 2s, the subsequents
-calls will grab the temperature from the cache making the loading method performance increase significantly.</p>
+<p>The first time the application runs, it takes about two seconds to load data. Subsequent calls retrieve the temperature from the cache, which increases performance.</p>
+</div>
+<div class="paragraph">
+<p>You should see messages such as the following:</p>
 </div>
 <div class="listingblock">
-<div class="title">org.infinispan.tutorial.services.temperature.TemperatureLoader</div>
+<div class="title">org.infinispan.tutorial.client.temperature.TemperatureLoaderApp</div>
 <div class="content">
 <pre class="pygments highlight"><code data-lang="java"><span></span>
 <span class="tok-o">----</span> <span class="tok-n">Connect</span> <span class="tok-n">to</span> <span class="tok-n">Infinispan</span> <span class="tok-o">----</span>
-<span class="tok-n">Jul</span> <span class="tok-mi">12</span><span class="tok-o">,</span> <span class="tok-mi">2020</span> <span class="tok-mi">2</span><span class="tok-o">:</span><span class="tok-mo">01</span><span class="tok-o">:</span><span class="tok-mo">03</span> <span class="tok-n">PM</span> <span class="tok-n">org</span><span class="tok-o">.</span><span class="tok-na">infinispan</span><span class="tok-o">.</span><span class="tok-na">client</span><span class="tok-o">.</span><span class="tok-na">hotrod</span><span class="tok-o">.</span><span class="tok-na">RemoteCacheManager</span> <span class="tok-n">actualStart</span>
+<span class="tok-o">&lt;</span><span class="tok-n">timestamp</span><span class="tok-o">&gt;</span> <span class="tok-n">org</span><span class="tok-o">.</span><span class="tok-na">infinispan</span><span class="tok-o">.</span><span class="tok-na">client</span><span class="tok-o">.</span><span class="tok-na">hotrod</span><span class="tok-o">.</span><span class="tok-na">RemoteCacheManager</span> <span class="tok-n">actualStart</span>
 <span class="tok-nl">INFO:</span> <span class="tok-n">ISPN004021</span><span class="tok-o">:</span> <span class="tok-n">Infinispan</span> <span class="tok-n">version</span><span class="tok-o">:</span> <span class="tok-n">Infinispan</span> <span class="tok-err">&#39;</span><span class="tok-n">Corona</span> <span class="tok-n">Extra</span><span class="tok-err">&#39;</span> <span class="tok-mf">11.0.1</span><span class="tok-o">.</span><span class="tok-na">Final</span>
 <span class="tok-o">----</span> <span class="tok-n">Get</span> <span class="tok-n">or</span> <span class="tok-n">create</span> <span class="tok-n">the</span> <span class="tok-err">&#39;</span><span class="tok-n">temperature</span><span class="tok-err">&#39;</span> <span class="tok-n">cache</span> <span class="tok-o">----</span>
 <span class="tok-o">----</span> <span class="tok-n">Press</span> <span class="tok-n">any</span> <span class="tok-n">key</span> <span class="tok-n">to</span> <span class="tok-n">quit</span> <span class="tok-o">----</span>
@@ -1081,13 +1073,12 @@ calls will grab the temperature from the cache making the loading method perform
 </div>
 </div>
 <div class="sect3">
-<h4 id="_making_the_data_expire">Making the data expire</h4>
+<h4 id="_expiring_data">Expiring Data</h4>
 <div class="paragraph">
-<p>At this point, if the temperatures changes, the data will stay forever unchanged.
-To force deletion, you will use expiration.</p>
+<p>At this point, data in the cache remains the same, even if temperatures at the locations change. You can use expiration to remove data after a period of time so that the Temperature Loader fetches new data for the <code>temperature</code> cache.</p>
 </div>
 <div class="paragraph">
-<p>Modify <code>put</code> method call and make the temperature data expire every 20s.</p>
+<p>Update the <code>put()</code> method in the <code>TemperatureLoader</code> class so data expires after 20 seconds as follows:</p>
 </div>
 <div class="listingblock">
 <div class="title">org.infinispan.tutorial.services.temperature.TemperatureLoader</div>
@@ -1096,38 +1087,25 @@ To force deletion, you will use expiration.</p>
 </div>
 </div>
 <div class="paragraph">
-<p>Running the application again, you will notice that after 20 seconds, the temperature loading gets <code>slow</code>
-again.</p>
-</div>
-<div class="admonitionblock tip">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-tip" title="Tip"></i>
-</td>
-<td class="content">
-Give a try to the <a href="https://localhost:11222/console">Infinispan Web Console</a> and get and put values.
-</td>
-</tr>
-</table>
+<p>Run the <code>TemperatureLoaderApp</code> class again. After 20 seconds you should notice that temperature loading performance decreases because the service needs to fetch data again.</p>
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_7_implement_the_temperature_monitor">7. Implement the Temperature Monitor</h3>
+<h3 id="_implementing_temperature_monitor">Implementing Temperature Monitor</h3>
 <div class="paragraph">
-<p>Implementing the Temperature Monitor, you will learn how to use
-<a href="https://infinispan.org/docs/stable/titles/hotrod_java/hotrod_java.html#creating_event_listeners">Infinispan Client Listeners</a>.</p>
+<p>In this section of the tutorial, you implement the Temperature Monitor application and learn how to use <a href="https://infinispan.org/docs/stable/titles/hotrod_java/hotrod_java.html#creating_event_listeners">Infinispan Client Listeners</a>.</p>
 </div>
 <div class="paragraph">
-<p>The application will display notifications with temperature changes happening in a
-given location.</p>
+<p>These client listeners enable the Temperator Monitor application to display notifications about temperature changes that happen for each location.</p>
 </div>
 <div class="sect3">
-<h4 id="_implement_and_use_a_client_listener">Implement and use a Client Listener</h4>
+<h4 id="_create_a_client_listener">Create a Client Listener</h4>
 <div class="paragraph">
-<p>At the time of this writing, client listeners do not bring the value of the key in the receiving event.
-Use the async API to get the value and display the temperature corresponding to the key.</p>
+<p>At present, client listeners do not include values of keys in receiving events. For this reason, you use the Async API to get the value and display the temperature that corresponds to the key.</p>
+</div>
+<div class="paragraph">
+<p>Update the <code>TemperatureMonitor</code> service as follows:</p>
 </div>
 <div class="listingblock">
 <div class="title">org.infinispan.tutorial.services.TemperatureMonitor</div>
@@ -1163,19 +1141,19 @@ Use the async API to get the value and display the temperature corresponding to 
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Use <code>@ClientListener</code> to make the <code>TemperatureChangesListener</code> an Infinispan Client Listener.</td>
+<td>Annotates <code>TemperatureChangesListener</code> with <code>@ClientListener</code> to make it an Infinispan Client Listener.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>Use <code>@ClientCacheEntryCreated</code> to get a notification every time a new cache entry is created.</td>
+<td>Uses the <code>@ClientCacheEntryCreated</code> annotation to get notifications every time data is added to the <code>temperature</code> cache.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>Filter the location with the key, get the value using the async call and print the new value</td>
+<td>Filters locations by key and gets values using the async call and then prints the new values.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>Add the client listener to the cache</td>
+<td>Adds the client listener to the cache.</td>
 </tr>
 </table>
 </div>
@@ -1186,33 +1164,42 @@ Use the async API to get the value and display the temperature corresponding to 
 <i class="fa icon-tip" title="Tip"></i>
 </td>
 <td class="content">
-The example above filters the events in the listener for the example. These events can be also filtered
-server side. For this, an <a href="https://infinispan.org/docs/stable/titles/hotrod_java/hotrod_java.html#filtering_events">event filter</a>
-can be created and deployed in the server. This functionality is out of the scope of this tutorial.
-CAUTION: Ensure that the client listeners are removed from the cache if you don&#8217;t need them anymore.
+<div class="paragraph">
+<p>The preceding example filters events in the listener. However, these events can also be filtered server-side with an <a href="https://infinispan.org/docs/stable/titles/hotrod_java/hotrod_java.html#filtering_events">event filter</a>. However, you must create the filter and deploy it to Infinispan Server, which is beyond the scope of this tutorial.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Always remove client listeners from caches when you no longer need them.</p>
+</div>
 </td>
 </tr>
 </table>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_verify_the_temperature_monitoring_application">Verify the temperature monitoring application</h4>
+<h4 id="_verify_temperature_monitor">Verify Temperature Monitor</h4>
 <div class="paragraph">
-<p><strong>TemperatureLoaderApp</strong> should be running, loading temperatures periodically and temperatures getting expired every 20s.</p>
+<p>Make sure that <code>TemperatureLoaderApp</code> is running and then run <code>TemperatureMonitorApp</code>.</p>
 </div>
 <div class="paragraph">
-<p>Run <strong>TemperatureMonitorApp</strong>.</p>
-</div>
-<div class="paragraph">
-<p>You should see a message for the current temperature of the chosen location.
-You should get notifications of new temperatures every 20s.</p>
+<p>You should see a message that displays the current temperature of a location and then get notifications for new temperatures every 20 seconds.</p>
 </div>
 <div class="listingblock">
 <div class="title">org.infinispan.tutorial.client.temperature.TemperatureMonitorApp</div>
 <div class="content">
 <pre class="pygments highlight"><code data-lang="bash"><span></span>
 ---- Connect to Infinispan ----
-Jul <span class="tok-m">12</span>, <span class="tok-m">2020</span> <span class="tok-m">3</span>:48:22 PM org.infinispan.client.hotrod.RemoteCacheManager actualStart
+&lt;timestamp&gt; org.infinispan.client.hotrod.RemoteCacheManager actualStart
 INFO: ISPN004021: Infinispan version: Infinispan <span class="tok-s1">&#39;Corona Extra&#39;</span> <span class="tok-m">11</span>.0.1.Final
 ---- Get or create the <span class="tok-s1">&#39;temperature&#39;</span> cache ----
 Temperature <span class="tok-m">14</span>.185611 <span class="tok-k">for</span> Bilbao, Spain
@@ -1229,8 +1216,9 @@ Temperature <span class="tok-m">14</span>.185611 <span class="tok-k">for</span> 
 <i class="fa icon-tip" title="Tip"></i>
 </td>
 <td class="content">
-Change the expiration values to get more notifications. Use <code>@ClientCacheEntryExpired</code> to get notifications
-when data is expired.
+<div class="paragraph">
+<p>Change the expiration values to get more notifications. Use <code>@ClientCacheEntryExpired</code> to get notifications when data expires.</p>
+</div>
 </td>
 </tr>
 </table>
@@ -1238,23 +1226,30 @@ when data is expired.
 </div>
 </div>
 <div class="sect2">
-<h3 id="_8_implement_the_weather_loader">8. Implement the Weather Loader</h3>
+<h3 id="_implementing_weather_loader">Implementing Weather Loader</h3>
 <div class="paragraph">
-<p>The Weather loader application puts complex Key-Value entries in the <code>weather</code> cache. These objects need to
-be serialized to travel over-the-wir and be stored in the Infinispan Server.</p>
+<p>In this section of the tutorial, you implement the Weather Loader application and learn how to:</p>
 </div>
-<div class="paragraph">
-<p>The Weather data will be searchable, so the data must use <a href="https://developers.google.com/protocol-buffers">Google Protocol Buffers</a>
-as an encoding for both over-the-wire and storage.</p>
-</div>
-<div class="paragraph">
-<p>The usage of protobuf allows remote query to work not only for Java, but for REST,
-C# and Node.js clients.</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Add complex key/value entries to a cache.</p>
+</li>
+<li>
+<p>Serialize Java objects so they can be transmitted to Infinispan Server.</p>
+</li>
+<li>
+<p>Use <a href="https://developers.google.com/protocol-buffers">Protobuf</a> encoding for searchable data so you perform remote queries from Hot Rod Java clients as well as REST clients and other Hot Rod clients such as C# and Node.js.</p>
+</li>
+</ul>
 </div>
 <div class="sect3">
-<h4 id="_annotate_the_pojo_locationweather">Annotate the POJO LocationWeather</h4>
+<h4 id="_annotate_the_locationweather_pojo">Annotate the LocationWeather POJO</h4>
 <div class="paragraph">
-<p>The default data serializer used by Infinispan is <a href="https://github.com/infinispan/protostream">Protostream</a>.</p>
+<p>Infinispan uses <a href="https://github.com/infinispan/protostream">Protostream</a> to serialize data to byte.</p>
+</div>
+<div class="paragraph">
+<p>Add the <code>@ProtoField</code> annotation to <code>LocationWeather</code> as follows:</p>
 </div>
 <div class="listingblock">
 <div class="title">org.infinispan.tutorial.data.LocationWeather</div>
@@ -1277,15 +1272,12 @@ C# and Node.js clients.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_configure_the_marshalling_context">Configure the marshalling context</h4>
+<h4 id="_configure_the_serialization_context">Configure the Serialization Context</h4>
 <div class="paragraph">
-<p>Infinispan needs to know wich protobuf schema use to marshall the previously annotated class.
-You can provide a protobuf descriptor file or the descriptor file be created based on the annotations
-you previously used in the POJO.</p>
+<p>To marshall the annotated <code>LocationWeather</code> class, Infinispan requires a Protobuf schema. You can either provide a Protobuf descriptor file or create a descriptor file from the annotations you added to the POJO.</p>
 </div>
 <div class="paragraph">
-<p>In the <code>LocationWeatherMarshallingContext</code>, we will add the schema to the Protobuf cache in infinispan.
-You need to build a schema using the builder API, pass the annotation POJO and add the schema to the cache.</p>
+<p>In <code>LocationWeatherMarshallingContext</code>, you add the schema to the Protobuf cache in Infinispan and then build a Protobuf schema using the builder API. You then pass the annotated POJO and add the schema to the cache as follows:</p>
 </div>
 <div class="listingblock">
 <div class="title">org.infinispan.tutorial.db.LocationWeatherMarshallingContext</div>
@@ -1315,37 +1307,35 @@ You need to build a schema using the builder API, pass the annotation POJO and a
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Get the serialization context of the client</td>
+<td>Gets the serialization context of the client.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>Use ProtoSchemaBuilder to define a Protobuf schema on the client</td>
+<td>Uses <code>ProtoSchemaBuilder</code> to define a Protobuf schema on the client.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>Use the annotated class</td>
+<td>Used the annotated class.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>The package is used in the queries</td>
+<td>Names package used in queries.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="5"></i><b>5</b></td>
-<td>Retrieve the metadata cache, where all the schemas are stores in Infinispan</td>
+<td>Retrieves the metadata cache that stores all Protobuf schemas.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="6"></i><b>6</b></td>
-<td>Store the schema</td>
+<td>Adds the schema to the cache.</td>
 </tr>
 </table>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_create_the_weather_cache">Create the weather cache</h4>
+<h4 id="_create_a_weather_cache">Create a Weather Cache</h4>
 <div class="paragraph">
-<p>Unlike the cache containing primitive data, to store <code>LocationWeather</code> objects we need to initialize
-the marshalling context.In this application. Do this <strong>before</strong> creating the <code>weather</code> cache in
-the <code>getWeatherCache</code> method.</p>
+<p>In this step, you create a <code>weather</code> cache that can store <code>LocationWeather</code> objects. First you must initialize the marshalling context in the application and then create the cache, as follows:</p>
 </div>
 <div class="listingblock">
 <div class="title">org.infinispan.tutorial.db.DataSourceConnector</div>
@@ -1365,47 +1355,32 @@ the <code>getWeatherCache</code> method.</p>
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Initialize the serialization context</td>
+<td>Initializes the serialization context.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>Get or create the cache</td>
-</tr>
-</table>
-</div>
-<div class="admonitionblock caution">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-caution" title="Caution"></i>
-</td>
-<td class="content">
-<code>example.PROTOBUF_DIST</code> is a template that is shipped with the Infinispan Server.
-Protostream marshaller is configured for the Key-Value pairs in the cache.
-This mashaller is mandatory to perform search from different clients.
-</td>
+<td>Creates the <code>weather</code> cache.</td>
 </tr>
 </table>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_verify_the_weather_loader_application">Verify the weather loader application</h4>
+<h4 id="_verify_weather_loader">Verify Weather Loader</h4>
 <div class="paragraph">
-<p>The code loading the data into the cache is available in the
-<code>org.infinispan.tutorial.services.weather.FullWeatherLoader</code>.
-The code is very similar to the code you already implemented in the <code>TemperatureLoader</code> so you won&#8217;t
-code anything else at this point.</p>
+<p>The code that loads data into the <code>weather</code> cache is located in the <code>org.infinispan.tutorial.services.weather.FullWeatherLoader</code>. Because this service is similar to the code you implemented for the <code>TemperatureLoader</code> service, you don&#8217;t need to do anything else.</p>
 </div>
 <div class="paragraph">
-<p>Run <strong>WeatherLoaderApp</strong>.
-If everything works, the data should be loading and you should get the resulting logs.</p>
+<p>Run <code>WeatherLoaderApp</code> to check that it loads weather data.</p>
+</div>
+<div class="paragraph">
+<p>You should see messages that indicate the <code>weather</code> cache is created and weather information is added for different locations:</p>
 </div>
 <div class="listingblock">
 <div class="title">org.infinispan.tutorial.client.weather.WeatherLoaderApp</div>
 <div class="content">
 <pre class="pygments highlight"><code data-lang="bash"><span></span>
 ---- Connect to Infinispan ----
-Jul <span class="tok-m">12</span>, <span class="tok-m">2020</span> <span class="tok-m">4</span>:11:42 PM org.infinispan.client.hotrod.RemoteCacheManager actualStart
+&lt;timestamp&gt; org.infinispan.client.hotrod.RemoteCacheManager actualStart
 INFO: ISPN004021: Infinispan version: Infinispan <span class="tok-s1">&#39;Corona Extra&#39;</span> <span class="tok-m">11</span>.0.1.Final
 LocationWeatherMarshallingContext - initialize the serialization context <span class="tok-k">for</span> LocationWeather class
 ---- Get or create the <span class="tok-s1">&#39;weather&#39;</span> cache ----
@@ -1429,27 +1404,27 @@ Como, Italy - LocationWeather<span class="tok-o">{</span><span class="tok-nv">te
 </div>
 </div>
 <div class="sect2">
-<h3 id="_9_implement_the_weather_search">9. Implement the Weather Search</h3>
+<h3 id="_implementing_weather_finder">Implementing Weather Finder</h3>
 <div class="paragraph">
-<p>After completing this section, you will know:</p>
+<p>In this section of the tutorial, you learn how to:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>How to create and run a FROM query</p>
+<p>Create and run FROM queries.</p>
 </li>
 <li>
-<p>How to create and run a SELECT query</p>
+<p>Create and run SELECT queries.</p>
 </li>
 <li>
-<p>How to use a query, and run it continuously</p>
+<p>Perform continuous queries.</p>
 </li>
 </ul>
 </div>
 <div class="sect3">
-<h4 id="_create_and_run_a_from_query">Create and run a FROM query</h4>
+<h4 id="_create_a_from_query">Create a FROM Query</h4>
 <div class="paragraph">
-<p>Create and run a query on the <code>weather</code> cache:</p>
+<p>Create a FROM query on values in the <code>weather</code> cache as follows:</p>
 </div>
 <div class="listingblock">
 <div class="title">org.infinispan.tutorial.services.weather.WeatherSearch</div>
@@ -1469,27 +1444,30 @@ Como, Italy - LocationWeather<span class="tok-o">{</span><span class="tok-nv">te
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Get the <code>QueryFactory</code> from the cache</td>
+<td>Gets the <code>QueryFactory</code> from the cache.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>Create a query using 'Ickle'. Find every <code>LocationWeather</code> in a country.</td>
+<td>Creates a FROM query using the Ickle query language. This query finds each <code>LocationWeather</code> in a country.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>Set the <code>country</code> parameter</td>
+<td>Sets the <code>country</code> parameter.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>Execute the query and return the list</td>
+<td>Executes the query and returns the list.</td>
 </tr>
 </table>
 </div>
+</div>
+<div class="sect3">
+<h4 id="_run_the_from_query">Run the FROM Query</h4>
 <div class="paragraph">
-<p><strong>WeatherLoaderApp</strong> should be running.</p>
+<p>Make sure <code>WeatherLoaderApp</code> is running and then run <code>WeatherFinderApp</code>.</p>
 </div>
 <div class="paragraph">
-<p>Run <strong>WeatherFinderApp</strong> and check the output</p>
+<p>You should see output such as the following:</p>
 </div>
 <div class="listingblock">
 <div class="title">org.infinispan.tutorial.client.weather.WeatherFinderApp</div>
@@ -1501,10 +1479,9 @@ LocationWeather<span class="tok-o">{</span><span class="tok-nv">temperature</spa
 </div>
 </div>
 <div class="sect3">
-<h4 id="_create_and_run_a_select_query">Create and run a SELECT query</h4>
+<h4 id="_create_a_select_query">Create a SELECT Query</h4>
 <div class="paragraph">
-<p>Sometimes we won&#8217;t need every field of an object. In the following example, create and run
-a query that returns only the <code>city</code> that matches a given weather condition.</p>
+<p>For some queries, you don&#8217;t want every field for an object. In this example, you create and run a query that returns only the <code>city</code> that matches a given weather condition.</p>
 </div>
 <div class="listingblock">
 <div class="title">org.infinispan.tutorial.services.weather.WeatherSearch</div>
@@ -1529,27 +1506,30 @@ a query that returns only the <code>city</code> that matches a given weather con
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Get the <code>QueryFactory</code> from the cache</td>
+<td>Gets the <code>QueryFactory</code> from the cache.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>Create a query using 'Ickle'. Find every <code>LocationWeather</code> with a weather condition and return only the city.</td>
+<td>Creates a SELECT query using the Ickle query language. This query finds every <code>LocationWeather</code> with a weather condition and returns only the city.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>Set the <code>condition</code> parameter</td>
+<td>Sets the <code>condition</code> parameter.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>Execute the query, return the list and filter the <code>Object[]</code> to get those <code>String</code></td>
+<td>Executes the query, returns the list, and filters the <code>Object[]</code> to get the <code>String</code> results.</td>
 </tr>
 </table>
 </div>
+</div>
+<div class="sect3">
+<h4 id="_run_the_select_query">Run the SELECT Query</h4>
 <div class="paragraph">
-<p><strong>WeatherLoaderApp</strong> should be running.</p>
+<p>Make sure <code>WeatherLoaderApp</code> is running and then run <code>WeatherFinderApp</code>.</p>
 </div>
 <div class="paragraph">
-<p>Run <strong>WeatherFinderApp</strong> and check the output:</p>
+<p>You should see output such as the following:</p>
 </div>
 <div class="listingblock">
 <div class="title">org.infinispan.tutorial.client.weather.WeatherFinderApp</div>
@@ -1568,10 +1548,9 @@ WET: <span class="tok-o">[</span>Basel, Bucarest<span class="tok-o">]</span></co
 </div>
 </div>
 <div class="sect3">
-<h4 id="_create_and_run_a_continuous_query">Create and run a continuous query</h4>
+<h4 id="_create_a_continuous_query">Create a Continuous Query</h4>
 <div class="paragraph">
-<p><a href="https://infinispan.org/docs/stable/titles/developing/developing.html#query_continuous">Continuous Queries</a> allow an application to register a listener which will receive the entries
-that currently match a query filter, and will be continuously notified of any changes to the queried data set that result from further cache operations.</p>
+<p><a href="https://infinispan.org/docs/stable/titles/developing/developing.html#query_continuous">Continuous Queries</a> allow applications to register listeners that receive the entries matching a query filter. In this way, applications are continuously notified of changes to the queried data set.</p>
 </div>
 <div class="listingblock">
 <div class="title">org.infinispan.tutorial.services.weather.WeatherSearch</div>
@@ -1597,40 +1576,44 @@ that currently match a query filter, and will be continuously notified of any ch
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Create a Query: find all the locations by weather condition (ex 'Sunny')</td>
+<td>Creates a query that finds all locations with a certain weather condition; for example, 'Sunny'.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>Create a Continuous Query from the cache weather</td>
+<td>Creates a continuous query on the <code>weather</code> cache.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>Create a Continuous Query Listener and print the condition</td>
+<td>Creates a continuous query listener and prints the condition.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>Match the query and the listener in the Continuous Query Object</td>
+<td>Matches the query and the listener in the <code>ContinuousQuery</code> object</td>
 </tr>
 </table>
 </div>
-<div class="admonitionblock caution">
+<div class="admonitionblock important">
 <table>
 <tr>
 <td class="icon">
-<i class="fa icon-caution" title="Caution"></i>
+<i class="fa icon-important" title="Important"></i>
 </td>
 <td class="content">
-Continuous Queries are similar to Client Listeners. Don&#8217;t forget to remove the continuous queries
-when you don&#8217;t need them anymore.
+<div class="paragraph">
+<p>Always remove continuous queries when you no longer need them.</p>
+</div>
 </td>
 </tr>
 </table>
 </div>
+</div>
+<div class="sect3">
+<h4 id="_run_the_continuous_query">Run the Continuous Query</h4>
 <div class="paragraph">
-<p><strong>WeatherLoaderApp</strong> should be running.</p>
+<p>Make sure <code>WeatherLoaderApp</code> is running and then run <code>WeatherFinderApp</code>.</p>
 </div>
 <div class="paragraph">
-<p>Run <strong>WeatherFinderApp</strong> and check the output:</p>
+<p>You should see output such as the following:</p>
 </div>
 <div class="listingblock">
 <div class="title">org.infinispan.tutorial.client.weather.WeatherFinderApp</div>
@@ -1648,44 +1631,24 @@ Porto is now SUNNY
 </div>
 </div>
 <div class="sect2">
-<h3 id="_10_testing_with_the_infinispan_server">10. Testing with the Infinispan Server</h3>
+<h3 id="_testing_infinispan_server">Testing Infinispan Server</h3>
 <div class="paragraph">
-<p><a href="https://www.testcontainers.org/test_framework_integration/junit_5/">Test containers</a> are a great way to run an Infinispan Server and
-use <a href="https://junit.org/junit5/">Junit 5</a> extension to test.</p>
+<p><a href="https://www.testcontainers.org/test_framework_integration/junit_5/">Test containers</a> are a great way to run an Infinispan Server and test with a <a href="https://junit.org/junit5/">Junit 5</a> extension.</p>
 </div>
 <div class="paragraph">
-<p>As an example, you will add a test to verify that the temperature is correctly loaded in
-the Infinispan Server.</p>
+<p>This section of the tutorial provides an example test that verifies the temperatures loaded in Infinispan Server are correct.</p>
 </div>
-<div class="admonitionblock warning">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-warning" title="Warning"></i>
-</td>
-<td class="content">
-You need <a href="https://www.docker.com/">Docker</a> for this step.
-</td>
-</tr>
-</table>
+<div class="exampleblock">
+<div class="content">
+<div class="paragraph">
+<p>You need <a href="https://www.docker.com/">Docker</a> for this part of the tutorial.</p>
 </div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-2 JUnit 4 Rules are also available for out of the box testing with the Infinispan Server.
-Check <code>infinispan-server-testdriver-junit4</code> dependency.
-</td>
-</tr>
-</table>
+</div>
 </div>
 <div class="sect3">
-<h4 id="_add_the_maven_dependency">Add the maven dependency</h4>
+<h4 id="_add_dependencies_2">Add Dependencies</h4>
 <div class="paragraph">
-<p>Add the <code>infinispan-server-testdriver-junit5</code> maven dependency to the project.</p>
+<p>Open the <code>pom.xml</code> file for this project and add the <code>infinispan-server-testdriver-junit5</code> dependency as follows:</p>
 </div>
 <div class="listingblock">
 <div class="title">pom.xml</div>
@@ -1698,9 +1661,23 @@ Check <code>infinispan-server-testdriver-junit4</code> dependency.
     <span class="tok-nt">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>JUnit 4 rules are also available for out-of-the-box testing with Infinispan Server. Check the <code>infinispan-server-testdriver-junit4</code> dependency.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
 </div>
 <div class="sect3">
-<h4 id="_test_using_test_containers">Test using Test Containers</h4>
+<h4 id="_using_test_containers">Using Test Containers</h4>
 <div class="paragraph">
 <p>Create a Junit 5 Test and use the <code>InfinispanServerExtension</code>.</p>
 </div>
@@ -1725,29 +1702,32 @@ Check <code>infinispan-server-testdriver-junit4</code> dependency.
 </div>
 </div>
 <div class="sect1">
-<h2 id="_whats_next">What&#8217;s next?</h2>
+<h2 id="_whats_next">What&#8217;s Next?</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>If you reached this point and completed this tutorial&#8230;&#8203; <strong>CONGRATULATIONS!</strong>
-This guide covered many of the knowledge you need to start using the Infinispan Server.
-Infinispan integrates with <a href="https://quarkus.io/">Quarkus</a>, <a href="https://infinispan.org/infinispan-spring-boot/master/spring_boot_starter.html">Spring Boot</a>
-and <a href="https://vertx.io/">Vert.x</a> among many other frameworks.
-Grab a look to the <a href="https://github.com/infinispan-demos">demos available</a>.</p>
+<p>Congratulations on completing this tutorial!</p>
 </div>
 <div class="paragraph">
-<p>You deployed a local server. Go and check the <a href="https://infinispan.org/infinispan-operator/master/operator.html">Infinispan Operator Guide</a>
-to learn how to deploy and scale the server in <a href="https://kubernetes.io">Kubernetes</a> / <a href="https://www.openshift.com/">Openshift</a>.</p>
+<p>You should now be well on your way with using the Infinispan Server. Here are some more things to help you keep learning:</p>
 </div>
 <div class="paragraph">
-<p>You have used the Java Hot Rod client. Grab a look to our <a href="https://infinispan.org/docs/stable/titles/rest/rest.html">REST API</a>,
-and other <a href="https://infinispan.org/hotrod-clients/">hotrod clients</a> to use the Infinispan Server with other programming languages.</p>
+<div class="title">Infinispan Integrations</div>
+<p><a href="https://quarkus.io/">Quarkus</a>, <a href="https://infinispan.org/infinispan-spring-boot/master/spring_boot_starter.html">Spring Boot</a>, <a href="https://vertx.io/">Vert.x</a> and other frameworks are featured in the <a href="https://github.com/infinispan-demos">Infinispan demos</a>.</p>
+</div>
+<div class="paragraph">
+<div class="title">Kubernetes Operator</div>
+<p>Visit the <a href="https://infinispan.org/infinispan-operator/master/operator.html">Infinispan Operator Guide</a> and learn how to deploy and scale Infinispan on <a href="https://kubernetes.io">Kubernetes</a> or <a href="https://www.openshift.com/">OpenShift</a>.</p>
+</div>
+<div class="paragraph">
+<div class="title">Remote Clients</div>
+<p>Try the <a href="https://infinispan.org/docs/stable/titles/rest/rest.html">Infinispan REST API</a> and check out different <a href="https://infinispan.org/hotrod-clients/">Hot Rod clients</a> to use Infinispan with other programming languages.</p>
 </div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-22 13:34:42 +0200
+Last updated 2020-07-24 12:08:13 +0200
 </div>
 </div>
 <style>
