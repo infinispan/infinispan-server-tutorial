@@ -30,10 +30,12 @@ public class DataSourceConnector {
     public void connect() {
         System.out.println("---- Connect to Infinispan ----");
         ConfigurationBuilder builder = new ConfigurationBuilder();
+
+        // Hot Rod URI
+        builder.uri("hotrod://admin:pass@localhost:11222");
+
+        // For Docker For Mac
         builder.clientIntelligence(ClientIntelligence.BASIC);
-        builder.addServer().host("127.0.0.1")
-              .port(ConfigurationProperties.DEFAULT_HOTROD_PORT);
-        builder.security().authentication().username("admin").password("pass");
 
         // Connect to the server
         remoteCacheManager = new RemoteCacheManager(builder.build());
