@@ -6,7 +6,10 @@
   <name>Infinispan Tutorial: Client/Server tutorial</name>
 
   <properties>
-    <version.infinispan>11.0.1.Final</version.infinispan>
+    <version.infinispan>11.0.4.Final</version.infinispan>
+    <version.maven-compiler-plugin>3.8.1</version.maven-compiler-plugin>
+    <version.maven-surefire-plugin>2.22.2</version.maven-surefire-plugin>
+    <version.maven-failsafe-plugin>2.22.2</version.maven-failsafe-plugin>
   </properties>
 
   <dependencyManagement>
@@ -47,56 +50,20 @@
         <plugin>
            <groupId>org.apache.maven.plugins</groupId>
            <artifactId>maven-compiler-plugin</artifactId>
-           <version>3.8.1</version>
+           <version>${version.maven-compiler-plugin}</version>
            <configuration>
-              <source>1.8</source>
-              <target>1.8</target>
+              <source>11</source>
+              <target>11</target>
             </configuration>
         </plugin>
-        <plugin>
-         <groupId>org.apache.maven.plugins</groupId>
-         <artifactId>maven-assembly-plugin</artifactId>
-         <executions>
-           <execution>
-             <phase>package</phase>
-             <goals>
-               <goal>single</goal>
-             </goals>
-           </execution>
-         </executions>
-         <configuration>
-           <descriptorRefs>
-             <descriptorRef>jar-with-dependencies</descriptorRef>
-           </descriptorRefs>
-           <archive>
-             <manifest>
-               <mainClass>org.infinispan.tutorial.client.ClientWeatherApp</mainClass>
-             </manifest>
-           </archive>
-         </configuration>
-        </plugin>
-        <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>exec-maven-plugin</artifactId>
-            <version>1.6.0</version>
-            <executions>
-               <execution>
-                  <goals>
-                     <goal>exec</goal>
-                  </goals>
-               </execution>
-            </executions>
-            <configuration>
-               <executable>java</executable>
-               <arguments>
-                   <argument>-Djava.net.preferIPv4Stack=true</argument>
-                   <argument>-Djava.util.logging.config.file=src/main/resources/logging.properties</argument>
-                   <argument>-classpath</argument>
-                   <classpath/>
-                   <argument>org.infinispan.tutorial.client.ClientWeatherApp</argument>
-               </arguments>
-            </configuration>
-        </plugin>
+         <plugin>
+             <artifactId>maven-surefire-plugin</artifactId>
+             <version>${version.maven-surefire-plugin}</version>
+         </plugin>
+         <plugin>
+             <artifactId>maven-failsafe-plugin</artifactId>
+             <version>${version.maven-failsafe-plugin}</version>
+         </plugin>
      </plugins>
    </build>
 </project>
