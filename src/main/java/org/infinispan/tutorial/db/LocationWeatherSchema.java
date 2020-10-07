@@ -11,5 +11,5 @@ import org.infinispan.tutorial.data.LocationWeather;
       schemaFileName = "weather.proto",
       schemaFilePath = "proto/",
       schemaPackageName = "org.infinispan.tutorial.data")
-public interface LocationWeatherQueryInitializer extends SerializationContextInitializer {
+public interface LocationWeatherSchema extends SerializationContextInitializer {
 }
