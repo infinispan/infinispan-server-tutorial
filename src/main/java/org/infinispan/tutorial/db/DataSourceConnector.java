@@ -4,8 +4,6 @@ import org.infinispan.client.hotrod.RemoteCache;
 import org.infinispan.client.hotrod.RemoteCacheManager;
 import org.infinispan.client.hotrod.configuration.ClientIntelligence;
 import org.infinispan.client.hotrod.configuration.ConfigurationBuilder;
-import org.infinispan.client.hotrod.impl.ConfigurationProperties;
-import org.infinispan.commons.api.CacheContainerAdmin;
 import org.infinispan.tutorial.data.LocationWeather;
 
 import java.util.Objects;
@@ -36,6 +34,9 @@ public class DataSourceConnector {
 
         // For Docker For Mac
         builder.clientIntelligence(ClientIntelligence.BASIC);
+
+        // Define the schema on the client
+        builder.addContextInitializer(new LocationWeatherSchemaImpl());
 
         // Connect to the server
         remoteCacheManager = new RemoteCacheManager(builder.build());
