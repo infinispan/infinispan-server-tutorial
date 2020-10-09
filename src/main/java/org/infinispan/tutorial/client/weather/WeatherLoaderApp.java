@@ -1,6 +1,7 @@
 package org.infinispan.tutorial.client.weather;
 
 import org.infinispan.tutorial.client.App;
+import org.infinispan.tutorial.data.LocationWeather;
 import org.infinispan.tutorial.services.weather.FullWeatherLoader;
 import org.infinispan.tutorial.services.WeatherLoader;
 
@@ -14,7 +15,7 @@ public class WeatherLoaderApp extends App {
 
     @Override
     protected void execute() throws Exception {
-        WeatherLoader weatherLoader = new FullWeatherLoader(admin);
+        WeatherLoader<LocationWeather> weatherLoader = new FullWeatherLoader(admin);
 
         System.out.println("---- Press any key to quit ----");
         while(System.in.available() == 0) {
