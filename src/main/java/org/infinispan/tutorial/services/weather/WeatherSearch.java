@@ -37,7 +37,7 @@ public class WeatherSearch {
       QueryFactory queryFactory = Search.getQueryFactory(weather);
 
       // Use Ickle to run the query
-      Query<LocationWeather> query = queryFactory.create("FROM org.infinispan.tutorial.data.LocationWeather w where w.country = :country");
+      Query<LocationWeather> query = queryFactory.create("FROM org.infinispan.tutorial.data.LocationWeather WHERE country = :country");
 
       // Set the parameter value
       query.setParameter("country", country);
@@ -63,17 +63,17 @@ public class WeatherSearch {
     * @return city list
     */
    public void findWeatherByConditionContinuously(WeatherCondition condition) {
-      Query query = createFindLocationWeatherByConditionQuery(condition);
+      Query<Object[]> query = createFindLocationWeatherByConditionQuery(condition);
 
       ContinuousQuery<String, LocationWeather> continuousQuery = Search.getContinuousQuery(weather);
 
       // Create the continuous query listener.
       ContinuousQueryListener<String, Object[]> listener =
-            new ContinuousQueryListener<String, Object[]>() {
+            new ContinuousQueryListener<>() {
                // This method will be executed every time new items that correspond with the query arrive
                @Override
                public void resultJoining(String key, Object[] data) {
-                  System.out.println(String.format("%s is now %s", data[0], condition));
+                  System.out.printf("%s is now %s%n", data[0], condition);
                }
             };
 
@@ -91,7 +91,7 @@ public class WeatherSearch {
       QueryFactory queryFactory = Search.getQueryFactory(weather);
 
       // Use Ickle to run the query
-      Query<Object[]> query = queryFactory.create("SELECT city FROM org.infinispan.tutorial.data.LocationWeather w where w.condition = :condition");
+      Query<Object[]> query = queryFactory.create("SELECT city FROM org.infinispan.tutorial.data.LocationWeather WHERE condition = :condition");
 
       // Set the parameter value
       query.setParameter("condition", condition.name());
