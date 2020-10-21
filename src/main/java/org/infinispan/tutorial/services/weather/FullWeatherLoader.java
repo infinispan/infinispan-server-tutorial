@@ -47,7 +47,9 @@ public class FullWeatherLoader implements WeatherLoader<LocationWeather> {
    private LocationWeather fetchWeather(String location) {
       try {
          TimeUnit.MILLISECONDS.sleep(200);
-      } catch (InterruptedException e) {}
+      } catch (InterruptedException e) {
+         Thread.currentThread().interrupt();
+      }
       String[] cityCountry = location.split(", ");
 
       return new LocationWeather(random.nextFloat() * 20f + 5f, getCondition(), cityCountry[0], cityCountry[1]);

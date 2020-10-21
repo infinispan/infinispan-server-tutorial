@@ -35,7 +35,9 @@ public class TemperatureLoader implements WeatherLoader<Float> {
    private Float fetchTemperature() {
       try {
          TimeUnit.MILLISECONDS.sleep(100);
-      } catch (InterruptedException e) {}
+      } catch (InterruptedException e) {
+         Thread.currentThread().interrupt();
+      }
 
       return random.nextFloat() * 20f + 5f;
    }
