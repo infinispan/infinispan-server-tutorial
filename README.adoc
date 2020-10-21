@@ -452,37 +452,43 @@ Add the `@ProtoField` annotation to `LocationWeather` as follows:
 
 To marshall the annotated `LocationWeather` class, Infinispan requires a Protobuf schema. You can either provide a Protobuf descriptor file or create a descriptor file from the annotations you added to the POJO.
 
-In `LocationWeatherMarshallingContext`, you add the schema to the Protobuf cache in Infinispan and then build a Protobuf schema using the builder API. You then pass the annotated POJO and add the schema to the cache as follows:
+In `LocationWeatherMarshallingContext`, you add the schema to the Protobuf cache in Infinispan and then build a Protobuf using the `@AutoProtoSchemaBuilder` method.
 
 .org.infinispan.tutorial.db.LocationWeatherMarshallingContext
 [source,java]
 ----
-    SerializationContext ctx = MarshallerUtil.getSerializationContext(cacheManager); // <1>
-
-    ProtoSchemaBuilder protoSchemaBuilder = new ProtoSchemaBuilder(); // <2>
-    String fileName = "weather.proto";
-    String protoFile = null;
-    try {
-        protoFile = protoSchemaBuilder
-                .fileName(fileName)
-                .addClass(LocationWeather.class) // <3>
-                .packageName("org.infinispan.tutorial.data") // <4>
-                .build(ctx);
-    } catch (IOException e) {
-        throw new RuntimeException(e);
-    }
-
-    RemoteCache<String, String> metadataCache =
-            cacheManager.getCache(PROTOBUF_METADATA_CACHE_NAME); //<5>
-
-    metadataCache.put(fileName, protoFile); //<6>
+@AutoProtoSchemaBuilder(
+includeClasses = {
+LocationWeather.class
+},
+schemaFileName = "weather.proto",
+schemaFilePath = "proto/",
+schemaPackageName = "org.infinispan.tutorial.data")
+public interface LocationWeatherSchema extends SerializationContextInitializer {
+}
 ----
-<1> Gets the serialization context of the client.
-<2> Uses `ProtoSchemaBuilder` to define a Protobuf schema on the client.
-<3> Used the annotated class.
-<4> Names package used in queries.
-<5> Retrieves the metadata cache that stores all Protobuf schemas.
-<6> Adds the schema to the cache.
+
+[TIP]
+====
+Run `mvn clean package` from the command line or build the project in your IDE to generate the `LocationWeatherSchemaImpl` class.
+====
+
+.org.infinispan.tutorial.db.LocationWeatherMarshallingContext
+[source,java]
+----
+       // Retrieve metadata cache
+      RemoteCache<String, String> metadataCache =
+            cacheManager.getCache(ProtobufMetadataManagerConstants.PROTOBUF_METADATA_CACHE_NAME); // <1>
+
+      GeneratedSchema schema = new LocationWeatherSchemaImpl(); // <2>
+
+      // Define the new schema on the server too
+      metadataCache.put(schema.getProtoFileName(), schema.getProtoFile()); //<3>
+----
+<1> Retrieves the metadata cache that stores all Protobuf schemas.
+<2> Use the class generated from the `LocationWeatherSchema` interface to retrieve the schema.
+<3> Adds the schema to the cache.
+
 
 ==== Create a Weather Cache
 
@@ -558,7 +564,7 @@ Create a FROM query on values in the `weather` cache as follows:
    public List<LocationWeather> findByCountry(String country) {
       QueryFactory queryFactory = Search.getQueryFactory(weather); //<1>
 
-      Query<LocationWeather> query = queryFactory.create("FROM org.infinispan.tutorial.data.LocationWeather w where w.country = :country"); //<2>
+      Query<LocationWeather> query = queryFactory.create("FROM org.infinispan.tutorial.data.LocationWeather WHERE country = :country"); //<2>
 
       query.setParameter("country", country); //<3>
 
@@ -641,15 +647,15 @@ https://infinispan.org/docs/stable/titles/developing/developing.html#query_conti
 [source,java]
 ----
 public void findWeatherByConditionContinuously(WeatherCondition condition) {
-      Query query = createFindLocationWeatherByConditionQuery(condition); //<1>
+      Query<Object[]> query = createFindLocationWeatherByConditionQuery(condition); //<1>
 
       ContinuousQuery<String, LocationWeather> continuousQuery = Search.getContinuousQuery(weather); // <2>
 
-      ContinuousQueryListener<String, Object[]> listener =
+      ContinuousQueryListener<> listener =
             new ContinuousQueryListener<String, Object[]>() { //<3>
                @Override
                public void resultJoining(String key, Object[] data) {
-                  System.out.println(String.format("%s is now %s", data[0], condition));
+                   System.out.printf("%s is now %s%n", data[0], condition);
                }
             };
 
@@ -728,16 +734,29 @@ Create a Junit 5 Test and use the `InfinispanServerExtension`.
 ----
 
    @RegisterExtension
-   static InfinispanServerExtension infinispanServerExtension = InfinispanServerExtensionBuilder.server();
+   static InfinispanServerExtension infinispanServerExtension = InfinispanServerExtensionBuilder.server(); // <1>
 
    @Test
    public void loadLocationTemperature() {
-      DataSourceConnector dataSourceConnector = new DataSourceConnector(infinispanServerExtension.hotrod().createRemoteCacheManager());
+      DataSourceConnector dataSourceConnector = new DataSourceConnector(createRemoteCacheManager());
       TemperatureLoader temperatureLoader = new TemperatureLoader(dataSourceConnector);
       Float temperatureLoaderForLocation = temperatureLoader.getForLocation(WeatherLoader.LOCATIONS[0]);
       assertNotNull(temperatureLoaderForLocation);
    }
+
+   // <2>
+   private RemoteCacheManager createRemoteCacheManager() {
+      RemoteCacheManager remoteCacheManager = infinispanServerExtension.hotrod().createRemoteCacheManager();
+      SerializationContext serCtx = MarshallerUtil.getSerializationContext(remoteCacheManager);
+      LocationWeatherSchema schema = new LocationWeatherSchemaImpl();
+      schema.registerSchema(serCtx);
+      schema.registerMarshallers(serCtx);
+      return remoteCacheManager;
+   }
 ----
+
+<1> Registers the Junit 5 Infinispan Server Extension.
+<2> Adds a serialization context for the tests.
 
 == What's Next?
 
