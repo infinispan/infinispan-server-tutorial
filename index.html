@@ -1269,56 +1269,61 @@ Temperature <span class="tok-m">14</span>.185611 <span class="tok-k">for</span> 
 <p>To marshall the annotated <code>LocationWeather</code> class, Infinispan requires a Protobuf schema. You can either provide a Protobuf descriptor file or create a descriptor file from the annotations you added to the POJO.</p>
 </div>
 <div class="paragraph">
-<p>In <code>LocationWeatherMarshallingContext</code>, you add the schema to the Protobuf cache in Infinispan and then build a Protobuf schema using the builder API. You then pass the annotated POJO and add the schema to the cache as follows:</p>
+<p>In <code>LocationWeatherMarshallingContext</code>, you add the schema to the Protobuf cache in Infinispan and then build a Protobuf using the <code>@AutoProtoSchemaBuilder</code> method.</p>
 </div>
 <div class="listingblock">
 <div class="title">org.infinispan.tutorial.db.LocationWeatherMarshallingContext</div>
 <div class="content">
-<pre class="pygments highlight"><code data-lang="java"><span></span>    <span class="tok-n">SerializationContext</span> <span class="tok-n">ctx</span> <span class="tok-o">=</span> <span class="tok-n">MarshallerUtil</span><span class="tok-o">.</span><span class="tok-na">getSerializationContext</span><span class="tok-o">(</span><span class="tok-n">cacheManager</span><span class="tok-o">);</span> <i class="conum" data-value="1"></i><b>(1)</b>
+<pre class="pygments highlight"><code data-lang="java"><span></span><span class="tok-nd">@AutoProtoSchemaBuilder</span><span class="tok-o">(</span>
+<span class="tok-n">includeClasses</span> <span class="tok-o">=</span> <span class="tok-o">{</span>
+<span class="tok-n">LocationWeather</span><span class="tok-o">.</span><span class="tok-na">class</span>
+<span class="tok-o">},</span>
+<span class="tok-n">schemaFileName</span> <span class="tok-o">=</span> <span class="tok-s">&quot;weather.proto&quot;</span><span class="tok-o">,</span>
+<span class="tok-n">schemaFilePath</span> <span class="tok-o">=</span> <span class="tok-s">&quot;proto/&quot;</span><span class="tok-o">,</span>
+<span class="tok-n">schemaPackageName</span> <span class="tok-o">=</span> <span class="tok-s">&quot;org.infinispan.tutorial.data&quot;</span><span class="tok-o">)</span>
+<span class="tok-kd">public</span> <span class="tok-kd">interface</span> <span class="tok-nc">LocationWeatherSchema</span> <span class="tok-kd">extends</span> <span class="tok-n">SerializationContextInitializer</span> <span class="tok-o">{</span>
+<span class="tok-o">}</span></code></pre>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Run <code>mvn clean package</code> from the command line or build the project in your IDE to generate the <code>LocationWeatherSchemaImpl</code> class.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="title">org.infinispan.tutorial.db.LocationWeatherMarshallingContext</div>
+<div class="content">
+<pre class="pygments highlight"><code data-lang="java"><span></span>       <span class="tok-c1">// Retrieve metadata cache</span>
+      <span class="tok-n">RemoteCache</span><span class="tok-o">&lt;</span><span class="tok-n">String</span><span class="tok-o">,</span> <span class="tok-n">String</span><span class="tok-o">&gt;</span> <span class="tok-n">metadataCache</span> <span class="tok-o">=</span>
+            <span class="tok-n">cacheManager</span><span class="tok-o">.</span><span class="tok-na">getCache</span><span class="tok-o">(</span><span class="tok-n">ProtobufMetadataManagerConstants</span><span class="tok-o">.</span><span class="tok-na">PROTOBUF_METADATA_CACHE_NAME</span><span class="tok-o">);</span> <i class="conum" data-value="1"></i><b>(1)</b>
 
-    <span class="tok-n">ProtoSchemaBuilder</span> <span class="tok-n">protoSchemaBuilder</span> <span class="tok-o">=</span> <span class="tok-k">new</span> <span class="tok-n">ProtoSchemaBuilder</span><span class="tok-o">();</span> <i class="conum" data-value="2"></i><b>(2)</b>
-    <span class="tok-n">String</span> <span class="tok-n">fileName</span> <span class="tok-o">=</span> <span class="tok-s">&quot;weather.proto&quot;</span><span class="tok-o">;</span>
-    <span class="tok-n">String</span> <span class="tok-n">protoFile</span> <span class="tok-o">=</span> <span class="tok-kc">null</span><span class="tok-o">;</span>
-    <span class="tok-k">try</span> <span class="tok-o">{</span>
-        <span class="tok-n">protoFile</span> <span class="tok-o">=</span> <span class="tok-n">protoSchemaBuilder</span>
-                <span class="tok-o">.</span><span class="tok-na">fileName</span><span class="tok-o">(</span><span class="tok-n">fileName</span><span class="tok-o">)</span>
-                <span class="tok-o">.</span><span class="tok-na">addClass</span><span class="tok-o">(</span><span class="tok-n">LocationWeather</span><span class="tok-o">.</span><span class="tok-na">class</span><span class="tok-o">)</span> <i class="conum" data-value="3"></i><b>(3)</b>
-                <span class="tok-o">.</span><span class="tok-na">packageName</span><span class="tok-o">(</span><span class="tok-s">&quot;org.infinispan.tutorial.data&quot;</span><span class="tok-o">)</span> <i class="conum" data-value="4"></i><b>(4)</b>
-                <span class="tok-o">.</span><span class="tok-na">build</span><span class="tok-o">(</span><span class="tok-n">ctx</span><span class="tok-o">);</span>
-    <span class="tok-o">}</span> <span class="tok-k">catch</span> <span class="tok-o">(</span><span class="tok-n">IOException</span> <span class="tok-n">e</span><span class="tok-o">)</span> <span class="tok-o">{</span>
-        <span class="tok-k">throw</span> <span class="tok-k">new</span> <span class="tok-n">RuntimeException</span><span class="tok-o">(</span><span class="tok-n">e</span><span class="tok-o">);</span>
-    <span class="tok-o">}</span>
+      <span class="tok-n">GeneratedSchema</span> <span class="tok-n">schema</span> <span class="tok-o">=</span> <span class="tok-k">new</span> <span class="tok-n">LocationWeatherSchemaImpl</span><span class="tok-o">();</span> <i class="conum" data-value="2"></i><b>(2)</b>
 
-    <span class="tok-n">RemoteCache</span><span class="tok-o">&lt;</span><span class="tok-n">String</span><span class="tok-o">,</span> <span class="tok-n">String</span><span class="tok-o">&gt;</span> <span class="tok-n">metadataCache</span> <span class="tok-o">=</span>
-            <span class="tok-n">cacheManager</span><span class="tok-o">.</span><span class="tok-na">getCache</span><span class="tok-o">(</span><span class="tok-n">PROTOBUF_METADATA_CACHE_NAME</span><span class="tok-o">);</span> <i class="conum" data-value="5"></i><b>(5)</b>
-
-    <span class="tok-n">metadataCache</span><span class="tok-o">.</span><span class="tok-na">put</span><span class="tok-o">(</span><span class="tok-n">fileName</span><span class="tok-o">,</span> <span class="tok-n">protoFile</span><span class="tok-o">);</span> <i class="conum" data-value="6"></i><b>(6)</b></code></pre>
+      <span class="tok-c1">// Define the new schema on the server too</span>
+      <span class="tok-n">metadataCache</span><span class="tok-o">.</span><span class="tok-na">put</span><span class="tok-o">(</span><span class="tok-n">schema</span><span class="tok-o">.</span><span class="tok-na">getProtoFileName</span><span class="tok-o">(),</span> <span class="tok-n">schema</span><span class="tok-o">.</span><span class="tok-na">getProtoFile</span><span class="tok-o">());</span> <i class="conum" data-value="3"></i><b>(3)</b></code></pre>
 </div>
 </div>
 <div class="colist arabic">
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Gets the serialization context of the client.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>Uses <code>ProtoSchemaBuilder</code> to define a Protobuf schema on the client.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>Used the annotated class.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>Names package used in queries.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="5"></i><b>5</b></td>
 <td>Retrieves the metadata cache that stores all Protobuf schemas.</td>
 </tr>
 <tr>
-<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Use the class generated from the <code>LocationWeatherSchema</code> interface to retrieve the schema.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
 <td>Adds the schema to the cache.</td>
 </tr>
 </table>
@@ -1424,7 +1429,7 @@ Como, Italy - LocationWeather<span class="tok-o">{</span><span class="tok-nv">te
 <pre class="pygments highlight"><code data-lang="java"><span></span>   <span class="tok-kd">public</span> <span class="tok-n">List</span><span class="tok-o">&lt;</span><span class="tok-n">LocationWeather</span><span class="tok-o">&gt;</span> <span class="tok-nf">findByCountry</span><span class="tok-o">(</span><span class="tok-n">String</span> <span class="tok-n">country</span><span class="tok-o">)</span> <span class="tok-o">{</span>
       <span class="tok-n">QueryFactory</span> <span class="tok-n">queryFactory</span> <span class="tok-o">=</span> <span class="tok-n">Search</span><span class="tok-o">.</span><span class="tok-na">getQueryFactory</span><span class="tok-o">(</span><span class="tok-n">weather</span><span class="tok-o">);</span> <i class="conum" data-value="1"></i><b>(1)</b>
 
-      <span class="tok-n">Query</span><span class="tok-o">&lt;</span><span class="tok-n">LocationWeather</span><span class="tok-o">&gt;</span> <span class="tok-n">query</span> <span class="tok-o">=</span> <span class="tok-n">queryFactory</span><span class="tok-o">.</span><span class="tok-na">create</span><span class="tok-o">(</span><span class="tok-s">&quot;FROM org.infinispan.tutorial.data.LocationWeather w where w.country = :country&quot;</span><span class="tok-o">);</span> <i class="conum" data-value="2"></i><b>(2)</b>
+      <span class="tok-n">Query</span><span class="tok-o">&lt;</span><span class="tok-n">LocationWeather</span><span class="tok-o">&gt;</span> <span class="tok-n">query</span> <span class="tok-o">=</span> <span class="tok-n">queryFactory</span><span class="tok-o">.</span><span class="tok-na">create</span><span class="tok-o">(</span><span class="tok-s">&quot;FROM org.infinispan.tutorial.data.LocationWeather WHERE country = :country&quot;</span><span class="tok-o">);</span> <i class="conum" data-value="2"></i><b>(2)</b>
 
       <span class="tok-n">query</span><span class="tok-o">.</span><span class="tok-na">setParameter</span><span class="tok-o">(</span><span class="tok-s">&quot;country&quot;</span><span class="tok-o">,</span> <span class="tok-n">country</span><span class="tok-o">);</span> <i class="conum" data-value="3"></i><b>(3)</b>
 
@@ -1548,15 +1553,15 @@ WET: <span class="tok-o">[</span>Basel, Bucarest<span class="tok-o">]</span></co
 <div class="title">org.infinispan.tutorial.services.weather.WeatherSearch</div>
 <div class="content">
 <pre class="pygments highlight"><code data-lang="java"><span></span><span class="tok-kd">public</span> <span class="tok-kt">void</span> <span class="tok-nf">findWeatherByConditionContinuously</span><span class="tok-o">(</span><span class="tok-n">WeatherCondition</span> <span class="tok-n">condition</span><span class="tok-o">)</span> <span class="tok-o">{</span>
-      <span class="tok-n">Query</span> <span class="tok-n">query</span> <span class="tok-o">=</span> <span class="tok-n">createFindLocationWeatherByConditionQuery</span><span class="tok-o">(</span><span class="tok-n">condition</span><span class="tok-o">);</span> <i class="conum" data-value="1"></i><b>(1)</b>
+      <span class="tok-n">Query</span><span class="tok-o">&lt;</span><span class="tok-n">Object</span><span class="tok-o">[]&gt;</span> <span class="tok-n">query</span> <span class="tok-o">=</span> <span class="tok-n">createFindLocationWeatherByConditionQuery</span><span class="tok-o">(</span><span class="tok-n">condition</span><span class="tok-o">);</span> <i class="conum" data-value="1"></i><b>(1)</b>
 
       <span class="tok-n">ContinuousQuery</span><span class="tok-o">&lt;</span><span class="tok-n">String</span><span class="tok-o">,</span> <span class="tok-n">LocationWeather</span><span class="tok-o">&gt;</span> <span class="tok-n">continuousQuery</span> <span class="tok-o">=</span> <span class="tok-n">Search</span><span class="tok-o">.</span><span class="tok-na">getContinuousQuery</span><span class="tok-o">(</span><span class="tok-n">weather</span><span class="tok-o">);</span> <i class="conum" data-value="2"></i><b>(2)</b>
 
-      <span class="tok-n">ContinuousQueryListener</span><span class="tok-o">&lt;</span><span class="tok-n">String</span><span class="tok-o">,</span> <span class="tok-n">Object</span><span class="tok-o">[]&gt;</span> <span class="tok-n">listener</span> <span class="tok-o">=</span>
+      <span class="tok-n">ContinuousQueryListener</span><span class="tok-o">&lt;&gt;</span> <span class="tok-n">listener</span> <span class="tok-o">=</span>
             <span class="tok-k">new</span> <span class="tok-n">ContinuousQueryListener</span><span class="tok-o">&lt;</span><span class="tok-n">String</span><span class="tok-o">,</span> <span class="tok-n">Object</span><span class="tok-o">[]&gt;()</span> <span class="tok-o">{</span> <i class="conum" data-value="3"></i><b>(3)</b>
                <span class="tok-nd">@Override</span>
                <span class="tok-kd">public</span> <span class="tok-kt">void</span> <span class="tok-nf">resultJoining</span><span class="tok-o">(</span><span class="tok-n">String</span> <span class="tok-n">key</span><span class="tok-o">,</span> <span class="tok-n">Object</span><span class="tok-o">[]</span> <span class="tok-n">data</span><span class="tok-o">)</span> <span class="tok-o">{</span>
-                  <span class="tok-n">System</span><span class="tok-o">.</span><span class="tok-na">out</span><span class="tok-o">.</span><span class="tok-na">println</span><span class="tok-o">(</span><span class="tok-n">String</span><span class="tok-o">.</span><span class="tok-na">format</span><span class="tok-o">(</span><span class="tok-s">&quot;%s is now %s&quot;</span><span class="tok-o">,</span> <span class="tok-n">data</span><span class="tok-o">[</span><span class="tok-mi">0</span><span class="tok-o">],</span> <span class="tok-n">condition</span><span class="tok-o">));</span>
+                   <span class="tok-n">System</span><span class="tok-o">.</span><span class="tok-na">out</span><span class="tok-o">.</span><span class="tok-na">printf</span><span class="tok-o">(</span><span class="tok-s">&quot;%s is now %s%n&quot;</span><span class="tok-o">,</span> <span class="tok-n">data</span><span class="tok-o">[</span><span class="tok-mi">0</span><span class="tok-o">],</span> <span class="tok-n">condition</span><span class="tok-o">);</span>
                <span class="tok-o">}</span>
             <span class="tok-o">};</span>
 
@@ -1678,16 +1683,38 @@ Porto is now SUNNY
 <div class="content">
 <pre class="pygments highlight"><code data-lang="java"><span></span>
    <span class="tok-nd">@RegisterExtension</span>
-   <span class="tok-kd">static</span> <span class="tok-n">InfinispanServerExtension</span> <span class="tok-n">infinispanServerExtension</span> <span class="tok-o">=</span> <span class="tok-n">InfinispanServerExtensionBuilder</span><span class="tok-o">.</span><span class="tok-na">server</span><span class="tok-o">();</span>
+   <span class="tok-kd">static</span> <span class="tok-n">InfinispanServerExtension</span> <span class="tok-n">infinispanServerExtension</span> <span class="tok-o">=</span> <span class="tok-n">InfinispanServerExtensionBuilder</span><span class="tok-o">.</span><span class="tok-na">server</span><span class="tok-o">();</span> <i class="conum" data-value="1"></i><b>(1)</b>
 
    <span class="tok-nd">@Test</span>
    <span class="tok-kd">public</span> <span class="tok-kt">void</span> <span class="tok-nf">loadLocationTemperature</span><span class="tok-o">()</span> <span class="tok-o">{</span>
-      <span class="tok-n">DataSourceConnector</span> <span class="tok-n">dataSourceConnector</span> <span class="tok-o">=</span> <span class="tok-k">new</span> <span class="tok-n">DataSourceConnector</span><span class="tok-o">(</span><span class="tok-n">infinispanServerExtension</span><span class="tok-o">.</span><span class="tok-na">hotrod</span><span class="tok-o">().</span><span class="tok-na">createRemoteCacheManager</span><span class="tok-o">());</span>
+      <span class="tok-n">DataSourceConnector</span> <span class="tok-n">dataSourceConnector</span> <span class="tok-o">=</span> <span class="tok-k">new</span> <span class="tok-n">DataSourceConnector</span><span class="tok-o">(</span><span class="tok-n">createRemoteCacheManager</span><span class="tok-o">());</span>
       <span class="tok-n">TemperatureLoader</span> <span class="tok-n">temperatureLoader</span> <span class="tok-o">=</span> <span class="tok-k">new</span> <span class="tok-n">TemperatureLoader</span><span class="tok-o">(</span><span class="tok-n">dataSourceConnector</span><span class="tok-o">);</span>
       <span class="tok-n">Float</span> <span class="tok-n">temperatureLoaderForLocation</span> <span class="tok-o">=</span> <span class="tok-n">temperatureLoader</span><span class="tok-o">.</span><span class="tok-na">getForLocation</span><span class="tok-o">(</span><span class="tok-n">WeatherLoader</span><span class="tok-o">.</span><span class="tok-na">LOCATIONS</span><span class="tok-o">[</span><span class="tok-mi">0</span><span class="tok-o">]);</span>
       <span class="tok-n">assertNotNull</span><span class="tok-o">(</span><span class="tok-n">temperatureLoaderForLocation</span><span class="tok-o">);</span>
+   <span class="tok-o">}</span>
+
+   <i class="conum" data-value="2"></i><b>(2)</b>
+   <span class="tok-kd">private</span> <span class="tok-n">RemoteCacheManager</span> <span class="tok-nf">createRemoteCacheManager</span><span class="tok-o">()</span> <span class="tok-o">{</span>
+      <span class="tok-n">RemoteCacheManager</span> <span class="tok-n">remoteCacheManager</span> <span class="tok-o">=</span> <span class="tok-n">infinispanServerExtension</span><span class="tok-o">.</span><span class="tok-na">hotrod</span><span class="tok-o">().</span><span class="tok-na">createRemoteCacheManager</span><span class="tok-o">();</span>
+      <span class="tok-n">SerializationContext</span> <span class="tok-n">serCtx</span> <span class="tok-o">=</span> <span class="tok-n">MarshallerUtil</span><span class="tok-o">.</span><span class="tok-na">getSerializationContext</span><span class="tok-o">(</span><span class="tok-n">remoteCacheManager</span><span class="tok-o">);</span>
+      <span class="tok-n">LocationWeatherSchema</span> <span class="tok-n">schema</span> <span class="tok-o">=</span> <span class="tok-k">new</span> <span class="tok-n">LocationWeatherSchemaImpl</span><span class="tok-o">();</span>
+      <span class="tok-n">schema</span><span class="tok-o">.</span><span class="tok-na">registerSchema</span><span class="tok-o">(</span><span class="tok-n">serCtx</span><span class="tok-o">);</span>
+      <span class="tok-n">schema</span><span class="tok-o">.</span><span class="tok-na">registerMarshallers</span><span class="tok-o">(</span><span class="tok-n">serCtx</span><span class="tok-o">);</span>
+      <span class="tok-k">return</span> <span class="tok-n">remoteCacheManager</span><span class="tok-o">;</span>
    <span class="tok-o">}</span></code></pre>
 </div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Registers the Junit 5 Infinispan Server Extension.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Adds a serialization context for the tests.</td>
+</tr>
+</table>
 </div>
 </div>
 </div>
@@ -1719,7 +1746,7 @@ Porto is now SUNNY
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-24 14:56:50 +0200
+Last updated 2020-10-21 16:32:22 +0200
 </div>
 </div>
 <style>
