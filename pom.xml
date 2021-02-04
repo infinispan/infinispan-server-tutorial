@@ -6,7 +6,7 @@
   <name>Infinispan Tutorial: Client/Server tutorial</name>
 
   <properties>
-    <version.infinispan>11.0.4.Final</version.infinispan>
+    <version.infinispan>12.0.0.Final</version.infinispan>
     <version.maven-compiler-plugin>3.8.1</version.maven-compiler-plugin>
     <version.maven-surefire-plugin>2.22.2</version.maven-surefire-plugin>
     <version.maven-failsafe-plugin>2.22.2</version.maven-failsafe-plugin>
@@ -25,15 +25,6 @@
   </dependencyManagement>
 
   <dependencies>
-      <!-- TODO remove the annotation api dependency after we migrate to protostream-4.3.5.Final/4.4.0.Alpha1 -->
-      <!-- See https://issues.redhat.com/browse/IPROTO-163 -->
-      <dependency>
-          <groupId>javax.annotation</groupId>
-          <artifactId>javax.annotation-api</artifactId>
-          <version>1.3.1</version>
-          <scope>provided</scope>
-      </dependency>
-
       <dependency>
           <groupId>org.infinispan.protostream</groupId>
           <artifactId>protostream-processor</artifactId>
