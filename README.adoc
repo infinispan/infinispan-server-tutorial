@@ -95,9 +95,11 @@ You can do one of the following:
 * Pull the container image and run with https://www.docker.com/[Docker] or https://podman.io/[Podman].
 * Download the server distribution and extract it to your filesystem.
 
+[IMPORTANT]
 .Credentials
-By default, Infinispan Server requires user authentication. This tutorial uses
-`admin` and `pass` credentials but you can use any username and password.
+By default, Infinispan Server *requires user authentication* and *authorization* is implicit since
+12.1. *Creating a user named `admin` gives you administrative access to Infinispan Server.*
+You can find more details about users and permissions in https://infinispan.org/docs/stable/titles/server/server.html#creating-users_quickstart[Creating and Modifying Users]
 
 ==== Running the Container Image
 
@@ -105,11 +107,12 @@ The easiest way to run Infinispan Server locally is to pull the container image.
 
 * Podman
 +
-`podman run --net=host -p 11222:11222 -e USER="admin" -e PASS="pass" quay.io/infinispan/server:12.0`
+`podman run --net=host -p 11222:11222 -e USER="admin" -e PASS="password" quay.io/infinispan/server:12.1`
 
 * Docker
 +
-`docker run -it -p 11222:11222 -e USER="admin" -e PASS="pass" infinispan/server:12.0`
+`docker run -it -p 11222:11222 -e USER="admin" -e PASS="password" infinispan/server:12.1`
+
 
 ==== Running the Server Distribution
 
@@ -121,7 +124,7 @@ Infinispan Server comes as a bare metal distribution that you can run locally.
 +
 [source,bash,options="nowrap"]
 ----
-$ ./bin/cli.sh user create admin -p pass
+$ ./bin/cli.sh user create admin -p password
 ----
 +
 . Run Infinispan Server.
@@ -143,7 +146,7 @@ image::welcomeConsole.png[Welcome to the console]
 To start using the Infinispan Console, do the following:
 
 . Select *Go to the console*.
-. Enter your credentials (`admin`/`pass`).
+. Enter your credentials (`admin`/`password`).
 
 //Step 3
 === Getting the Weather Application
@@ -397,9 +400,6 @@ You should see a message that displays the current temperature of a location and
 [source,bash]
 ----
 
----- Connect to Infinispan ----
-<timestamp> org.infinispan.client.hotrod.RemoteCacheManager actualStart
-INFO: ISPN004021: Infinispan version: Infinispan 'Corona Extra' 11.0.1.Final
 ---- Get or create the 'temperature' cache ----
 Temperature 14.185611 for Bilbao, Spain
 ---- Start monitoring temperature changes for Bilbao, Spain ----
@@ -522,10 +522,6 @@ You should see messages that indicate the `weather` cache is created and weather
 [source,bash]
 ----
 
----- Connect to Infinispan ----
-<timestamp> org.infinispan.client.hotrod.RemoteCacheManager actualStart
-INFO: ISPN004021: Infinispan version: Infinispan 'Corona Extra' 11.0.1.Final
-LocationWeatherMarshallingContext - initialize the serialization context for LocationWeather class
 ---- Get or create the 'weather' cache ----
 ---- Press any key to quit ----
 

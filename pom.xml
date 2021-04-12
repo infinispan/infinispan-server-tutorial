@@ -6,7 +6,7 @@
     <name>Infinispan Tutorial: Client/Server tutorial</name>
 
     <properties>
-        <version.infinispan>12.0.0.Final</version.infinispan>
+        <version.infinispan>12.1.0.Final</version.infinispan>
         <version.maven-compiler-plugin>3.8.1</version.maven-compiler-plugin>
         <version.maven-surefire-plugin>2.22.2</version.maven-surefire-plugin>
         <version.maven-failsafe-plugin>2.22.2</version.maven-failsafe-plugin>
