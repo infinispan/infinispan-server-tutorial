@@ -96,7 +96,7 @@ You can do one of the following:
 * Download the server distribution and extract it to your filesystem.
 
 [IMPORTANT]
-By default, Infinispan Server *requires user authentication* and *authorization* is implicit since
+By default, Infinispan Server requires user *authentication* and *authorization*.
 For the purposes of this tutorial, create a user named `admin` so you get administrative access to Infinispan Server.
 You can find more details about users and permissions in https://infinispan.org/docs/stable/titles/server/server.html#creating-users_quickstart[Creating and Modifying Users]
 
