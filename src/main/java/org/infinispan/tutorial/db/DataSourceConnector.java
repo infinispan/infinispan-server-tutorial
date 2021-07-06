@@ -6,6 +6,8 @@ import org.infinispan.client.hotrod.configuration.ClientIntelligence;
 import org.infinispan.client.hotrod.configuration.ConfigurationBuilder;
 import org.infinispan.tutorial.data.LocationWeather;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Objects;
 
 /**
@@ -30,10 +32,24 @@ public class DataSourceConnector {
         ConfigurationBuilder builder = new ConfigurationBuilder();
 
         // Hot Rod URI
-        builder.uri("hotrod://admin:pass@localhost:11222");
+        builder.uri("hotrod://admin:password@localhost:11222");
 
-        // For Docker For Mac
+        // For Docker For Mac. Not recommended for production. Default is HASH_DISTRIBUTION_AWARE
         builder.clientIntelligence(ClientIntelligence.BASIC);
+
+        URI temperatureCacheConfig;
+        URI weatherCacheConfig;
+        try {
+            temperatureCacheConfig = getClass().getClassLoader().getResource("temperatureCacheConfig.xml").toURI();
+            weatherCacheConfig = getClass().getClassLoader().getResource("weatherCacheConfig.xml").toURI();
+        } catch (URISyntaxException ex) {
+            System.out.println(ex);
+            throw new RuntimeException(ex);
+        }
+
+        // Define two caches that should be created in the server if they not exist
+        builder.remoteCache("temperature").configurationURI(temperatureCacheConfig);
+        builder.remoteCache("weather").configurationURI(weatherCacheConfig);
 
         // Define the schema on the client
         builder.addContextInitializer(new LocationWeatherSchemaImpl());
@@ -50,11 +66,10 @@ public class DataSourceConnector {
     // Step 2 - Get or create a simple cache
     public RemoteCache<String, Float> getTemperatureCache() {
         Objects.requireNonNull(remoteCacheManager);
-        System.out.println("---- Get or create the 'temperature' cache ----");
+        System.out.println("---- Get the 'temperature' cache ----");
 
-        // Get the cache, create it if needed with an existing template name
-       return remoteCacheManager.administration()
-              .getOrCreateCache("temperature", "example.PROTOBUF_DIST");
+        // Get the cache
+       return remoteCacheManager.getCache("temperature");
     }
     // Step - Get or create a Queryable Cache
 
@@ -64,11 +79,10 @@ public class DataSourceConnector {
         // Initialize the Marshalling context
         LocationWeatherMarshallingContext.initSerializationContext(remoteCacheManager);
 
-        System.out.println("---- Get or create the 'weather' cache ----");
+        System.out.println("---- Get the 'weather' cache ----");
 
-        // Get the cache, create it if needed with an existing template name
-       return remoteCacheManager.administration()
-              .getOrCreateCache("weather", "example.PROTOBUF_DIST");
+        // Get the cache
+       return remoteCacheManager.getCache("weather");
     }
 
     public void shutdown() {

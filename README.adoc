@@ -30,9 +30,8 @@ By completing this tutorial, you will learn how to:
 To complete this tutorial, you need:
 
 - Approximately 25 to 30 minutes
-- IDE such as Intellij
-- JDK 8 or JDK 11 or later
-- Apache Maven 3.6.2 or later
+- IDE such as Eclipse or Intellij
+- JDK 11 or later
 - https://www.docker.com/[Docker] or https://podman.io/[Podman]
 
 [TIP]
@@ -97,7 +96,7 @@ You can do one of the following:
 
 .Credentials
 By default, Infinispan Server requires user authentication. This tutorial uses
-`admin` and `pass` credentials but you can use any username and password.
+`admin` and `password` credentials but you can use any username and password.
 
 ==== Running the Container Image
 
@@ -105,11 +104,11 @@ The easiest way to run Infinispan Server locally is to pull the container image.
 
 * Podman
 +
-`podman run --net=host -p 11222:11222 -e USER="admin" -e PASS="pass" quay.io/infinispan/server:12.0`
+`podman run --net=host -p 11222:11222 -e USER="admin" -e PASS="password" quay.io/infinispan/server:12.0`
 
 * Docker
 +
-`docker run -it -p 11222:11222 -e USER="admin" -e PASS="pass" infinispan/server:12.0`
+`docker run -it -p 11222:11222 -e USER="admin" -e PASS="password" infinispan/server:12.0`
 
 ==== Running the Server Distribution
 
@@ -121,7 +120,7 @@ Infinispan Server comes as a bare metal distribution that you can run locally.
 +
 [source,bash,options="nowrap"]
 ----
-$ ./bin/cli.sh user create admin -p pass
+$ ./bin/cli.sh user create admin -p password
 ----
 +
 . Run Infinispan Server.
@@ -143,7 +142,7 @@ image::welcomeConsole.png[Welcome to the console]
 To start using the Infinispan Console, do the following:
 
 . Select *Go to the console*.
-. Enter your credentials (`admin`/`pass`).
+. Enter your credentials (`admin`/`password`).
 
 //Step 3
 === Getting the Weather Application
@@ -201,7 +200,7 @@ Update the `connect()` method in the `DataSourceConnector` class as follows:
 ----
 ConfigurationBuilder builder = new ConfigurationBuilder(); //<1>
 
-builder.uri("hotrod://admin:pass@localhost:11222"); //<2>
+builder.uri("hotrod://admin:password@localhost:11222"); //<2>
 
 builder.clientIntelligence(ClientIntelligence.BASIC); //<3>
 
@@ -240,22 +239,20 @@ In this section of the tutorial, you implement the Temperature Loader applicatio
 
 ==== Create a Temperature Cache
 
-Update the `getTemperatureCache()` method in the `DataSourceConnector` class to invoke `getOrCreateCache()` as follows:
+Update the `connect()` method in the `DataSourceConnector` class by adding a `remoteCache("temperature")` as follows:
 
 .org.infinispan.tutorial.db.DataSourceConnector
 [source,java]
 ----
-public RemoteCache<String, Float> getTemperatureCache() {
-   return remoteCacheManager.administration().getOrCreateCache("temperature", "example.PROTOBUF_DIST"); //<1>
-}
+builder.remoteCache("temperature").configurationURI(temperatureCacheConfig); <1>
 ----
-<1> Adds a cache named `temperature` that uses the `example.PROTOBUF_DIST` configuration template.
+<1> Adds a cache named `temperature` that uses the content of the 'temperatureCacheConfig.xml' file.
 +
-This template uses Protobuf encoding for keys and values so that you can operate on data from different clients. You can
+This configuration uses Protobuf encoding for keys and values so that you can operate on data from different clients.
 
 [TIP]
 ====
-View the configuration for the `example.PROTOBUF_DIST` template from the Console at https://localhost:11222/console/container/default/configurations/[localhost:11222/console/container/default/configurations/]
+View the configuration in JSON for the cache from the Console once it's created.
 ====
 
 ==== Put and Read Temperature Data
@@ -464,7 +461,7 @@ LocationWeather.class
 schemaFileName = "weather.proto",
 schemaFilePath = "proto/",
 schemaPackageName = "org.infinispan.tutorial.data")
-public interface LocationWeatherSchema extends SerializationContextInitializer {
+public interface LocationWeatherSchema extends GeneratedSchema {
 }
 ----
 
@@ -494,21 +491,33 @@ Run `mvn clean package` from the command line or build the project in your IDE t
 
 In this step, you create a `weather` cache that can store `LocationWeather` objects. First you must initialize the marshalling context in the application and then create the cache, as follows:
 
+As before, configure the `weather` cache.
+
 .org.infinispan.tutorial.db.DataSourceConnector
 [source,java]
 ----
-    public RemoteCache<String, LocationWeather> getWeatherCache() {
+builder.remoteCache("weather").configurationURI(weatherCacheConfig); <1>
+----
+<1> Adds a cache named `weather` that uses the content of the 'weatherCacheConfig.xml' file.
+
+Unlike the `temperature` cache, the `weather` cache stores complex Java objects and you will query 
+the values. For this reason the serialization context needs to be registered on the client
+and on Infinispan Server.
+
+.org.infinispan.tutorial.db.DataSourceConnector
+[source,java]
+----
+=     public RemoteCache<String, LocationWeather> getWeatherCache() {
         System.out.println("--- Get or Create a queryable weather cache ---");
         Objects.requireNonNull(remoteCacheManager);
 
         LocationWeatherMarshallingContext.initSerializationContext(remoteCacheManager); // <1>
 
-        return remoteCacheManager.administration()
-              .getOrCreateCache("weather", "example.PROTOBUF_DIST"); // <2>
+        return remoteCacheManager.getCache("weather"); // <2>
     }
 ----
 <1> Initializes the serialization context.
-<2> Creates the `weather` cache.
+<2> Gets the `weather` cache.
 
 ==== Verify Weather Loader
 

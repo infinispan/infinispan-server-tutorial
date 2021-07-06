@@ -1,5 +1,6 @@
 package org.infinispan.tutorial.data;
 
+import org.infinispan.protostream.annotations.ProtoFactory;
 import org.infinispan.protostream.annotations.ProtoField;
 
 /**
@@ -23,6 +24,7 @@ public class LocationWeather {
 
    }
 
+   @ProtoFactory
    public LocationWeather(float temperature, String condition, String city, String country) {
       this.temperature = temperature;
       this.condition = condition;
