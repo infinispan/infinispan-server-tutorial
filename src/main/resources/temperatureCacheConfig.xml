@@ -1,0 +1,5 @@
+<distributed-cache name="temperature" remote-timeout="17500">
+    <locking acquire-timeout="15000" striping="false" concurrency-level="1000"/>
+    <encoding media-type="application/x-protostream"/>
+    <state-transfer timeout="60000"/>
+</distributed-cache>
