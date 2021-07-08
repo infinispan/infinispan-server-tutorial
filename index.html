@@ -435,6 +435,82 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 @media amzn-kf8{#header,#content,#footnotes,#footer{padding:0}}
 </style>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+pre.pygments .hll { background-color: #ffffcc }
+pre.pygments { background: #f8f8f8; }
+pre.pygments .tok-c { color: #408080; font-style: italic } /* Comment */
+pre.pygments .tok-err { border: 1px solid #FF0000 } /* Error */
+pre.pygments .tok-k { color: #008000; font-weight: bold } /* Keyword */
+pre.pygments .tok-o { color: #666666 } /* Operator */
+pre.pygments .tok-ch { color: #408080; font-style: italic } /* Comment.Hashbang */
+pre.pygments .tok-cm { color: #408080; font-style: italic } /* Comment.Multiline */
+pre.pygments .tok-cp { color: #BC7A00 } /* Comment.Preproc */
+pre.pygments .tok-cpf { color: #408080; font-style: italic } /* Comment.PreprocFile */
+pre.pygments .tok-c1 { color: #408080; font-style: italic } /* Comment.Single */
+pre.pygments .tok-cs { color: #408080; font-style: italic } /* Comment.Special */
+pre.pygments .tok-gd { color: #A00000 } /* Generic.Deleted */
+pre.pygments .tok-ge { font-style: italic } /* Generic.Emph */
+pre.pygments .tok-gr { color: #FF0000 } /* Generic.Error */
+pre.pygments .tok-gh { color: #000080; font-weight: bold } /* Generic.Heading */
+pre.pygments .tok-gi { color: #00A000 } /* Generic.Inserted */
+pre.pygments .tok-go { color: #888888 } /* Generic.Output */
+pre.pygments .tok-gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+pre.pygments .tok-gs { font-weight: bold } /* Generic.Strong */
+pre.pygments .tok-gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+pre.pygments .tok-gt { color: #0044DD } /* Generic.Traceback */
+pre.pygments .tok-kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+pre.pygments .tok-kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+pre.pygments .tok-kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+pre.pygments .tok-kp { color: #008000 } /* Keyword.Pseudo */
+pre.pygments .tok-kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+pre.pygments .tok-kt { color: #B00040 } /* Keyword.Type */
+pre.pygments .tok-m { color: #666666 } /* Literal.Number */
+pre.pygments .tok-s { color: #BA2121 } /* Literal.String */
+pre.pygments .tok-na { color: #7D9029 } /* Name.Attribute */
+pre.pygments .tok-nb { color: #008000 } /* Name.Builtin */
+pre.pygments .tok-nc { color: #0000FF; font-weight: bold } /* Name.Class */
+pre.pygments .tok-no { color: #880000 } /* Name.Constant */
+pre.pygments .tok-nd { color: #AA22FF } /* Name.Decorator */
+pre.pygments .tok-ni { color: #999999; font-weight: bold } /* Name.Entity */
+pre.pygments .tok-ne { color: #D2413A; font-weight: bold } /* Name.Exception */
+pre.pygments .tok-nf { color: #0000FF } /* Name.Function */
+pre.pygments .tok-nl { color: #A0A000 } /* Name.Label */
+pre.pygments .tok-nn { color: #0000FF; font-weight: bold } /* Name.Namespace */
+pre.pygments .tok-nt { color: #008000; font-weight: bold } /* Name.Tag */
+pre.pygments .tok-nv { color: #19177C } /* Name.Variable */
+pre.pygments .tok-ow { color: #AA22FF; font-weight: bold } /* Operator.Word */
+pre.pygments .tok-w { color: #bbbbbb } /* Text.Whitespace */
+pre.pygments .tok-mb { color: #666666 } /* Literal.Number.Bin */
+pre.pygments .tok-mf { color: #666666 } /* Literal.Number.Float */
+pre.pygments .tok-mh { color: #666666 } /* Literal.Number.Hex */
+pre.pygments .tok-mi { color: #666666 } /* Literal.Number.Integer */
+pre.pygments .tok-mo { color: #666666 } /* Literal.Number.Oct */
+pre.pygments .tok-sa { color: #BA2121 } /* Literal.String.Affix */
+pre.pygments .tok-sb { color: #BA2121 } /* Literal.String.Backtick */
+pre.pygments .tok-sc { color: #BA2121 } /* Literal.String.Char */
+pre.pygments .tok-dl { color: #BA2121 } /* Literal.String.Delimiter */
+pre.pygments .tok-sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+pre.pygments .tok-s2 { color: #BA2121 } /* Literal.String.Double */
+pre.pygments .tok-se { color: #BB6622; font-weight: bold } /* Literal.String.Escape */
+pre.pygments .tok-sh { color: #BA2121 } /* Literal.String.Heredoc */
+pre.pygments .tok-si { color: #BB6688; font-weight: bold } /* Literal.String.Interpol */
+pre.pygments .tok-sx { color: #008000 } /* Literal.String.Other */
+pre.pygments .tok-sr { color: #BB6688 } /* Literal.String.Regex */
+pre.pygments .tok-s1 { color: #BA2121 } /* Literal.String.Single */
+pre.pygments .tok-ss { color: #19177C } /* Literal.String.Symbol */
+pre.pygments .tok-bp { color: #008000 } /* Name.Builtin.Pseudo */
+pre.pygments .tok-fm { color: #0000FF } /* Name.Function.Magic */
+pre.pygments .tok-vc { color: #19177C } /* Name.Variable.Class */
+pre.pygments .tok-vg { color: #19177C } /* Name.Variable.Global */
+pre.pygments .tok-vi { color: #19177C } /* Name.Variable.Instance */
+pre.pygments .tok-vm { color: #19177C } /* Name.Variable.Magic */
+pre.pygments .tok-il { color: #666666 } /* Literal.Number.Integer.Long */
+</style>
 </head>
 <body class="article toc2 toc-left">
 <div id="header">
@@ -756,7 +832,7 @@ this tutorial, you need a locally running server instance.</p>
 <p>Add credentials.</p>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight nowrap"><code data-lang="bash">$ ./bin/cli.sh user create admin -p password</code></pre>
+<pre class="pygments highlight nowrap"><code data-lang="bash"><span></span>$ ./bin/cli.sh user create admin -p password</code></pre>
 </div>
 </div>
 </li>
@@ -764,7 +840,7 @@ this tutorial, you need a locally running server instance.</p>
 <p>Run Infinispan Server.</p>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight nowrap"><code data-lang="bash">$ ./bin/server.sh</code></pre>
+<pre class="pygments highlight nowrap"><code data-lang="bash"><span></span>$ ./bin/server.sh</code></pre>
 </div>
 </div>
 </li>
@@ -853,18 +929,18 @@ this tutorial, you need a locally running server instance.</p>
 <div class="listingblock">
 <div class="title">pom.xml</div>
 <div class="content">
-<pre class="pygments highlight"><code data-lang="xml">&lt;dependency&gt;
-    &lt;groupId&gt;org.infinispan&lt;/groupId&gt;
-    &lt;artifactId&gt;infinispan-client-hotrod&lt;/artifactId&gt;
-&lt;/dependency&gt;
-&lt;dependency&gt;
-    &lt;groupId&gt;org.infinispan&lt;/groupId&gt;
-    &lt;artifactId&gt;infinispan-query-dsl&lt;/artifactId&gt;
-&lt;/dependency&gt;
-&lt;dependency&gt;
-    &lt;groupId&gt;org.infinispan&lt;/groupId&gt;
-    &lt;artifactId&gt;infinispan-remote-query-client&lt;/artifactId&gt;
-&lt;/dependency&gt;</code></pre>
+<pre class="pygments highlight"><code data-lang="xml"><span></span><span class="tok-nt">&lt;dependency&gt;</span>
+    <span class="tok-nt">&lt;groupId&gt;</span>org.infinispan<span class="tok-nt">&lt;/groupId&gt;</span>
+    <span class="tok-nt">&lt;artifactId&gt;</span>infinispan-client-hotrod<span class="tok-nt">&lt;/artifactId&gt;</span>
+<span class="tok-nt">&lt;/dependency&gt;</span>
+<span class="tok-nt">&lt;dependency&gt;</span>
+    <span class="tok-nt">&lt;groupId&gt;</span>org.infinispan<span class="tok-nt">&lt;/groupId&gt;</span>
+    <span class="tok-nt">&lt;artifactId&gt;</span>infinispan-query-dsl<span class="tok-nt">&lt;/artifactId&gt;</span>
+<span class="tok-nt">&lt;/dependency&gt;</span>
+<span class="tok-nt">&lt;dependency&gt;</span>
+    <span class="tok-nt">&lt;groupId&gt;</span>org.infinispan<span class="tok-nt">&lt;/groupId&gt;</span>
+    <span class="tok-nt">&lt;artifactId&gt;</span>infinispan-remote-query-client<span class="tok-nt">&lt;/artifactId&gt;</span>
+<span class="tok-nt">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
 </div>
@@ -876,13 +952,13 @@ this tutorial, you need a locally running server instance.</p>
 <div class="listingblock">
 <div class="title">org.infinispan.tutorial.db.DataSourceConnector</div>
 <div class="content">
-<pre class="pygments highlight"><code data-lang="java">ConfigurationBuilder builder = new ConfigurationBuilder(); <i class="conum" data-value="1"></i><b>(1)</b>
+<pre class="pygments highlight"><code data-lang="java"><span></span><span class="tok-n">ConfigurationBuilder</span> <span class="tok-n">builder</span> <span class="tok-o">=</span> <span class="tok-k">new</span> <span class="tok-n">ConfigurationBuilder</span><span class="tok-p">();</span> <i class="conum" data-value="1"></i><b>(1)</b>
 
-builder.uri("hotrod://admin:password@localhost:11222"); <i class="conum" data-value="2"></i><b>(2)</b>
+<span class="tok-n">builder</span><span class="tok-p">.</span><span class="tok-na">uri</span><span class="tok-p">(</span><span class="tok-s">&quot;hotrod://admin:password@localhost:11222&quot;</span><span class="tok-p">);</span> <i class="conum" data-value="2"></i><b>(2)</b>
 
-builder.clientIntelligence(ClientIntelligence.BASIC); <i class="conum" data-value="3"></i><b>(3)</b>
+<span class="tok-n">builder</span><span class="tok-p">.</span><span class="tok-na">clientIntelligence</span><span class="tok-p">(</span><span class="tok-n">ClientIntelligence</span><span class="tok-p">.</span><span class="tok-na">BASIC</span><span class="tok-p">);</span> <i class="conum" data-value="3"></i><b>(3)</b>
 
-remoteCacheManager = new RemoteCacheManager(builder.build()); <i class="conum" data-value="4"></i><b>(4)</b></code></pre>
+<span class="tok-n">remoteCacheManager</span> <span class="tok-o">=</span> <span class="tok-k">new</span> <span class="tok-n">RemoteCacheManager</span><span class="tok-p">(</span><span class="tok-n">builder</span><span class="tok-p">.</span><span class="tok-na">build</span><span class="tok-p">());</span> <i class="conum" data-value="4"></i><b>(4)</b></code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -916,9 +992,10 @@ remoteCacheManager = new RemoteCacheManager(builder.build()); <i class="conum" d
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="bash">---- Connect to Infinispan ----
+<pre class="pygments highlight"><code data-lang="bash"><span></span>
+---- Connect to Infinispan ----
 INFO: ISPN004021: Infinispan version: Infinispan ...
----- Connection count: 1 ----
+---- Connection count: <span class="tok-m">1</span> ----
 ---- Shutdown the client ----</code></pre>
 </div>
 </div>
@@ -953,7 +1030,7 @@ INFO: ISPN004021: Infinispan version: Infinispan ...
 <div class="listingblock">
 <div class="title">org.infinispan.tutorial.db.DataSourceConnector</div>
 <div class="content">
-<pre class="pygments highlight"><code data-lang="java">builder.remoteCache("temperature").configurationURI(temperatureCacheConfig); <i class="conum" data-value="1"></i><b>(1)</b></code></pre>
+<pre class="pygments highlight"><code data-lang="java"><span></span><span class="tok-n">builder</span><span class="tok-p">.</span><span class="tok-na">remoteCache</span><span class="tok-p">(</span><span class="tok-s">&quot;temperature&quot;</span><span class="tok-p">).</span><span class="tok-na">configurationURI</span><span class="tok-p">(</span><span class="tok-n">temperatureCacheConfig</span><span class="tok-p">);</span> <i class="conum" data-value="1"></i><b>(1)</b></code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -990,15 +1067,15 @@ INFO: ISPN004021: Infinispan version: Infinispan ...
 <div class="listingblock">
 <div class="title">org.infinispan.tutorial.services.temperature.TemperatureLoader</div>
 <div class="content">
-<pre class="pygments highlight"><code data-lang="java">   @Override
-   public Float getForLocation(String location) {
-      Float temperature = cache.get(location); <i class="conum" data-value="1"></i><b>(1)</b>
-      if (temperature == null) {
-         temperature = fetchTemperature(); <i class="conum" data-value="2"></i><b>(2)</b>
-         cache.put(location, temperature); <i class="conum" data-value="3"></i><b>(3)</b>
-      }
-      return temperature;
-   }</code></pre>
+<pre class="pygments highlight"><code data-lang="java"><span></span>   <span class="tok-nd">@Override</span>
+   <span class="tok-kd">public</span> <span class="tok-n">Float</span> <span class="tok-nf">getForLocation</span><span class="tok-p">(</span><span class="tok-n">String</span> <span class="tok-n">location</span><span class="tok-p">)</span> <span class="tok-p">{</span>
+      <span class="tok-n">Float</span> <span class="tok-n">temperature</span> <span class="tok-o">=</span> <span class="tok-n">cache</span><span class="tok-p">.</span><span class="tok-na">get</span><span class="tok-p">(</span><span class="tok-n">location</span><span class="tok-p">);</span> <i class="conum" data-value="1"></i><b>(1)</b>
+      <span class="tok-k">if</span> <span class="tok-p">(</span><span class="tok-n">temperature</span> <span class="tok-o">==</span> <span class="tok-kc">null</span><span class="tok-p">)</span> <span class="tok-p">{</span>
+         <span class="tok-n">temperature</span> <span class="tok-o">=</span> <span class="tok-n">fetchTemperature</span><span class="tok-p">();</span> <i class="conum" data-value="2"></i><b>(2)</b>
+         <span class="tok-n">cache</span><span class="tok-p">.</span><span class="tok-na">put</span><span class="tok-p">(</span><span class="tok-n">location</span><span class="tok-p">,</span> <span class="tok-n">temperature</span><span class="tok-p">);</span> <i class="conum" data-value="3"></i><b>(3)</b>
+      <span class="tok-p">}</span>
+      <span class="tok-k">return</span> <span class="tok-n">temperature</span><span class="tok-p">;</span>
+   <span class="tok-p">}</span></code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -1035,24 +1112,25 @@ INFO: ISPN004021: Infinispan version: Infinispan ...
 <div class="listingblock">
 <div class="title">org.infinispan.tutorial.client.temperature.TemperatureLoaderApp</div>
 <div class="content">
-<pre class="pygments highlight"><code data-lang="java">---- Connect to Infinispan ----
-&lt;timestamp&gt; org.infinispan.client.hotrod.RemoteCacheManager actualStart
-INFO: ISPN004021: Infinispan version: Infinispan 'Corona Extra' 11.0.1.Final
----- Get or create the 'temperature' cache ----
----- Press any key to quit ----
----- Loading information ----
-Rome, Italy - 22.000622
-Como, Italy - 21.044369
-...
+<pre class="pygments highlight"><code data-lang="java"><span></span>
+<span class="tok-o">----</span> <span class="tok-n">Connect</span> <span class="tok-n">to</span> <span class="tok-n">Infinispan</span> <span class="tok-o">----</span>
+<span class="tok-o">&lt;</span><span class="tok-n">timestamp</span><span class="tok-o">&gt;</span> <span class="tok-n">org</span><span class="tok-p">.</span><span class="tok-na">infinispan</span><span class="tok-p">.</span><span class="tok-na">client</span><span class="tok-p">.</span><span class="tok-na">hotrod</span><span class="tok-p">.</span><span class="tok-na">RemoteCacheManager</span> <span class="tok-n">actualStart</span>
+<span class="tok-nl">INFO:</span> <span class="tok-n">ISPN004021</span><span class="tok-p">:</span> <span class="tok-n">Infinispan</span> <span class="tok-n">version</span><span class="tok-p">:</span> <span class="tok-n">Infinispan</span> <span class="tok-err">&#39;</span><span class="tok-n">Corona</span> <span class="tok-n">Extra</span><span class="tok-err">&#39;</span> <span class="tok-mf">11.0.1</span><span class="tok-p">.</span><span class="tok-na">Final</span>
+<span class="tok-o">----</span> <span class="tok-n">Get</span> <span class="tok-n">or</span> <span class="tok-n">create</span> <span class="tok-n">the</span> <span class="tok-err">&#39;</span><span class="tok-n">temperature</span><span class="tok-err">&#39;</span> <span class="tok-n">cache</span> <span class="tok-o">----</span>
+<span class="tok-o">----</span> <span class="tok-n">Press</span> <span class="tok-n">any</span> <span class="tok-n">key</span> <span class="tok-n">to</span> <span class="tok-n">quit</span> <span class="tok-o">----</span>
+<span class="tok-o">----</span> <span class="tok-n">Loading</span> <span class="tok-n">information</span> <span class="tok-o">----</span>
+<span class="tok-n">Rome</span><span class="tok-p">,</span> <span class="tok-n">Italy</span> <span class="tok-o">-</span> <span class="tok-mf">22.000622</span>
+<span class="tok-n">Como</span><span class="tok-p">,</span> <span class="tok-n">Italy</span> <span class="tok-o">-</span> <span class="tok-mf">21.044369</span>
+<span class="tok-p">...</span>
 
----- Loaded in 1762ms ----
----- Loading information ----
-Rome, Italy - 22.000622
-Como, Italy - 21.044369
-...
----- Loaded in 44ms ----
-q
----- Shutdown the client ----</code></pre>
+<span class="tok-o">----</span> <span class="tok-n">Loaded</span> <span class="tok-n">in</span> <span class="tok-mi">1762</span><span class="tok-n">ms</span> <span class="tok-o">----</span>
+<span class="tok-o">----</span> <span class="tok-n">Loading</span> <span class="tok-n">information</span> <span class="tok-o">----</span>
+<span class="tok-n">Rome</span><span class="tok-p">,</span> <span class="tok-n">Italy</span> <span class="tok-o">-</span> <span class="tok-mf">22.000622</span>
+<span class="tok-n">Como</span><span class="tok-p">,</span> <span class="tok-n">Italy</span> <span class="tok-o">-</span> <span class="tok-mf">21.044369</span>
+<span class="tok-p">...</span>
+<span class="tok-o">----</span> <span class="tok-n">Loaded</span> <span class="tok-n">in</span> <span class="tok-mi">44</span><span class="tok-n">ms</span> <span class="tok-o">----</span>
+<span class="tok-n">q</span>
+<span class="tok-o">----</span> <span class="tok-n">Shutdown</span> <span class="tok-n">the</span> <span class="tok-n">client</span> <span class="tok-o">----</span></code></pre>
 </div>
 </div>
 </div>
@@ -1067,7 +1145,7 @@ q
 <div class="listingblock">
 <div class="title">org.infinispan.tutorial.services.temperature.TemperatureLoader</div>
 <div class="content">
-<pre class="pygments highlight"><code data-lang="java">   cache.put(location, temperature, 20, TimeUnit.SECONDS);</code></pre>
+<pre class="pygments highlight"><code data-lang="java"><span></span>   <span class="tok-n">cache</span><span class="tok-p">.</span><span class="tok-na">put</span><span class="tok-p">(</span><span class="tok-n">location</span><span class="tok-p">,</span> <span class="tok-n">temperature</span><span class="tok-p">,</span> <span class="tok-mi">20</span><span class="tok-p">,</span> <span class="tok-n">TimeUnit</span><span class="tok-p">.</span><span class="tok-na">SECONDS</span><span class="tok-p">);</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1094,31 +1172,31 @@ q
 <div class="listingblock">
 <div class="title">org.infinispan.tutorial.services.TemperatureMonitor</div>
 <div class="content">
-<pre class="pygments highlight"><code data-lang="java">    @ClientListener <i class="conum" data-value="1"></i><b>(1)</b>
-    public class TemperatureChangesListener {
-      private String location;
+<pre class="pygments highlight"><code data-lang="java"><span></span>    <span class="tok-nd">@ClientListener</span> <i class="conum" data-value="1"></i><b>(1)</b>
+    <span class="tok-kd">public</span> <span class="tok-kd">class</span> <span class="tok-nc">TemperatureChangesListener</span> <span class="tok-p">{</span>
+      <span class="tok-kd">private</span> <span class="tok-n">String</span> <span class="tok-n">location</span><span class="tok-p">;</span>
 
-      TemperatureChangesListener(String location) {
-         this.location = location;
-      }
+      <span class="tok-n">TemperatureChangesListener</span><span class="tok-p">(</span><span class="tok-n">String</span> <span class="tok-n">location</span><span class="tok-p">)</span> <span class="tok-p">{</span>
+         <span class="tok-k">this</span><span class="tok-p">.</span><span class="tok-na">location</span> <span class="tok-o">=</span> <span class="tok-n">location</span><span class="tok-p">;</span>
+      <span class="tok-p">}</span>
 
-      @ClientCacheEntryCreated <i class="conum" data-value="2"></i><b>(2)</b>
-      public void created(ClientCacheEntryCreatedEvent event) {
-         if(event.getKey().equals(location)) {
-            cache.getAsync(location) <i class="conum" data-value="3"></i><b>(3)</b>
-                  .whenComplete((temperature, ex) -&gt;
-                  System.out.printf("&gt;&gt; Location %s Temperature %s", location, temperature));
-         }
-      }
-    }
+      <span class="tok-nd">@ClientCacheEntryCreated</span> <i class="conum" data-value="2"></i><b>(2)</b>
+      <span class="tok-kd">public</span> <span class="tok-kt">void</span> <span class="tok-nf">created</span><span class="tok-p">(</span><span class="tok-n">ClientCacheEntryCreatedEvent</span> <span class="tok-n">event</span><span class="tok-p">)</span> <span class="tok-p">{</span>
+         <span class="tok-k">if</span><span class="tok-p">(</span><span class="tok-n">event</span><span class="tok-p">.</span><span class="tok-na">getKey</span><span class="tok-p">().</span><span class="tok-na">equals</span><span class="tok-p">(</span><span class="tok-n">location</span><span class="tok-p">))</span> <span class="tok-p">{</span>
+            <span class="tok-n">cache</span><span class="tok-p">.</span><span class="tok-na">getAsync</span><span class="tok-p">(</span><span class="tok-n">location</span><span class="tok-p">)</span> <i class="conum" data-value="3"></i><b>(3)</b>
+                  <span class="tok-p">.</span><span class="tok-na">whenComplete</span><span class="tok-p">((</span><span class="tok-n">temperature</span><span class="tok-p">,</span> <span class="tok-n">ex</span><span class="tok-p">)</span> <span class="tok-o">-&gt;</span>
+                  <span class="tok-n">System</span><span class="tok-p">.</span><span class="tok-na">out</span><span class="tok-p">.</span><span class="tok-na">printf</span><span class="tok-p">(</span><span class="tok-s">&quot;&gt;&gt; Location %s Temperature %s&quot;</span><span class="tok-p">,</span> <span class="tok-n">location</span><span class="tok-p">,</span> <span class="tok-n">temperature</span><span class="tok-p">));</span>
+         <span class="tok-p">}</span>
+      <span class="tok-p">}</span>
+    <span class="tok-p">}</span>
 
-   ...
+   <span class="tok-p">...</span>
 
-    public void monitorLocation(String location) {
-        System.out.println("---- Start monitoring temperature changes for " + location + " ----\n");
-        TemperatureChangesListener temperatureChangesListener = new TemperatureChangesListener(location);
-        cache.addClientListener(temperatureChangesListener); <i class="conum" data-value="4"></i><b>(4)</b>
-    }</code></pre>
+    <span class="tok-kd">public</span> <span class="tok-kt">void</span> <span class="tok-nf">monitorLocation</span><span class="tok-p">(</span><span class="tok-n">String</span> <span class="tok-n">location</span><span class="tok-p">)</span> <span class="tok-p">{</span>
+        <span class="tok-n">System</span><span class="tok-p">.</span><span class="tok-na">out</span><span class="tok-p">.</span><span class="tok-na">println</span><span class="tok-p">(</span><span class="tok-s">&quot;---- Start monitoring temperature changes for &quot;</span> <span class="tok-o">+</span> <span class="tok-n">location</span> <span class="tok-o">+</span> <span class="tok-s">&quot; ----\n&quot;</span><span class="tok-p">);</span>
+        <span class="tok-n">TemperatureChangesListener</span> <span class="tok-n">temperatureChangesListener</span> <span class="tok-o">=</span> <span class="tok-k">new</span> <span class="tok-n">TemperatureChangesListener</span><span class="tok-p">(</span><span class="tok-n">location</span><span class="tok-p">);</span>
+        <span class="tok-n">cache</span><span class="tok-p">.</span><span class="tok-na">addClientListener</span><span class="tok-p">(</span><span class="tok-n">temperatureChangesListener</span><span class="tok-p">);</span> <i class="conum" data-value="4"></i><b>(4)</b>
+    <span class="tok-p">}</span></code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -1181,15 +1259,16 @@ q
 <div class="listingblock">
 <div class="title">org.infinispan.tutorial.client.temperature.TemperatureMonitorApp</div>
 <div class="content">
-<pre class="pygments highlight"><code data-lang="bash">---- Connect to Infinispan ----
+<pre class="pygments highlight"><code data-lang="bash"><span></span>
+---- Connect to Infinispan ----
 &lt;timestamp&gt; org.infinispan.client.hotrod.RemoteCacheManager actualStart
-INFO: ISPN004021: Infinispan version: Infinispan 'Corona Extra' 11.0.1.Final
----- Get or create the 'temperature' cache ----
-Temperature 14.185611 for Bilbao, Spain
----- Start monitoring temperature changes for Bilbao, Spain ----
+INFO: ISPN004021: Infinispan version: Infinispan <span class="tok-s1">&#39;Corona Extra&#39;</span> <span class="tok-m">11</span>.0.1.Final
+---- Get or create the <span class="tok-s1">&#39;temperature&#39;</span> cache ----
+Temperature <span class="tok-m">14</span>.185611 <span class="tok-k">for</span> Bilbao, Spain
+---- Start monitoring temperature changes <span class="tok-k">for</span> Bilbao, Spain ----
 ---- Press any key to quit ----
-&gt;&gt; Location Bilbao, Spain Temperature 7.374308
-&gt;&gt; Location Bilbao, Spain Temperature 24.784744</code></pre>
+&gt;&gt; Location Bilbao, Spain Temperature <span class="tok-m">7</span>.374308
+&gt;&gt; Location Bilbao, Spain Temperature <span class="tok-m">24</span>.784744</code></pre>
 </div>
 </div>
 <div class="admonitionblock tip">
@@ -1237,20 +1316,20 @@ Temperature 14.185611 for Bilbao, Spain
 <div class="listingblock">
 <div class="title">org.infinispan.tutorial.data.LocationWeather</div>
 <div class="content">
-<pre class="pygments highlight"><code data-lang="java">    public class LocationWeather {
+<pre class="pygments highlight"><code data-lang="java"><span></span>    <span class="tok-kd">public</span> <span class="tok-kd">class</span> <span class="tok-nc">LocationWeather</span> <span class="tok-p">{</span>
 
-       @ProtoField(number = 1, defaultValue = "0.0")
-       float temperature;
+       <span class="tok-nd">@ProtoField</span><span class="tok-p">(</span><span class="tok-n">number</span> <span class="tok-o">=</span> <span class="tok-mi">1</span><span class="tok-p">,</span> <span class="tok-n">defaultValue</span> <span class="tok-o">=</span> <span class="tok-s">&quot;0.0&quot;</span><span class="tok-p">)</span>
+       <span class="tok-kt">float</span> <span class="tok-n">temperature</span><span class="tok-p">;</span>
 
-       @ProtoField(number = 2)
-       String condition;
+       <span class="tok-nd">@ProtoField</span><span class="tok-p">(</span><span class="tok-n">number</span> <span class="tok-o">=</span> <span class="tok-mi">2</span><span class="tok-p">)</span>
+       <span class="tok-n">String</span> <span class="tok-n">condition</span><span class="tok-p">;</span>
 
-       @ProtoField(number = 3)
-       String city;
+       <span class="tok-nd">@ProtoField</span><span class="tok-p">(</span><span class="tok-n">number</span> <span class="tok-o">=</span> <span class="tok-mi">3</span><span class="tok-p">)</span>
+       <span class="tok-n">String</span> <span class="tok-n">city</span><span class="tok-p">;</span>
 
-       @ProtoField(number = 4)
-       String country;
-...</code></pre>
+       <span class="tok-nd">@ProtoField</span><span class="tok-p">(</span><span class="tok-n">number</span> <span class="tok-o">=</span> <span class="tok-mi">4</span><span class="tok-p">)</span>
+       <span class="tok-n">String</span> <span class="tok-n">country</span><span class="tok-p">;</span>
+<span class="tok-p">...</span></code></pre>
 </div>
 </div>
 </div>
@@ -1265,15 +1344,15 @@ Temperature 14.185611 for Bilbao, Spain
 <div class="listingblock">
 <div class="title">org.infinispan.tutorial.db.LocationWeatherMarshallingContext</div>
 <div class="content">
-<pre class="pygments highlight"><code data-lang="java">@AutoProtoSchemaBuilder(
-includeClasses = {
-LocationWeather.class
-},
-schemaFileName = "weather.proto",
-schemaFilePath = "proto/",
-schemaPackageName = "org.infinispan.tutorial.data")
-public interface LocationWeatherSchema extends GeneratedSchema {
-}</code></pre>
+<pre class="pygments highlight"><code data-lang="java"><span></span><span class="tok-nd">@AutoProtoSchemaBuilder</span><span class="tok-p">(</span>
+<span class="tok-n">includeClasses</span> <span class="tok-o">=</span> <span class="tok-p">{</span>
+<span class="tok-n">LocationWeather</span><span class="tok-p">.</span><span class="tok-na">class</span>
+<span class="tok-p">},</span>
+<span class="tok-n">schemaFileName</span> <span class="tok-o">=</span> <span class="tok-s">&quot;weather.proto&quot;</span><span class="tok-p">,</span>
+<span class="tok-n">schemaFilePath</span> <span class="tok-o">=</span> <span class="tok-s">&quot;proto/&quot;</span><span class="tok-p">,</span>
+<span class="tok-n">schemaPackageName</span> <span class="tok-o">=</span> <span class="tok-s">&quot;org.infinispan.tutorial.data&quot;</span><span class="tok-p">)</span>
+<span class="tok-kd">public</span> <span class="tok-kd">interface</span> <span class="tok-nc">LocationWeatherSchema</span> <span class="tok-kd">extends</span> <span class="tok-n">GeneratedSchema</span> <span class="tok-p">{</span>
+<span class="tok-p">}</span></code></pre>
 </div>
 </div>
 <div class="admonitionblock important">
@@ -1293,14 +1372,14 @@ public interface LocationWeatherSchema extends GeneratedSchema {
 <div class="listingblock">
 <div class="title">org.infinispan.tutorial.db.LocationWeatherMarshallingContext</div>
 <div class="content">
-<pre class="pygments highlight"><code data-lang="java">       // Retrieve metadata cache
-      RemoteCache&lt;String, String&gt; metadataCache =
-            cacheManager.getCache(ProtobufMetadataManagerConstants.PROTOBUF_METADATA_CACHE_NAME); <i class="conum" data-value="1"></i><b>(1)</b>
+<pre class="pygments highlight"><code data-lang="java"><span></span>       <span class="tok-c1">// Retrieve metadata cache</span>
+      <span class="tok-n">RemoteCache</span><span class="tok-o">&lt;</span><span class="tok-n">String</span><span class="tok-p">,</span> <span class="tok-n">String</span><span class="tok-o">&gt;</span> <span class="tok-n">metadataCache</span> <span class="tok-o">=</span>
+            <span class="tok-n">cacheManager</span><span class="tok-p">.</span><span class="tok-na">getCache</span><span class="tok-p">(</span><span class="tok-n">ProtobufMetadataManagerConstants</span><span class="tok-p">.</span><span class="tok-na">PROTOBUF_METADATA_CACHE_NAME</span><span class="tok-p">);</span> <i class="conum" data-value="1"></i><b>(1)</b>
 
-      GeneratedSchema schema = new LocationWeatherSchemaImpl(); <i class="conum" data-value="2"></i><b>(2)</b>
+      <span class="tok-n">GeneratedSchema</span> <span class="tok-n">schema</span> <span class="tok-o">=</span> <span class="tok-k">new</span> <span class="tok-n">LocationWeatherSchemaImpl</span><span class="tok-p">();</span> <i class="conum" data-value="2"></i><b>(2)</b>
 
-      // Define the new schema on the server too
-      metadataCache.put(schema.getProtoFileName(), schema.getProtoFile()); <i class="conum" data-value="3"></i><b>(3)</b></code></pre>
+      <span class="tok-c1">// Define the new schema on the server too</span>
+      <span class="tok-n">metadataCache</span><span class="tok-p">.</span><span class="tok-na">put</span><span class="tok-p">(</span><span class="tok-n">schema</span><span class="tok-p">.</span><span class="tok-na">getProtoFileName</span><span class="tok-p">(),</span> <span class="tok-n">schema</span><span class="tok-p">.</span><span class="tok-na">getProtoFile</span><span class="tok-p">());</span> <i class="conum" data-value="3"></i><b>(3)</b></code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -1331,7 +1410,7 @@ public interface LocationWeatherSchema extends GeneratedSchema {
 <div class="listingblock">
 <div class="title">org.infinispan.tutorial.db.DataSourceConnector</div>
 <div class="content">
-<pre class="pygments highlight"><code data-lang="java">builder.remoteCache("weather").configurationURI(weatherCacheConfig); <i class="conum" data-value="1"></i><b>(1)</b></code></pre>
+<pre class="pygments highlight"><code data-lang="java"><span></span><span class="tok-n">builder</span><span class="tok-p">.</span><span class="tok-na">remoteCache</span><span class="tok-p">(</span><span class="tok-s">&quot;weather&quot;</span><span class="tok-p">).</span><span class="tok-na">configurationURI</span><span class="tok-p">(</span><span class="tok-n">weatherCacheConfig</span><span class="tok-p">);</span> <i class="conum" data-value="1"></i><b>(1)</b></code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -1350,14 +1429,14 @@ and on Infinispan Server.</p>
 <div class="listingblock">
 <div class="title">org.infinispan.tutorial.db.DataSourceConnector</div>
 <div class="content">
-<pre class="pygments highlight"><code data-lang="java">=     public RemoteCache&lt;String, LocationWeather&gt; getWeatherCache() {
-        System.out.println("--- Get or Create a queryable weather cache ---");
-        Objects.requireNonNull(remoteCacheManager);
+<pre class="pygments highlight"><code data-lang="java"><span></span><span class="tok-o">=</span>     <span class="tok-kd">public</span> <span class="tok-n">RemoteCache</span><span class="tok-o">&lt;</span><span class="tok-n">String</span><span class="tok-p">,</span> <span class="tok-n">LocationWeather</span><span class="tok-o">&gt;</span> <span class="tok-nf">getWeatherCache</span><span class="tok-p">()</span> <span class="tok-p">{</span>
+        <span class="tok-n">System</span><span class="tok-p">.</span><span class="tok-na">out</span><span class="tok-p">.</span><span class="tok-na">println</span><span class="tok-p">(</span><span class="tok-s">&quot;--- Get or Create a queryable weather cache ---&quot;</span><span class="tok-p">);</span>
+        <span class="tok-n">Objects</span><span class="tok-p">.</span><span class="tok-na">requireNonNull</span><span class="tok-p">(</span><span class="tok-n">remoteCacheManager</span><span class="tok-p">);</span>
 
-        LocationWeatherMarshallingContext.initSerializationContext(remoteCacheManager); <i class="conum" data-value="1"></i><b>(1)</b>
+        <span class="tok-n">LocationWeatherMarshallingContext</span><span class="tok-p">.</span><span class="tok-na">initSerializationContext</span><span class="tok-p">(</span><span class="tok-n">remoteCacheManager</span><span class="tok-p">);</span> <i class="conum" data-value="1"></i><b>(1)</b>
 
-        return remoteCacheManager.getCache("weather"); <i class="conum" data-value="2"></i><b>(2)</b>
-    }</code></pre>
+        <span class="tok-k">return</span> <span class="tok-n">remoteCacheManager</span><span class="tok-p">.</span><span class="tok-na">getCache</span><span class="tok-p">(</span><span class="tok-s">&quot;weather&quot;</span><span class="tok-p">);</span> <i class="conum" data-value="2"></i><b>(2)</b>
+    <span class="tok-p">}</span></code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -1387,26 +1466,27 @@ and on Infinispan Server.</p>
 <div class="listingblock">
 <div class="title">org.infinispan.tutorial.client.weather.WeatherLoaderApp</div>
 <div class="content">
-<pre class="pygments highlight"><code data-lang="bash">---- Connect to Infinispan ----
+<pre class="pygments highlight"><code data-lang="bash"><span></span>
+---- Connect to Infinispan ----
 &lt;timestamp&gt; org.infinispan.client.hotrod.RemoteCacheManager actualStart
-INFO: ISPN004021: Infinispan version: Infinispan 'Corona Extra' 11.0.1.Final
-LocationWeatherMarshallingContext - initialize the serialization context for LocationWeather class
----- Get or create the 'weather' cache ----
+INFO: ISPN004021: Infinispan version: Infinispan <span class="tok-s1">&#39;Corona Extra&#39;</span> <span class="tok-m">11</span>.0.1.Final
+LocationWeatherMarshallingContext - initialize the serialization context <span class="tok-k">for</span> LocationWeather class
+---- Get or create the <span class="tok-s1">&#39;weather&#39;</span> cache ----
 ---- Press any key to quit ----
 
 ---- Loading information ----
-Rome, Italy - LocationWeather{temperature=17.252243, condition='SUNNY', city='Rome', country='Italy'}
-Como, Italy - LocationWeather{temperature=24.495003, condition='WINDLESS', city='Como', country='Italy'}
-Basel, Switzerland - LocationWeather{temperature=19.795946, condition='WINDLESS', city='Basel', country='Switzerland'}
-Bern, Switzerland - LocationWeather{temperature=20.455978, condition='WINDLESS', city='Bern', country='Switzerland'}
+Rome, Italy - LocationWeather<span class="tok-o">{</span><span class="tok-nv">temperature</span><span class="tok-o">=</span><span class="tok-m">17</span>.252243, <span class="tok-nv">condition</span><span class="tok-o">=</span><span class="tok-s1">&#39;SUNNY&#39;</span>, <span class="tok-nv">city</span><span class="tok-o">=</span><span class="tok-s1">&#39;Rome&#39;</span>, <span class="tok-nv">country</span><span class="tok-o">=</span><span class="tok-s1">&#39;Italy&#39;</span><span class="tok-o">}</span>
+Como, Italy - LocationWeather<span class="tok-o">{</span><span class="tok-nv">temperature</span><span class="tok-o">=</span><span class="tok-m">24</span>.495003, <span class="tok-nv">condition</span><span class="tok-o">=</span><span class="tok-s1">&#39;WINDLESS&#39;</span>, <span class="tok-nv">city</span><span class="tok-o">=</span><span class="tok-s1">&#39;Como&#39;</span>, <span class="tok-nv">country</span><span class="tok-o">=</span><span class="tok-s1">&#39;Italy&#39;</span><span class="tok-o">}</span>
+Basel, Switzerland - LocationWeather<span class="tok-o">{</span><span class="tok-nv">temperature</span><span class="tok-o">=</span><span class="tok-m">19</span>.795946, <span class="tok-nv">condition</span><span class="tok-o">=</span><span class="tok-s1">&#39;WINDLESS&#39;</span>, <span class="tok-nv">city</span><span class="tok-o">=</span><span class="tok-s1">&#39;Basel&#39;</span>, <span class="tok-nv">country</span><span class="tok-o">=</span><span class="tok-s1">&#39;Switzerland&#39;</span><span class="tok-o">}</span>
+Bern, Switzerland - LocationWeather<span class="tok-o">{</span><span class="tok-nv">temperature</span><span class="tok-o">=</span><span class="tok-m">20</span>.455978, <span class="tok-nv">condition</span><span class="tok-o">=</span><span class="tok-s1">&#39;WINDLESS&#39;</span>, <span class="tok-nv">city</span><span class="tok-o">=</span><span class="tok-s1">&#39;Bern&#39;</span>, <span class="tok-nv">country</span><span class="tok-o">=</span><span class="tok-s1">&#39;Switzerland&#39;</span><span class="tok-o">}</span>
 ...
----- Loaded in 3386ms ----
+---- Loaded <span class="tok-k">in</span> 3386ms ----
 
 ---- Loading information ----
-Rome, Italy - LocationWeather{temperature=17.252243, condition='CLOUDY', city='Rome', country='Italy'}
-Como, Italy - LocationWeather{temperature=24.495003, condition='PARTIALLY_COVERED', city='Como', country='Italy'}
+Rome, Italy - LocationWeather<span class="tok-o">{</span><span class="tok-nv">temperature</span><span class="tok-o">=</span><span class="tok-m">17</span>.252243, <span class="tok-nv">condition</span><span class="tok-o">=</span><span class="tok-s1">&#39;CLOUDY&#39;</span>, <span class="tok-nv">city</span><span class="tok-o">=</span><span class="tok-s1">&#39;Rome&#39;</span>, <span class="tok-nv">country</span><span class="tok-o">=</span><span class="tok-s1">&#39;Italy&#39;</span><span class="tok-o">}</span>
+Como, Italy - LocationWeather<span class="tok-o">{</span><span class="tok-nv">temperature</span><span class="tok-o">=</span><span class="tok-m">24</span>.495003, <span class="tok-nv">condition</span><span class="tok-o">=</span><span class="tok-s1">&#39;PARTIALLY_COVERED&#39;</span>, <span class="tok-nv">city</span><span class="tok-o">=</span><span class="tok-s1">&#39;Como&#39;</span>, <span class="tok-nv">country</span><span class="tok-o">=</span><span class="tok-s1">&#39;Italy&#39;</span><span class="tok-o">}</span>
 ...
----- Loaded in 70ms ----</code></pre>
+---- Loaded <span class="tok-k">in</span> 70ms ----</code></pre>
 </div>
 </div>
 </div>
@@ -1437,15 +1517,15 @@ Como, Italy - LocationWeather{temperature=24.495003, condition='PARTIALLY_COVERE
 <div class="listingblock">
 <div class="title">org.infinispan.tutorial.services.weather.WeatherSearch</div>
 <div class="content">
-<pre class="pygments highlight"><code data-lang="java">   public List&lt;LocationWeather&gt; findByCountry(String country) {
-      QueryFactory queryFactory = Search.getQueryFactory(weather); <i class="conum" data-value="1"></i><b>(1)</b>
+<pre class="pygments highlight"><code data-lang="java"><span></span>   <span class="tok-kd">public</span> <span class="tok-n">List</span><span class="tok-o">&lt;</span><span class="tok-n">LocationWeather</span><span class="tok-o">&gt;</span> <span class="tok-nf">findByCountry</span><span class="tok-p">(</span><span class="tok-n">String</span> <span class="tok-n">country</span><span class="tok-p">)</span> <span class="tok-p">{</span>
+      <span class="tok-n">QueryFactory</span> <span class="tok-n">queryFactory</span> <span class="tok-o">=</span> <span class="tok-n">Search</span><span class="tok-p">.</span><span class="tok-na">getQueryFactory</span><span class="tok-p">(</span><span class="tok-n">weather</span><span class="tok-p">);</span> <i class="conum" data-value="1"></i><b>(1)</b>
 
-      Query&lt;LocationWeather&gt; query = queryFactory.create("FROM org.infinispan.tutorial.data.LocationWeather WHERE country = :country"); <i class="conum" data-value="2"></i><b>(2)</b>
+      <span class="tok-n">Query</span><span class="tok-o">&lt;</span><span class="tok-n">LocationWeather</span><span class="tok-o">&gt;</span> <span class="tok-n">query</span> <span class="tok-o">=</span> <span class="tok-n">queryFactory</span><span class="tok-p">.</span><span class="tok-na">create</span><span class="tok-p">(</span><span class="tok-s">&quot;FROM org.infinispan.tutorial.data.LocationWeather WHERE country = :country&quot;</span><span class="tok-p">);</span> <i class="conum" data-value="2"></i><b>(2)</b>
 
-      query.setParameter("country", country); <i class="conum" data-value="3"></i><b>(3)</b>
+      <span class="tok-n">query</span><span class="tok-p">.</span><span class="tok-na">setParameter</span><span class="tok-p">(</span><span class="tok-s">&quot;country&quot;</span><span class="tok-p">,</span> <span class="tok-n">country</span><span class="tok-p">);</span> <i class="conum" data-value="3"></i><b>(3)</b>
 
-      return query.execute().list(); <i class="conum" data-value="4"></i><b>(4)</b>
-   }</code></pre>
+      <span class="tok-k">return</span> <span class="tok-n">query</span><span class="tok-p">.</span><span class="tok-na">execute</span><span class="tok-p">().</span><span class="tok-na">list</span><span class="tok-p">();</span> <i class="conum" data-value="4"></i><b>(4)</b>
+   <span class="tok-p">}</span></code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -1480,9 +1560,9 @@ Como, Italy - LocationWeather{temperature=24.495003, condition='PARTIALLY_COVERE
 <div class="listingblock">
 <div class="title">org.infinispan.tutorial.client.weather.WeatherFinderApp</div>
 <div class="content">
-<pre class="pygments highlight"><code data-lang="bash">---- Get or create the 'weather' cache ----
-Spain: [LocationWeather{temperature=6.2846804, condition='CLOUDY',city='Bilbao', country='Spain'},
-LocationWeather{temperature=18.044653, condition='SUNNY', city='Madrid', country='Spain'}]</code></pre>
+<pre class="pygments highlight"><code data-lang="bash"><span></span>---- Get or create the <span class="tok-s1">&#39;weather&#39;</span> cache ----
+Spain: <span class="tok-o">[</span>LocationWeather<span class="tok-o">{</span><span class="tok-nv">temperature</span><span class="tok-o">=</span><span class="tok-m">6</span>.2846804, <span class="tok-nv">condition</span><span class="tok-o">=</span><span class="tok-s1">&#39;CLOUDY&#39;</span>,city<span class="tok-o">=</span><span class="tok-s1">&#39;Bilbao&#39;</span>, <span class="tok-nv">country</span><span class="tok-o">=</span><span class="tok-s1">&#39;Spain&#39;</span><span class="tok-o">}</span>,
+LocationWeather<span class="tok-o">{</span><span class="tok-nv">temperature</span><span class="tok-o">=</span><span class="tok-m">18</span>.044653, <span class="tok-nv">condition</span><span class="tok-o">=</span><span class="tok-s1">&#39;SUNNY&#39;</span>, <span class="tok-nv">city</span><span class="tok-o">=</span><span class="tok-s1">&#39;Madrid&#39;</span>, <span class="tok-nv">country</span><span class="tok-o">=</span><span class="tok-s1">&#39;Spain&#39;</span><span class="tok-o">}]</span></code></pre>
 </div>
 </div>
 </div>
@@ -1494,20 +1574,20 @@ LocationWeather{temperature=18.044653, condition='SUNNY', city='Madrid', country
 <div class="listingblock">
 <div class="title">org.infinispan.tutorial.services.weather.WeatherSearch</div>
 <div class="content">
-<pre class="pygments highlight"><code data-lang="java">    public List&lt;String&gt; findByCondition(WeatherCondition condition) {
-      Query&lt;Object[]&gt; query = createFindLocationWeatherByConditionQuery(condition);
-      return query.execute().list().stream().map(data -&gt; (String) data[0]).collect(Collectors.toList()); <i class="conum" data-value="4"></i><b>(4)</b>
-    }
+<pre class="pygments highlight"><code data-lang="java"><span></span>    <span class="tok-kd">public</span> <span class="tok-n">List</span><span class="tok-o">&lt;</span><span class="tok-n">String</span><span class="tok-o">&gt;</span> <span class="tok-nf">findByCondition</span><span class="tok-p">(</span><span class="tok-n">WeatherCondition</span> <span class="tok-n">condition</span><span class="tok-p">)</span> <span class="tok-p">{</span>
+      <span class="tok-n">Query</span><span class="tok-o">&lt;</span><span class="tok-n">Object</span><span class="tok-o">[]&gt;</span> <span class="tok-n">query</span> <span class="tok-o">=</span> <span class="tok-n">createFindLocationWeatherByConditionQuery</span><span class="tok-p">(</span><span class="tok-n">condition</span><span class="tok-p">);</span>
+      <span class="tok-k">return</span> <span class="tok-n">query</span><span class="tok-p">.</span><span class="tok-na">execute</span><span class="tok-p">().</span><span class="tok-na">list</span><span class="tok-p">().</span><span class="tok-na">stream</span><span class="tok-p">().</span><span class="tok-na">map</span><span class="tok-p">(</span><span class="tok-n">data</span> <span class="tok-o">-&gt;</span> <span class="tok-p">(</span><span class="tok-n">String</span><span class="tok-p">)</span> <span class="tok-n">data</span><span class="tok-o">[</span><span class="tok-mi">0</span><span class="tok-o">]</span><span class="tok-p">).</span><span class="tok-na">collect</span><span class="tok-p">(</span><span class="tok-n">Collectors</span><span class="tok-p">.</span><span class="tok-na">toList</span><span class="tok-p">());</span> <i class="conum" data-value="4"></i><b>(4)</b>
+    <span class="tok-p">}</span>
 
-    private Query&lt;Object[]&gt; createFindLocationWeatherByConditionQuery(WeatherCondition condition) {
-      QueryFactory queryFactory = Search.getQueryFactory(weather); <i class="conum" data-value="1"></i><b>(1)</b>
+    <span class="tok-kd">private</span> <span class="tok-n">Query</span><span class="tok-o">&lt;</span><span class="tok-n">Object</span><span class="tok-o">[]&gt;</span> <span class="tok-nf">createFindLocationWeatherByConditionQuery</span><span class="tok-p">(</span><span class="tok-n">WeatherCondition</span> <span class="tok-n">condition</span><span class="tok-p">)</span> <span class="tok-p">{</span>
+      <span class="tok-n">QueryFactory</span> <span class="tok-n">queryFactory</span> <span class="tok-o">=</span> <span class="tok-n">Search</span><span class="tok-p">.</span><span class="tok-na">getQueryFactory</span><span class="tok-p">(</span><span class="tok-n">weather</span><span class="tok-p">);</span> <i class="conum" data-value="1"></i><b>(1)</b>
 
-      Query&lt;Object[]&gt; query = queryFactory.create("SELECT city FROM org.infinispan.tutorial.data.LocationWeather w where w.condition = :condition"); <i class="conum" data-value="2"></i><b>(2)</b>
+      <span class="tok-n">Query</span><span class="tok-o">&lt;</span><span class="tok-n">Object</span><span class="tok-o">[]&gt;</span> <span class="tok-n">query</span> <span class="tok-o">=</span> <span class="tok-n">queryFactory</span><span class="tok-p">.</span><span class="tok-na">create</span><span class="tok-p">(</span><span class="tok-s">&quot;SELECT city FROM org.infinispan.tutorial.data.LocationWeather w where w.condition = :condition&quot;</span><span class="tok-p">);</span> <i class="conum" data-value="2"></i><b>(2)</b>
 
-      query.setParameter("condition", condition.name()); <i class="conum" data-value="3"></i><b>(3)</b>
+      <span class="tok-n">query</span><span class="tok-p">.</span><span class="tok-na">setParameter</span><span class="tok-p">(</span><span class="tok-s">&quot;condition&quot;</span><span class="tok-p">,</span> <span class="tok-n">condition</span><span class="tok-p">.</span><span class="tok-na">name</span><span class="tok-p">());</span> <i class="conum" data-value="3"></i><b>(3)</b>
 
-      return query;
-   }</code></pre>
+      <span class="tok-k">return</span> <span class="tok-n">query</span><span class="tok-p">;</span>
+   <span class="tok-p">}</span></code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -1542,16 +1622,16 @@ LocationWeather{temperature=18.044653, condition='SUNNY', city='Madrid', country
 <div class="listingblock">
 <div class="title">org.infinispan.tutorial.client.weather.WeatherFinderApp</div>
 <div class="content">
-<pre class="pygments highlight"><code data-lang="bash">SUNNY: [Madrid]
-CLOUDY: [Lisbon, Bilbao, Newcastle, Como]
-RAINY: [Cluj-Napoca]
-PARTIALLY_COVERED: [Toronto, Bern]
-HUMID: []
-WINDY: []
-FOGGY: [Washington, Porto, Rome]
-WINDLESS: [London, Raleigh]
-DRY: [Ottawa]
-WET: [Basel, Bucarest]</code></pre>
+<pre class="pygments highlight"><code data-lang="bash"><span></span>SUNNY: <span class="tok-o">[</span>Madrid<span class="tok-o">]</span>
+CLOUDY: <span class="tok-o">[</span>Lisbon, Bilbao, Newcastle, Como<span class="tok-o">]</span>
+RAINY: <span class="tok-o">[</span>Cluj-Napoca<span class="tok-o">]</span>
+PARTIALLY_COVERED: <span class="tok-o">[</span>Toronto, Bern<span class="tok-o">]</span>
+HUMID: <span class="tok-o">[]</span>
+WINDY: <span class="tok-o">[]</span>
+FOGGY: <span class="tok-o">[</span>Washington, Porto, Rome<span class="tok-o">]</span>
+WINDLESS: <span class="tok-o">[</span>London, Raleigh<span class="tok-o">]</span>
+DRY: <span class="tok-o">[</span>Ottawa<span class="tok-o">]</span>
+WET: <span class="tok-o">[</span>Basel, Bucarest<span class="tok-o">]</span></code></pre>
 </div>
 </div>
 </div>
@@ -1563,21 +1643,21 @@ WET: [Basel, Bucarest]</code></pre>
 <div class="listingblock">
 <div class="title">org.infinispan.tutorial.services.weather.WeatherSearch</div>
 <div class="content">
-<pre class="pygments highlight"><code data-lang="java">public void findWeatherByConditionContinuously(WeatherCondition condition) {
-      Query&lt;Object[]&gt; query = createFindLocationWeatherByConditionQuery(condition); <i class="conum" data-value="1"></i><b>(1)</b>
+<pre class="pygments highlight"><code data-lang="java"><span></span><span class="tok-kd">public</span> <span class="tok-kt">void</span> <span class="tok-nf">findWeatherByConditionContinuously</span><span class="tok-p">(</span><span class="tok-n">WeatherCondition</span> <span class="tok-n">condition</span><span class="tok-p">)</span> <span class="tok-p">{</span>
+      <span class="tok-n">Query</span><span class="tok-o">&lt;</span><span class="tok-n">Object</span><span class="tok-o">[]&gt;</span> <span class="tok-n">query</span> <span class="tok-o">=</span> <span class="tok-n">createFindLocationWeatherByConditionQuery</span><span class="tok-p">(</span><span class="tok-n">condition</span><span class="tok-p">);</span> <i class="conum" data-value="1"></i><b>(1)</b>
 
-      ContinuousQuery&lt;String, LocationWeather&gt; continuousQuery = Search.getContinuousQuery(weather); <i class="conum" data-value="2"></i><b>(2)</b>
+      <span class="tok-n">ContinuousQuery</span><span class="tok-o">&lt;</span><span class="tok-n">String</span><span class="tok-p">,</span> <span class="tok-n">LocationWeather</span><span class="tok-o">&gt;</span> <span class="tok-n">continuousQuery</span> <span class="tok-o">=</span> <span class="tok-n">Search</span><span class="tok-p">.</span><span class="tok-na">getContinuousQuery</span><span class="tok-p">(</span><span class="tok-n">weather</span><span class="tok-p">);</span> <i class="conum" data-value="2"></i><b>(2)</b>
 
-      ContinuousQueryListener&lt;&gt; listener =
-            new ContinuousQueryListener&lt;String, Object[]&gt;() { <i class="conum" data-value="3"></i><b>(3)</b>
-               @Override
-               public void resultJoining(String key, Object[] data) {
-                   System.out.printf("%s is now %s%n", data[0], condition);
-               }
-            };
+      <span class="tok-n">ContinuousQueryListener</span><span class="tok-o">&lt;&gt;</span> <span class="tok-n">listener</span> <span class="tok-o">=</span>
+            <span class="tok-k">new</span> <span class="tok-n">ContinuousQueryListener</span><span class="tok-o">&lt;</span><span class="tok-n">String</span><span class="tok-p">,</span> <span class="tok-n">Object</span><span class="tok-o">[]&gt;</span><span class="tok-p">()</span> <span class="tok-p">{</span> <i class="conum" data-value="3"></i><b>(3)</b>
+               <span class="tok-nd">@Override</span>
+               <span class="tok-kd">public</span> <span class="tok-kt">void</span> <span class="tok-nf">resultJoining</span><span class="tok-p">(</span><span class="tok-n">String</span> <span class="tok-n">key</span><span class="tok-p">,</span> <span class="tok-n">Object</span><span class="tok-o">[]</span> <span class="tok-n">data</span><span class="tok-p">)</span> <span class="tok-p">{</span>
+                   <span class="tok-n">System</span><span class="tok-p">.</span><span class="tok-na">out</span><span class="tok-p">.</span><span class="tok-na">printf</span><span class="tok-p">(</span><span class="tok-s">&quot;%s is now %s%n&quot;</span><span class="tok-p">,</span> <span class="tok-n">data</span><span class="tok-o">[</span><span class="tok-mi">0</span><span class="tok-o">]</span><span class="tok-p">,</span> <span class="tok-n">condition</span><span class="tok-p">);</span>
+               <span class="tok-p">}</span>
+            <span class="tok-p">};</span>
 
-      continuousQuery.addContinuousQueryListener(query, listener); <i class="conum" data-value="4"></i><b>(4)</b>
-   }</code></pre>
+      <span class="tok-n">continuousQuery</span><span class="tok-p">.</span><span class="tok-na">addContinuousQueryListener</span><span class="tok-p">(</span><span class="tok-n">query</span><span class="tok-p">,</span> <span class="tok-n">listener</span><span class="tok-p">);</span> <i class="conum" data-value="4"></i><b>(4)</b>
+   <span class="tok-p">}</span></code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -1626,7 +1706,7 @@ WET: [Basel, Bucarest]</code></pre>
 <div class="listingblock">
 <div class="title">org.infinispan.tutorial.client.weather.WeatherFinderApp</div>
 <div class="content">
-<pre class="pygments highlight"><code data-lang="bash">---- Press any key to quit ----
+<pre class="pygments highlight"><code data-lang="bash"><span></span>---- Press any key to quit ----
 Madrid is now SUNNY
 Bilbao is now SUNNY
 Toronto is now SUNNY
@@ -1661,12 +1741,12 @@ Porto is now SUNNY
 <div class="listingblock">
 <div class="title">pom.xml</div>
 <div class="content">
-<pre class="pygments highlight"><code data-lang="xml">    &lt;dependency&gt;
-        &lt;groupId&gt;org.infinispan&lt;/groupId&gt;
-        &lt;artifactId&gt;infinispan-server-testdriver-junit5&lt;/artifactId&gt;
-        &lt;version&gt;${version.infinispan}&lt;/version&gt;
-        &lt;scope&gt;test&lt;/scope&gt;
-    &lt;/dependency&gt;</code></pre>
+<pre class="pygments highlight"><code data-lang="xml"><span></span>    <span class="tok-nt">&lt;dependency&gt;</span>
+        <span class="tok-nt">&lt;groupId&gt;</span>org.infinispan<span class="tok-nt">&lt;/groupId&gt;</span>
+        <span class="tok-nt">&lt;artifactId&gt;</span>infinispan-server-testdriver-junit5<span class="tok-nt">&lt;/artifactId&gt;</span>
+        <span class="tok-nt">&lt;version&gt;</span>${version.infinispan}<span class="tok-nt">&lt;/version&gt;</span>
+        <span class="tok-nt">&lt;scope&gt;</span>test<span class="tok-nt">&lt;/scope&gt;</span>
+    <span class="tok-nt">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
 <div class="admonitionblock note">
@@ -1692,26 +1772,27 @@ Porto is now SUNNY
 <div class="listingblock">
 <div class="title">org.infinispan.tutorial.services.temperature.TemperatureLoaderTest</div>
 <div class="content">
-<pre class="pygments highlight"><code data-lang="java">   @RegisterExtension
-   static InfinispanServerExtension infinispanServerExtension = InfinispanServerExtensionBuilder.server(); <i class="conum" data-value="1"></i><b>(1)</b>
+<pre class="pygments highlight"><code data-lang="java"><span></span>
+   <span class="tok-nd">@RegisterExtension</span>
+   <span class="tok-kd">static</span> <span class="tok-n">InfinispanServerExtension</span> <span class="tok-n">infinispanServerExtension</span> <span class="tok-o">=</span> <span class="tok-n">InfinispanServerExtensionBuilder</span><span class="tok-p">.</span><span class="tok-na">server</span><span class="tok-p">();</span> <i class="conum" data-value="1"></i><b>(1)</b>
 
-   @Test
-   public void loadLocationTemperature() {
-      DataSourceConnector dataSourceConnector = new DataSourceConnector(createRemoteCacheManager());
-      TemperatureLoader temperatureLoader = new TemperatureLoader(dataSourceConnector);
-      Float temperatureLoaderForLocation = temperatureLoader.getForLocation(WeatherLoader.LOCATIONS[0]);
-      assertNotNull(temperatureLoaderForLocation);
-   }
+   <span class="tok-nd">@Test</span>
+   <span class="tok-kd">public</span> <span class="tok-kt">void</span> <span class="tok-nf">loadLocationTemperature</span><span class="tok-p">()</span> <span class="tok-p">{</span>
+      <span class="tok-n">DataSourceConnector</span> <span class="tok-n">dataSourceConnector</span> <span class="tok-o">=</span> <span class="tok-k">new</span> <span class="tok-n">DataSourceConnector</span><span class="tok-p">(</span><span class="tok-n">createRemoteCacheManager</span><span class="tok-p">());</span>
+      <span class="tok-n">TemperatureLoader</span> <span class="tok-n">temperatureLoader</span> <span class="tok-o">=</span> <span class="tok-k">new</span> <span class="tok-n">TemperatureLoader</span><span class="tok-p">(</span><span class="tok-n">dataSourceConnector</span><span class="tok-p">);</span>
+      <span class="tok-n">Float</span> <span class="tok-n">temperatureLoaderForLocation</span> <span class="tok-o">=</span> <span class="tok-n">temperatureLoader</span><span class="tok-p">.</span><span class="tok-na">getForLocation</span><span class="tok-p">(</span><span class="tok-n">WeatherLoader</span><span class="tok-p">.</span><span class="tok-na">LOCATIONS</span><span class="tok-o">[</span><span class="tok-mi">0</span><span class="tok-o">]</span><span class="tok-p">);</span>
+      <span class="tok-n">assertNotNull</span><span class="tok-p">(</span><span class="tok-n">temperatureLoaderForLocation</span><span class="tok-p">);</span>
+   <span class="tok-p">}</span>
 
    <i class="conum" data-value="2"></i><b>(2)</b>
-   private RemoteCacheManager createRemoteCacheManager() {
-      RemoteCacheManager remoteCacheManager = infinispanServerExtension.hotrod().createRemoteCacheManager();
-      SerializationContext serCtx = MarshallerUtil.getSerializationContext(remoteCacheManager);
-      LocationWeatherSchema schema = new LocationWeatherSchemaImpl();
-      schema.registerSchema(serCtx);
-      schema.registerMarshallers(serCtx);
-      return remoteCacheManager;
-   }</code></pre>
+   <span class="tok-kd">private</span> <span class="tok-n">RemoteCacheManager</span> <span class="tok-nf">createRemoteCacheManager</span><span class="tok-p">()</span> <span class="tok-p">{</span>
+      <span class="tok-n">RemoteCacheManager</span> <span class="tok-n">remoteCacheManager</span> <span class="tok-o">=</span> <span class="tok-n">infinispanServerExtension</span><span class="tok-p">.</span><span class="tok-na">hotrod</span><span class="tok-p">().</span><span class="tok-na">createRemoteCacheManager</span><span class="tok-p">();</span>
+      <span class="tok-n">SerializationContext</span> <span class="tok-n">serCtx</span> <span class="tok-o">=</span> <span class="tok-n">MarshallerUtil</span><span class="tok-p">.</span><span class="tok-na">getSerializationContext</span><span class="tok-p">(</span><span class="tok-n">remoteCacheManager</span><span class="tok-p">);</span>
+      <span class="tok-n">LocationWeatherSchema</span> <span class="tok-n">schema</span> <span class="tok-o">=</span> <span class="tok-k">new</span> <span class="tok-n">LocationWeatherSchemaImpl</span><span class="tok-p">();</span>
+      <span class="tok-n">schema</span><span class="tok-p">.</span><span class="tok-na">registerSchema</span><span class="tok-p">(</span><span class="tok-n">serCtx</span><span class="tok-p">);</span>
+      <span class="tok-n">schema</span><span class="tok-p">.</span><span class="tok-na">registerMarshallers</span><span class="tok-p">(</span><span class="tok-n">serCtx</span><span class="tok-p">);</span>
+      <span class="tok-k">return</span> <span class="tok-n">remoteCacheManager</span><span class="tok-p">;</span>
+   <span class="tok-p">}</span></code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -1756,7 +1837,7 @@ Porto is now SUNNY
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2021-07-08 14:49:24 +0200
+Last updated 2021-07-08 14:50:14 +0200
 </div>
 </div>
 </body>
