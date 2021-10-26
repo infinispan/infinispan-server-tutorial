@@ -32,7 +32,7 @@ public class DataSourceConnector {
         ConfigurationBuilder builder = new ConfigurationBuilder();
 
         // Hot Rod URI
-        builder.uri("hotrod://admin:password@localhost:11222");
+        builder.uri("hotrod://admin:secret@localhost:11222");
 
         // For Docker For Mac. Not recommended for production. Default is HASH_DISTRIBUTION_AWARE
         builder.clientIntelligence(ClientIntelligence.BASIC);
