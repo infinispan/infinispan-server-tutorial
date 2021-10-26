@@ -96,7 +96,7 @@ You can do one of the following:
 
 .Credentials
 By default, Infinispan Server requires user authentication. This tutorial uses
-`admin` and `password` credentials but you can use any username and password.
+`admin` and `secret` credentials but you can use any username and password.
 
 ==== Running the Container Image
 
@@ -104,7 +104,7 @@ The easiest way to run Infinispan Server locally is to pull the container image.
 
 * Podman
 +
-`podman run --net=host -p 11222:11222 -e USER="admin" -e PASS="password" quay.io/infinispan/server:13.0`
+`podman run --net=host -p 11222:11222 -e USER="admin" -e PASS="secret" quay.io/infinispan/server:13.0`
 
 * Docker
 +
@@ -120,7 +120,7 @@ Infinispan Server comes as a bare metal distribution that you can run locally.
 +
 [source,bash,options="nowrap"]
 ----
-$ ./bin/cli.sh user create admin -p password
+$ ./bin/cli.sh user create admin -p secret
 ----
 +
 . Run Infinispan Server.
@@ -142,7 +142,7 @@ image::welcomeConsole.png[Welcome to the console]
 To start using the Infinispan Console, do the following:
 
 . Select *Go to the console*.
-. Enter your credentials (`admin`/`password`).
+. Enter your credentials (`admin`/`secret`).
 
 //Step 3
 === Getting the Weather Application
@@ -200,7 +200,7 @@ Update the `connect()` method in the `DataSourceConnector` class as follows:
 ----
 ConfigurationBuilder builder = new ConfigurationBuilder(); //<1>
 
-builder.uri("hotrod://admin:password@localhost:11222"); //<2>
+builder.uri("hotrod://admin:secret@localhost:11222"); //<2>
 
 builder.clientIntelligence(ClientIntelligence.BASIC); //<3>
 
