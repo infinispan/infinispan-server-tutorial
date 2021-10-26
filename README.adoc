@@ -153,7 +153,7 @@ You can create the Weather Application yourself going step by step or you can sk
 +
 You'll find the code for each application and placeholder comments for each step in this tutorial on the `master` branch.
 +
-`git clone -b master https://github.com/infinispan/infinispan-server-tutorial.git`
+`git clone -b main https://github.com/infinispan/infinispan-server-tutorial.git`
 
 * Use the complete solution.
 +
