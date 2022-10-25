@@ -7,7 +7,7 @@
   <name>Infinispan Tutorial: Client/Server tutorial</name>
 
   <properties>
-    <version.infinispan>14.0.0.Final</version.infinispan>
+    <version.infinispan>14.0.1.Final</version.infinispan>
     <version.maven-surefire-plugin>2.22.2</version.maven-surefire-plugin>
     <version.maven-failsafe-plugin>2.22.2</version.maven-failsafe-plugin>
   </properties>
@@ -28,6 +28,10 @@
       <dependency>
           <groupId>org.infinispan.protostream</groupId>
           <artifactId>protostream-processor</artifactId>
+      </dependency>
+      <dependency>
+          <groupId>org.infinispan</groupId>
+          <artifactId>infinispan-api</artifactId>
       </dependency>
       <dependency>
           <groupId>org.infinispan</groupId>
