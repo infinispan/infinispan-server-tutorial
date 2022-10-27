@@ -171,6 +171,7 @@ Connect to your locally running Infinispan Server from a Hot Rod Java client.
 Open the `pom.xml` file for this project and confirm that the following dependencies are available:
 
 * `infinispan-client-hotrod` adds the https://infinispan.org/docs/stable/titles/hotrod_java/hotrod_java.html[Java Hot Rod Client].
+* `infinispan-api` adds the Infinispan new API with the annotations.
 * `infinispan-query-dsl` adds the Infinispan Search API.
 * `infinispan-remote-query-client` adds a remote search client.
 
@@ -180,6 +181,10 @@ Open the `pom.xml` file for this project and confirm that the following dependen
 <dependency>
     <groupId>org.infinispan</groupId>
     <artifactId>infinispan-client-hotrod</artifactId>
+</dependency>
+<dependency>
+    <groupId>org.infinispan</groupId>
+    <artifactId>infinispan-api</artifactId>
 </dependency>
 <dependency>
     <groupId>org.infinispan</groupId>
@@ -423,22 +428,28 @@ In this section of the tutorial, you implement the Weather Loader application an
 
 Infinispan uses https://github.com/infinispan/protostream[Protostream] to serialize data to byte.
 
-Add the `@ProtoField` annotation to `LocationWeather` as follows:
+* Add the `@ProtoField` annotation to `LocationWeather` as follows:
+* Add indexing annotations as follows
 
 .org.infinispan.tutorial.data.LocationWeather
 [source,java]
 ----
+    @Indexed
     public class LocationWeather {
 
+       @Basic
        @ProtoField(number = 1, defaultValue = "0.0")
        float temperature;
 
+       @Basic
        @ProtoField(number = 2)
        String condition;
 
+       @Keyword(projectable = true, sortable = true, normalizer = "lowercase", indexNullAs = "unnamed", norms = false)
        @ProtoField(number = 3)
        String city;
 
+       @Keyword(projectable = true, sortable = true, normalizer = "lowercase", indexNullAs = "unnamed", norms = false)
        @ProtoField(number = 4)
        String country;
 ...
