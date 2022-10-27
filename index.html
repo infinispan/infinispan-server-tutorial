@@ -921,6 +921,9 @@ this tutorial, you need a locally running server instance.</p>
 <p><code>infinispan-client-hotrod</code> adds the <a href="https://infinispan.org/docs/stable/titles/hotrod_java/hotrod_java.html">Java Hot Rod Client</a>.</p>
 </li>
 <li>
+<p><code>infinispan-api</code> adds the Infinispan new API with the annotations.</p>
+</li>
+<li>
 <p><code>infinispan-query-dsl</code> adds the Infinispan Search API.</p>
 </li>
 <li>
@@ -934,6 +937,10 @@ this tutorial, you need a locally running server instance.</p>
 <pre class="pygments highlight"><code data-lang="xml"><span></span><span class="tok-nt">&lt;dependency&gt;</span>
     <span class="tok-nt">&lt;groupId&gt;</span>org.infinispan<span class="tok-nt">&lt;/groupId&gt;</span>
     <span class="tok-nt">&lt;artifactId&gt;</span>infinispan-client-hotrod<span class="tok-nt">&lt;/artifactId&gt;</span>
+<span class="tok-nt">&lt;/dependency&gt;</span>
+<span class="tok-nt">&lt;dependency&gt;</span>
+    <span class="tok-nt">&lt;groupId&gt;</span>org.infinispan<span class="tok-nt">&lt;/groupId&gt;</span>
+    <span class="tok-nt">&lt;artifactId&gt;</span>infinispan-api<span class="tok-nt">&lt;/artifactId&gt;</span>
 <span class="tok-nt">&lt;/dependency&gt;</span>
 <span class="tok-nt">&lt;dependency&gt;</span>
     <span class="tok-nt">&lt;groupId&gt;</span>org.infinispan<span class="tok-nt">&lt;/groupId&gt;</span>
@@ -1312,23 +1319,35 @@ Temperature <span class="tok-m">14</span>.185611 <span class="tok-k">for</span> 
 <div class="paragraph">
 <p>Infinispan uses <a href="https://github.com/infinispan/protostream">Protostream</a> to serialize data to byte.</p>
 </div>
-<div class="paragraph">
+<div class="ulist">
+<ul>
+<li>
 <p>Add the <code>@ProtoField</code> annotation to <code>LocationWeather</code> as follows:</p>
+</li>
+<li>
+<p>Add indexing annotations as follows</p>
+</li>
+</ul>
 </div>
 <div class="listingblock">
 <div class="title">org.infinispan.tutorial.data.LocationWeather</div>
 <div class="content">
-<pre class="pygments highlight"><code data-lang="java"><span></span>    <span class="tok-kd">public</span> <span class="tok-kd">class</span> <span class="tok-nc">LocationWeather</span> <span class="tok-p">{</span>
+<pre class="pygments highlight"><code data-lang="java"><span></span>    <span class="tok-nd">@Indexed</span>
+    <span class="tok-kd">public</span> <span class="tok-kd">class</span> <span class="tok-nc">LocationWeather</span> <span class="tok-p">{</span>
 
+       <span class="tok-nd">@Basic</span>
        <span class="tok-nd">@ProtoField</span><span class="tok-p">(</span><span class="tok-n">number</span> <span class="tok-o">=</span> <span class="tok-mi">1</span><span class="tok-p">,</span> <span class="tok-n">defaultValue</span> <span class="tok-o">=</span> <span class="tok-s">&quot;0.0&quot;</span><span class="tok-p">)</span>
        <span class="tok-kt">float</span> <span class="tok-n">temperature</span><span class="tok-p">;</span>
 
+       <span class="tok-nd">@Basic</span>
        <span class="tok-nd">@ProtoField</span><span class="tok-p">(</span><span class="tok-n">number</span> <span class="tok-o">=</span> <span class="tok-mi">2</span><span class="tok-p">)</span>
        <span class="tok-n">String</span> <span class="tok-n">condition</span><span class="tok-p">;</span>
 
+       <span class="tok-nd">@Keyword</span><span class="tok-p">(</span><span class="tok-n">projectable</span> <span class="tok-o">=</span> <span class="tok-kc">true</span><span class="tok-p">,</span> <span class="tok-n">sortable</span> <span class="tok-o">=</span> <span class="tok-kc">true</span><span class="tok-p">,</span> <span class="tok-n">normalizer</span> <span class="tok-o">=</span> <span class="tok-s">&quot;lowercase&quot;</span><span class="tok-p">,</span> <span class="tok-n">indexNullAs</span> <span class="tok-o">=</span> <span class="tok-s">&quot;unnamed&quot;</span><span class="tok-p">,</span> <span class="tok-n">norms</span> <span class="tok-o">=</span> <span class="tok-kc">false</span><span class="tok-p">)</span>
        <span class="tok-nd">@ProtoField</span><span class="tok-p">(</span><span class="tok-n">number</span> <span class="tok-o">=</span> <span class="tok-mi">3</span><span class="tok-p">)</span>
        <span class="tok-n">String</span> <span class="tok-n">city</span><span class="tok-p">;</span>
 
+       <span class="tok-nd">@Keyword</span><span class="tok-p">(</span><span class="tok-n">projectable</span> <span class="tok-o">=</span> <span class="tok-kc">true</span><span class="tok-p">,</span> <span class="tok-n">sortable</span> <span class="tok-o">=</span> <span class="tok-kc">true</span><span class="tok-p">,</span> <span class="tok-n">normalizer</span> <span class="tok-o">=</span> <span class="tok-s">&quot;lowercase&quot;</span><span class="tok-p">,</span> <span class="tok-n">indexNullAs</span> <span class="tok-o">=</span> <span class="tok-s">&quot;unnamed&quot;</span><span class="tok-p">,</span> <span class="tok-n">norms</span> <span class="tok-o">=</span> <span class="tok-kc">false</span><span class="tok-p">)</span>
        <span class="tok-nd">@ProtoField</span><span class="tok-p">(</span><span class="tok-n">number</span> <span class="tok-o">=</span> <span class="tok-mi">4</span><span class="tok-p">)</span>
        <span class="tok-n">String</span> <span class="tok-n">country</span><span class="tok-p">;</span>
 <span class="tok-p">...</span></code></pre>
@@ -1839,7 +1858,7 @@ Porto is now SUNNY
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2022-10-14 14:12:08 +0200
+Last updated 2022-10-27 17:23:31 +0200
 </div>
 </div>
 </body>
