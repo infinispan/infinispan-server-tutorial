@@ -149,17 +149,35 @@ To start using the Infinispan Console, do the following:
 
 You can create the Weather Application yourself going step by step or you can skip ahead and use the complete solution.
 
-* Bootstrap the project.
-+
+
+=== Bootstrap the project
+
 You'll find the code for each application and placeholder comments for each step in this tutorial on the `main` branch.
 +
-`git clone -b main https://github.com/infinispan/infinispan-server-tutorial.git`
+```bash
+git clone -b main https://github.com/infinispan/infinispan-server-tutorial.git
+```
++
 
-* Use the complete solution.
+=== Use the complete solution
 +
-If you just want to see the Weather System in action, use the completed example on the `solution` branch.
+If you just want to see the Weather System in action, use the completed example on the *`solution` branch*.
 +
-`git clone -b solution https://github.com/infinispan/infinispan-server-tutorial.git`
+```bash
+git clone -b solution https://github.com/infinispan/infinispan-server-tutorial.git
+```
++
+[WARNING]
+====
+Infinispan uses Protostream, a Protobuf serialization Java library; Protobuf schemas are generated in build-time.
+You *must build* the project before running the main classes (even from your editor).
+If you experience issues with the tests (Docker, running on Mac...), skip the test suite with the
+`-DskipTests=true` flag.
+
+```bash
+mvn clean install -DskipTests=true
+```
+====
 
 //Step 4
 === Establishing Remote Connections
