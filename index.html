@@ -547,6 +547,8 @@ pre.pygments .tok-il { color: #666666 } /* Literal.Number.Integer.Long */
 </li>
 <li><a href="#_accessing_the_infinispan_console">Accessing the Infinispan Console</a></li>
 <li><a href="#_getting_the_weather_application">Getting the Weather Application</a></li>
+<li><a href="#_bootstrap_the_project">Bootstrap the project</a></li>
+<li><a href="#_use_the_complete_solution">Use the complete solution</a></li>
 <li><a href="#_establishing_remote_connections">Establishing Remote Connections</a>
 <ul class="sectlevel3">
 <li><a href="#_add_dependencies">Add Dependencies</a></li>
@@ -882,27 +884,62 @@ this tutorial, you need a locally running server instance.</p>
 <div class="paragraph">
 <p>You can create the Weather Application yourself going step by step or you can skip ahead and use the complete solution.</p>
 </div>
-<div class="ulist">
-<ul>
-<li>
-<p>Bootstrap the project.</p>
+</div>
+<div class="sect2">
+<h3 id="_bootstrap_the_project">Bootstrap the project</h3>
 <div class="paragraph">
 <p>You&#8217;ll find the code for each application and placeholder comments for each step in this tutorial on the <code>main</code> branch.</p>
 </div>
 <div class="paragraph">
-<p><code>git clone -b main <a href="https://github.com/infinispan/infinispan-server-tutorial.git" class="bare">https://github.com/infinispan/infinispan-server-tutorial.git</a></code></p>
+<p>+</p>
 </div>
-</li>
-<li>
-<p>Use the complete solution.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="bash"><span></span>git clone -b main https://github.com/infinispan/infinispan-server-tutorial.git</code></pre>
+</div>
+</div>
 <div class="paragraph">
-<p>If you just want to see the Weather System in action, use the completed example on the <code>solution</code> branch.</p>
+<p>+</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_use_the_complete_solution">Use the complete solution</h3>
+<div class="paragraph">
+<p>+
+If you just want to see the Weather System in action, use the completed example on the <strong><code>solution</code> branch</strong>.</p>
 </div>
 <div class="paragraph">
-<p><code>git clone -b solution <a href="https://github.com/infinispan/infinispan-server-tutorial.git" class="bare">https://github.com/infinispan/infinispan-server-tutorial.git</a></code></p>
+<p>+</p>
 </div>
-</li>
-</ul>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="bash"><span></span>git clone -b solution https://github.com/infinispan/infinispan-server-tutorial.git</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>+</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Infinispan uses Protostream, a Protobuf serialization Java library; Protobuf schemas are generated in build-time.
+You <strong>must build</strong> the project before running the main classes (even from your editor).
+If you experience issues with the tests (Docker, running on Mac&#8230;&#8203;), skip the test suite with the
+<code>-DskipTests=true</code> flag.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="bash"><span></span>mvn clean install -DskipTests<span class="tok-o">=</span><span class="tok-nb">true</span></code></pre>
+</div>
+</div>
+</td>
+</tr>
+</table>
 </div>
 </div>
 <div class="sect2">
@@ -1858,7 +1895,7 @@ Porto is now SUNNY
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2022-10-27 17:23:31 +0200
+Last updated 2023-09-18 17:58:41 +0200
 </div>
 </div>
 </body>
