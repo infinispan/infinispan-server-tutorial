@@ -921,7 +921,14 @@ If you experience issues with the tests (Docker, running on Mac&#8230;&#8203;), 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="bash"><span></span>mvn clean install -DskipTests<span class="tok-o">=</span><span class="tok-nb">true</span></code></pre>
+<pre class="pygments highlight"><code data-lang="bash"><span></span><span class="tok-c1"># Build</span>
+mvn clean install -DskipTests<span class="tok-o">=</span><span class="tok-nb">true</span>
+
+<span class="tok-c1"># Run the loader</span>
+mvn exec:java -Dexec.mainClass<span class="tok-o">=</span>org.infinispan.tutorial.client.temperature.TemperatureLoaderApp
+
+<span class="tok-c1"># Run the monitor</span>
+mvn exec:java -Dexec.mainClass<span class="tok-o">=</span>org.infinispan.tutorial.client.temperature.TemperatureMonitorApp</code></pre>
 </div>
 </div>
 </td>
@@ -1882,7 +1889,7 @@ Porto is now SUNNY
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-09-18 18:06:16 +0200
+Last updated 2023-09-21 22:18:55 +0200
 </div>
 </div>
 </body>
