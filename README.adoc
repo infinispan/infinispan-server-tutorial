@@ -175,7 +175,14 @@ If you experience issues with the tests (Docker, running on Mac...), skip the te
 `-DskipTests=true` flag.
 
 ```bash
+# Build
 mvn clean install -DskipTests=true
+
+# Run the loader
+mvn exec:java -Dexec.mainClass=org.infinispan.tutorial.client.temperature.TemperatureLoaderApp
+
+# Run the monitor
+mvn exec:java -Dexec.mainClass=org.infinispan.tutorial.client.temperature.TemperatureMonitorApp
 ```
 ====
 

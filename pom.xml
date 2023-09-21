@@ -75,6 +75,18 @@
              <artifactId>maven-failsafe-plugin</artifactId>
              <version>${version.maven-failsafe-plugin}</version>
          </plugin>
+         <plugin>
+             <groupId>org.codehaus.mojo</groupId>
+             <artifactId>exec-maven-plugin</artifactId>
+             <version>3.1.0</version>
+             <executions>
+                 <execution>
+                     <goals>
+                         <goal>java</goal>
+                     </goals>
+                 </execution>
+             </executions>
+         </plugin>
      </plugins>
    </build>
 </project>
