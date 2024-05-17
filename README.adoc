@@ -31,7 +31,7 @@ To complete this tutorial, you need:
 
 - Approximately 25 to 30 minutes
 - IDE such as Eclipse or Intellij
-- JDK 11 or later
+- JDK 17 or later
 - https://www.docker.com/[Docker] or https://podman.io/[Podman]
 
 [TIP]
