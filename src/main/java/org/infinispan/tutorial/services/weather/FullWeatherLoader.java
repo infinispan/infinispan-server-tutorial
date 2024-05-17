@@ -30,8 +30,10 @@ public class FullWeatherLoader implements WeatherLoader<LocationWeather> {
          weather = fetchWeather(location);
          cache.put(location, weather);
       } else {
-         weather.setCondition(getCondition());
-         cache.put(location, weather);
+         cache.put(location, new LocationWeather(weather.temperature(),
+                 getCondition(),
+                 weather.city(),
+                 weather.country()));
       }
       return weather;
    }

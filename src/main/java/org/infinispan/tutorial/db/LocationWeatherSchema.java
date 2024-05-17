@@ -1,10 +1,10 @@
 package org.infinispan.tutorial.db;
 
 import org.infinispan.protostream.GeneratedSchema;
-import org.infinispan.protostream.annotations.AutoProtoSchemaBuilder;
+import org.infinispan.protostream.annotations.ProtoSchema;
 import org.infinispan.tutorial.data.LocationWeather;
 
-@AutoProtoSchemaBuilder(
+@ProtoSchema(
       includeClasses = {
             LocationWeather.class
       },
