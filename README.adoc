@@ -453,32 +453,23 @@ In this section of the tutorial, you implement the Weather Loader application an
 
 Infinispan uses https://github.com/infinispan/protostream[Protostream] to serialize data to byte.
 
-* Add the `@ProtoField` annotation to `LocationWeather` as follows:
-* Add indexing annotations as follows
+* Add the `@Proto` annotation to `LocationWeather`.
+* Add indexing annotations.
 
 .org.infinispan.tutorial.data.LocationWeather
 [source,java]
 ----
-    @Indexed
-    public class LocationWeather {
-
-       @Basic
-       @ProtoField(number = 1, defaultValue = "0.0")
-       float temperature;
-
-       @Basic
-       @ProtoField(number = 2)
-       String condition;
-
-       @Keyword(projectable = true, sortable = true, normalizer = "lowercase", indexNullAs = "unnamed", norms = false)
-       @ProtoField(number = 3)
-       String city;
-
-       @Keyword(projectable = true, sortable = true, normalizer = "lowercase", indexNullAs = "unnamed", norms = false)
-       @ProtoField(number = 4)
-       String country;
-...
-
+@Indexed
+@Proto
+public record LocationWeather(@Basic
+                              float temperature,
+                              @Basic
+                              String condition,
+                              @Keyword(projectable = true, sortable = true, normalizer = "lowercase", indexNullAs = "unnamed", norms = false)
+                              String city,
+                              @Keyword(projectable = true, sortable = true, normalizer = "lowercase", indexNullAs = "unnamed", norms = false)
+                              String country) {
+}
 ----
 
 ==== Configure the Serialization Context
@@ -490,7 +481,7 @@ In `LocationWeatherMarshallingContext`, you add the schema to the Protobuf cache
 .org.infinispan.tutorial.db.LocationWeatherMarshallingContext
 [source,java]
 ----
-@AutoProtoSchemaBuilder(
+@ProtoSchema(
 includeClasses = {
 LocationWeather.class
 },
@@ -607,19 +598,18 @@ Create a FROM query on values in the `weather` cache as follows:
 [source,java]
 ----
    public List<LocationWeather> findByCountry(String country) {
-      QueryFactory queryFactory = Search.getQueryFactory(weather); //<1>
+      // Use Ickle to run the query
+      Query<LocationWeather> query = weather.query("FROM org.infinispan.tutorial.data.LocationWeather WHERE country = :country"); //<1>
 
-      Query<LocationWeather> query = queryFactory.create("FROM org.infinispan.tutorial.data.LocationWeather WHERE country = :country"); //<2>
+      // Set the parameter value
+      query.setParameter("country", country); //<2>
 
-      query.setParameter("country", country); //<3>
-
-      return query.execute().list(); // <4>
+      return query.execute().list(); // <3>
    }
 ----
-<1> Gets the `QueryFactory` from the cache.
-<2> Creates a FROM query using the Ickle query language. This query finds each `LocationWeather` in a country.
-<3> Sets the `country` parameter.
-<4> Executes the query and returns the list.
+<1> Creates a FROM query using the Ickle query language. This query finds each `LocationWeather` in a country.
+<2> Sets the `country` parameter.
+<3> Executes the query and returns the list.
 
 ==== Run the FROM Query
 
@@ -644,24 +634,23 @@ For some queries, you don't want every field for an object. In this example, you
 ----
     public List<String> findByCondition(WeatherCondition condition) {
       Query<Object[]> query = createFindLocationWeatherByConditionQuery(condition);
-      return query.execute().list().stream().map(data -> (String) data[0]).collect(Collectors.toList()); //<4>
+      return query.execute().list().stream().map(data -> (String) data[0]).collect(Collectors.toList()); //<3>
     }
 
     private Query<Object[]> createFindLocationWeatherByConditionQuery(WeatherCondition condition) {
-      QueryFactory queryFactory = Search.getQueryFactory(weather); //<1>
+      // Use Ickle to run the query
+      Query<Object[]> query = weather.query("SELECT city FROM org.infinispan.tutorial.data.LocationWeather WHERE condition = :condition"); // <1>
 
-      Query<Object[]> query = queryFactory.create("SELECT city FROM org.infinispan.tutorial.data.LocationWeather w where w.condition = :condition"); //<2>
-
-      query.setParameter("condition", condition.name()); //<3>
+      // Set the parameter value
+      query.setParameter("condition", condition.name()); //<2>
 
       return query;
    }
 ----
 
-<1> Gets the `QueryFactory` from the cache.
-<2> Creates a SELECT query using the Ickle query language. This query finds every `LocationWeather` with a weather condition and returns only the city.
-<3> Sets the `condition` parameter.
-<4> Executes the query, returns the list, and filters the `Object[]` to get the `String` results.
+<1> Creates a SELECT query using the Ickle query language. This query finds every `LocationWeather` with a weather condition and returns only the city.
+<2> Sets the `condition` parameter.
+<3> Executes the query, returns the list, and filters the `Object[]` to get the `String` results.
 
 ==== Run the SELECT Query
 
@@ -693,17 +682,19 @@ https://infinispan.org/docs/stable/titles/developing/developing.html#query_conti
 ----
 public void findWeatherByConditionContinuously(WeatherCondition condition) {
       Query<Object[]> query = createFindLocationWeatherByConditionQuery(condition); //<1>
+      ContinuousQuery<String, LocationWeather> continuousQuery = weather.continuousQuery(); //<2>
 
-      ContinuousQuery<String, LocationWeather> continuousQuery = Search.getContinuousQuery(weather); // <2>
-
-      ContinuousQueryListener<> listener =
-            new ContinuousQueryListener<String, Object[]>() { //<3>
+      // Create the continuous query listener.
+      ContinuousQueryListener<String, Object[]> listener = //<3>
+            new ContinuousQueryListener<>() {
+               // This method will be executed every time new items that correspond with the query arrive
                @Override
                public void resultJoining(String key, Object[] data) {
-                   System.out.printf("%s is now %s%n", data[0], condition);
+                  System.out.printf("%s is now %s%n", data[0], condition);
                }
             };
 
+      // And the listener corresponding the query to the continuous query
       continuousQuery.addContinuousQueryListener(query, listener); //<4>
    }
 ----
