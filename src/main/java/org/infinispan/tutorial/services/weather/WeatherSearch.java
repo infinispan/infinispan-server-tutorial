@@ -1,11 +1,9 @@
 package org.infinispan.tutorial.services.weather;
 
 import org.infinispan.client.hotrod.RemoteCache;
-import org.infinispan.client.hotrod.Search;
-import org.infinispan.query.api.continuous.ContinuousQuery;
-import org.infinispan.query.api.continuous.ContinuousQueryListener;
-import org.infinispan.query.dsl.Query;
-import org.infinispan.query.dsl.QueryFactory;
+import org.infinispan.commons.api.query.ContinuousQuery;
+import org.infinispan.commons.api.query.ContinuousQueryListener;
+import org.infinispan.commons.api.query.Query;
 import org.infinispan.tutorial.data.LocationWeather;
 import org.infinispan.tutorial.data.WeatherCondition;
 import org.infinispan.tutorial.db.DataSourceConnector;
@@ -33,11 +31,8 @@ public class WeatherSearch {
     * @return {@link LocationWeather} for country
     */
    public List<LocationWeather> findByCountry(String country) {
-      // Get the query factory
-      QueryFactory queryFactory = Search.getQueryFactory(weather);
-
       // Use Ickle to run the query
-      Query<LocationWeather> query = queryFactory.create("FROM org.infinispan.tutorial.data.LocationWeather WHERE country = :country");
+      Query<LocationWeather> query = weather.query("FROM org.infinispan.tutorial.data.LocationWeather WHERE country = :country");
 
       // Set the parameter value
       query.setParameter("country", country);
@@ -64,8 +59,7 @@ public class WeatherSearch {
     */
    public void findWeatherByConditionContinuously(WeatherCondition condition) {
       Query<Object[]> query = createFindLocationWeatherByConditionQuery(condition);
-
-      ContinuousQuery<String, LocationWeather> continuousQuery = Search.getContinuousQuery(weather);
+      ContinuousQuery<String, LocationWeather> continuousQuery = weather.continuousQuery();
 
       // Create the continuous query listener.
       ContinuousQueryListener<String, Object[]> listener =
@@ -87,11 +81,8 @@ public class WeatherSearch {
     * @return a Query than can be run in Infinispan
     */
    private Query<Object[]> createFindLocationWeatherByConditionQuery(WeatherCondition condition) {
-      // Get the query factory
-      QueryFactory queryFactory = Search.getQueryFactory(weather);
-
       // Use Ickle to run the query
-      Query<Object[]> query = queryFactory.create("SELECT city FROM org.infinispan.tutorial.data.LocationWeather WHERE condition = :condition");
+      Query<Object[]> query = weather.query("SELECT city FROM org.infinispan.tutorial.data.LocationWeather WHERE condition = :condition");
 
       // Set the parameter value
       query.setParameter("condition", condition.name());
