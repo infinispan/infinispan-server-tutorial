@@ -1270,35 +1270,27 @@ Temperature 14.185611 for Bilbao, Spain
 <div class="ulist">
 <ul>
 <li>
-<p>Add the <code>@ProtoField</code> annotation to <code>LocationWeather</code> as follows:</p>
+<p>Add the <code>@Proto</code> annotation to <code>LocationWeather</code>.</p>
 </li>
 <li>
-<p>Add indexing annotations as follows</p>
+<p>Add indexing annotations.</p>
 </li>
 </ul>
 </div>
 <div class="listingblock">
 <div class="title">org.infinispan.tutorial.data.LocationWeather</div>
 <div class="content">
-<pre class="pygments highlight"><code data-lang="java">    @Indexed
-    public class LocationWeather {
-
-       @Basic
-       @ProtoField(number = 1, defaultValue = "0.0")
-       float temperature;
-
-       @Basic
-       @ProtoField(number = 2)
-       String condition;
-
-       @Keyword(projectable = true, sortable = true, normalizer = "lowercase", indexNullAs = "unnamed", norms = false)
-       @ProtoField(number = 3)
-       String city;
-
-       @Keyword(projectable = true, sortable = true, normalizer = "lowercase", indexNullAs = "unnamed", norms = false)
-       @ProtoField(number = 4)
-       String country;
-...</code></pre>
+<pre class="pygments highlight"><code data-lang="java">@Indexed
+@Proto
+public record LocationWeather(@Basic
+                              float temperature,
+                              @Basic
+                              String condition,
+                              @Keyword(projectable = true, sortable = true, normalizer = "lowercase", indexNullAs = "unnamed", norms = false)
+                              String city,
+                              @Keyword(projectable = true, sortable = true, normalizer = "lowercase", indexNullAs = "unnamed", norms = false)
+                              String country) {
+}</code></pre>
 </div>
 </div>
 </div>
@@ -1313,7 +1305,7 @@ Temperature 14.185611 for Bilbao, Spain
 <div class="listingblock">
 <div class="title">org.infinispan.tutorial.db.LocationWeatherMarshallingContext</div>
 <div class="content">
-<pre class="pygments highlight"><code data-lang="java">@AutoProtoSchemaBuilder(
+<pre class="pygments highlight"><code data-lang="java">@ProtoSchema(
 includeClasses = {
 LocationWeather.class
 },
@@ -1486,13 +1478,13 @@ Como, Italy - LocationWeather{temperature=24.495003, condition='PARTIALLY_COVERE
 <div class="title">org.infinispan.tutorial.services.weather.WeatherSearch</div>
 <div class="content">
 <pre class="pygments highlight"><code data-lang="java">   public List&lt;LocationWeather&gt; findByCountry(String country) {
-      QueryFactory queryFactory = Search.getQueryFactory(weather); <i class="conum" data-value="1"></i><b>(1)</b>
+      // Use Ickle to run the query
+      Query&lt;LocationWeather&gt; query = weather.query("FROM org.infinispan.tutorial.data.LocationWeather WHERE country = :country"); <i class="conum" data-value="1"></i><b>(1)</b>
 
-      Query&lt;LocationWeather&gt; query = queryFactory.create("FROM org.infinispan.tutorial.data.LocationWeather WHERE country = :country"); <i class="conum" data-value="2"></i><b>(2)</b>
+      // Set the parameter value
+      query.setParameter("country", country); <i class="conum" data-value="2"></i><b>(2)</b>
 
-      query.setParameter("country", country); <i class="conum" data-value="3"></i><b>(3)</b>
-
-      return query.execute().list(); <i class="conum" data-value="4"></i><b>(4)</b>
+      return query.execute().list(); <i class="conum" data-value="3"></i><b>(3)</b>
    }</code></pre>
 </div>
 </div>
@@ -1500,18 +1492,14 @@ Como, Italy - LocationWeather{temperature=24.495003, condition='PARTIALLY_COVERE
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Gets the <code>QueryFactory</code> from the cache.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="2"></i><b>2</b></td>
 <td>Creates a FROM query using the Ickle query language. This query finds each <code>LocationWeather</code> in a country.</td>
 </tr>
 <tr>
-<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
 <td>Sets the <code>country</code> parameter.</td>
 </tr>
 <tr>
-<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
 <td>Executes the query and returns the list.</td>
 </tr>
 </table>
@@ -1544,15 +1532,15 @@ LocationWeather{temperature=18.044653, condition='SUNNY', city='Madrid', country
 <div class="content">
 <pre class="pygments highlight"><code data-lang="java">    public List&lt;String&gt; findByCondition(WeatherCondition condition) {
       Query&lt;Object[]&gt; query = createFindLocationWeatherByConditionQuery(condition);
-      return query.execute().list().stream().map(data -&gt; (String) data[0]).collect(Collectors.toList()); <i class="conum" data-value="4"></i><b>(4)</b>
+      return query.execute().list().stream().map(data -&gt; (String) data[0]).collect(Collectors.toList()); <i class="conum" data-value="3"></i><b>(3)</b>
     }
 
     private Query&lt;Object[]&gt; createFindLocationWeatherByConditionQuery(WeatherCondition condition) {
-      QueryFactory queryFactory = Search.getQueryFactory(weather); <i class="conum" data-value="1"></i><b>(1)</b>
+      // Use Ickle to run the query
+      Query&lt;Object[]&gt; query = weather.query("SELECT city FROM org.infinispan.tutorial.data.LocationWeather WHERE condition = :condition"); <i class="conum" data-value="1"></i><b>(1)</b>
 
-      Query&lt;Object[]&gt; query = queryFactory.create("SELECT city FROM org.infinispan.tutorial.data.LocationWeather w where w.condition = :condition"); <i class="conum" data-value="2"></i><b>(2)</b>
-
-      query.setParameter("condition", condition.name()); <i class="conum" data-value="3"></i><b>(3)</b>
+      // Set the parameter value
+      query.setParameter("condition", condition.name()); <i class="conum" data-value="2"></i><b>(2)</b>
 
       return query;
    }</code></pre>
@@ -1562,18 +1550,14 @@ LocationWeather{temperature=18.044653, condition='SUNNY', city='Madrid', country
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Gets the <code>QueryFactory</code> from the cache.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="2"></i><b>2</b></td>
 <td>Creates a SELECT query using the Ickle query language. This query finds every <code>LocationWeather</code> with a weather condition and returns only the city.</td>
 </tr>
 <tr>
-<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
 <td>Sets the <code>condition</code> parameter.</td>
 </tr>
 <tr>
-<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
 <td>Executes the query, returns the list, and filters the <code>Object[]</code> to get the <code>String</code> results.</td>
 </tr>
 </table>
@@ -1613,17 +1597,19 @@ WET: [Basel, Bucarest]</code></pre>
 <div class="content">
 <pre class="pygments highlight"><code data-lang="java">public void findWeatherByConditionContinuously(WeatherCondition condition) {
       Query&lt;Object[]&gt; query = createFindLocationWeatherByConditionQuery(condition); <i class="conum" data-value="1"></i><b>(1)</b>
+      ContinuousQuery&lt;String, LocationWeather&gt; continuousQuery = weather.continuousQuery(); <i class="conum" data-value="2"></i><b>(2)</b>
 
-      ContinuousQuery&lt;String, LocationWeather&gt; continuousQuery = Search.getContinuousQuery(weather); <i class="conum" data-value="2"></i><b>(2)</b>
-
-      ContinuousQueryListener&lt;&gt; listener =
-            new ContinuousQueryListener&lt;String, Object[]&gt;() { <i class="conum" data-value="3"></i><b>(3)</b>
+      // Create the continuous query listener.
+      ContinuousQueryListener&lt;String, Object[]&gt; listener = <i class="conum" data-value="3"></i><b>(3)</b>
+            new ContinuousQueryListener&lt;&gt;() {
+               // This method will be executed every time new items that correspond with the query arrive
                @Override
                public void resultJoining(String key, Object[] data) {
-                   System.out.printf("%s is now %s%n", data[0], condition);
+                  System.out.printf("%s is now %s%n", data[0], condition);
                }
             };
 
+      // And the listener corresponding the query to the continuous query
       continuousQuery.addContinuousQueryListener(query, listener); <i class="conum" data-value="4"></i><b>(4)</b>
    }</code></pre>
 </div>
@@ -1804,7 +1790,7 @@ Porto is now SUNNY
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2024-05-17 16:02:09 +0200
+Last updated 2024-05-17 16:18:39 +0200
 </div>
 </div>
 </body>
