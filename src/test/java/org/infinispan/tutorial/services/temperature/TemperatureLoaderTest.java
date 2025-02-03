@@ -30,7 +30,7 @@ public class TemperatureLoaderTest {
    }
 
    private RemoteCacheManager createRemoteCacheManager() {
-      ConfigurationBuilder clientConfiguration = new ConfigurationBuilder().clientIntelligence(ClientIntelligence.BASIC);
+      ConfigurationBuilder clientConfiguration = new ConfigurationBuilder();
       RemoteCacheManager remoteCacheManager = infinispanServerExtension.hotrod().withClientConfiguration(clientConfiguration).createRemoteCacheManager();
       SerializationContext serCtx = MarshallerUtil.getSerializationContext(remoteCacheManager);
       LocationWeatherSchema schema = new LocationWeatherSchemaImpl();

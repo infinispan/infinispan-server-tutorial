@@ -2,7 +2,6 @@ package org.infinispan.tutorial.db;
 
 import org.infinispan.client.hotrod.RemoteCache;
 import org.infinispan.client.hotrod.RemoteCacheManager;
-import org.infinispan.client.hotrod.configuration.ClientIntelligence;
 import org.infinispan.client.hotrod.configuration.ConfigurationBuilder;
 import org.infinispan.tutorial.data.LocationWeather;
 
@@ -33,9 +32,6 @@ public class DataSourceConnector {
 
         // Hot Rod URI
         builder.uri("hotrod://admin:secret@localhost:11222");
-
-        // For Docker For Mac. Not recommended for production. Default is HASH_DISTRIBUTION_AWARE
-        builder.clientIntelligence(ClientIntelligence.BASIC);
 
         URI temperatureCacheConfig;
         URI weatherCacheConfig;

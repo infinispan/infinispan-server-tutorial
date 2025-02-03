@@ -7,7 +7,7 @@
   <name>Infinispan Tutorial: Client/Server tutorial</name>
 
   <properties>
-    <version.infinispan>15.0.10.Final</version.infinispan>
+    <version.infinispan>15.1.15.Final</version.infinispan>
     <version.maven-surefire-plugin>2.22.2</version.maven-surefire-plugin>
     <version.maven-failsafe-plugin>2.22.2</version.maven-failsafe-plugin>
   </properties>

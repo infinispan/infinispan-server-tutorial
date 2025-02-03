@@ -1,7 +1,6 @@
 package org.infinispan.tutorial.services.temperature;
 
 import org.infinispan.client.hotrod.RemoteCacheManager;
-import org.infinispan.client.hotrod.configuration.ClientIntelligence;
 import org.infinispan.client.hotrod.configuration.ConfigurationBuilder;
 import org.infinispan.client.hotrod.marshall.MarshallerUtil;
 import org.infinispan.protostream.SerializationContext;
@@ -32,7 +31,7 @@ public class LocationWeatherLoaderTest {
    }
 
    private RemoteCacheManager createRemoteCacheManager() {
-      ConfigurationBuilder clientConfiguration = new ConfigurationBuilder().clientIntelligence(ClientIntelligence.BASIC);
+      ConfigurationBuilder clientConfiguration = new ConfigurationBuilder();
       RemoteCacheManager remoteCacheManager = infinispanServerExtension.hotrod().withClientConfiguration(clientConfiguration).createRemoteCacheManager();
       SerializationContext serCtx = MarshallerUtil.getSerializationContext(remoteCacheManager);
       LocationWeatherSchema schema = new LocationWeatherSchemaImpl();
