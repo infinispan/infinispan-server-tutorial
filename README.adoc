@@ -232,14 +232,11 @@ ConfigurationBuilder builder = new ConfigurationBuilder(); //<1>
 
 builder.uri("hotrod://admin:secret@localhost:11222"); //<2>
 
-builder.clientIntelligence(ClientIntelligence.BASIC); //<3>
-
-remoteCacheManager = new RemoteCacheManager(builder.build()); //<4>
+remoteCacheManager = new RemoteCacheManager(builder.build()); //<3>
 ----
 <1> Creates a `ConfigurationBuilder`
 <2> HotRod URI connection (server, port and credentials)
-<3> Uses `BASIC` Hot Rod client intelligence. This is required to use Docker with a Mac.
-<4> Creates a `RemoteCacheManager` with the configuration.
+<3> Creates a `RemoteCacheManager` with the configuration.
 
 ==== Test the Connection
 
