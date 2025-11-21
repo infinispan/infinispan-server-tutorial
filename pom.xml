@@ -7,7 +7,7 @@
   <name>Infinispan Tutorial: Client/Server tutorial</name>
 
   <properties>
-    <version.infinispan>15.1.15.Final</version.infinispan>
+    <version.infinispan>16.0.1</version.infinispan>
     <version.maven-surefire-plugin>2.22.2</version.maven-surefire-plugin>
     <version.maven-failsafe-plugin>2.22.2</version.maven-failsafe-plugin>
   </properties>
@@ -36,14 +36,6 @@
       <dependency>
           <groupId>org.infinispan</groupId>
           <artifactId>infinispan-client-hotrod</artifactId>
-      </dependency>
-      <dependency>
-          <groupId>org.infinispan</groupId>
-          <artifactId>infinispan-remote-query-client</artifactId>
-      </dependency>
-      <dependency>
-          <groupId>org.infinispan</groupId>
-          <artifactId>infinispan-query-dsl</artifactId>
       </dependency>
       <dependency>
           <groupId>org.infinispan</groupId>

@@ -72,8 +72,9 @@ public class DataSourceConnector {
     public RemoteCache<String, LocationWeather> getWeatherCache() {
         Objects.requireNonNull(remoteCacheManager);
 
-        // Initialize the Marshalling context
-        LocationWeatherMarshallingContext.initSerializationContext(remoteCacheManager);
+        // Upload schema on the server
+        remoteCacheManager.administration().schemas()
+              .createOrUpdate(new LocationWeatherSchemaImpl());
 
         System.out.println("---- Get the 'weather' cache ----");
 
