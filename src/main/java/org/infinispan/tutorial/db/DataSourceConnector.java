@@ -44,7 +44,9 @@ public class DataSourceConnector {
         System.out.println("---- Get or create the 'weather' cache ----");
         checkConnection();
 
-        // STEP Create the weather cache
+        // STEP Upload schema on the server
+
+        // STEP Get the weather cache
         return null;
     }
 

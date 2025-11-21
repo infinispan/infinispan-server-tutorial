@@ -494,21 +494,24 @@ public interface LocationWeatherSchema extends GeneratedSchema {
 Run `mvn clean package` from the command line or build the project in your IDE to generate the `LocationWeatherSchemaImpl` class.
 ====
 
-.org.infinispan.tutorial.db.LocationWeatherMarshallingContext
+.org.infinispan.tutorial.db.DataSourceConnector
 [source,java]
 ----
-       // Retrieve metadata cache
-      RemoteCache<String, String> metadataCache =
-            cacheManager.getCache(ProtobufMetadataManagerConstants.PROTOBUF_METADATA_CACHE_NAME); // <1>
+ // Step - Get or create a Queryable Cache
+public RemoteCache<String, LocationWeather> getWeatherCache() {
+    Objects.requireNonNull(remoteCacheManager);
 
-      GeneratedSchema schema = new LocationWeatherSchemaImpl(); // <2>
+    // Step - Upload schema on the server
+    remoteCacheManager.administration().schemas()
+          .createOrUpdate(new LocationWeatherSchemaImpl()); // <1>
 
-      // Define the new schema on the server too
-      metadataCache.put(schema.getProtoFileName(), schema.getProtoFile()); //<3>
+    System.out.println("---- Get the 'weather' cache ----");
+
+    // Get the cache
+   return remoteCacheManager.getCache("weather");
+}
 ----
-<1> Retrieves the metadata cache that stores all Protobuf schemas.
-<2> Use the class generated from the `LocationWeatherSchema` interface to retrieve the schema.
-<3> Adds the schema to the cache.
+<1> Use schema administration to upload to the server
 
 
 ==== Create a Weather Cache
