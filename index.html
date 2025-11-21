@@ -916,9 +916,7 @@ mvn exec:java -Dexec.mainClass=org.infinispan.tutorial.client.temperature.Temper
 
 builder.uri("hotrod://admin:secret@localhost:11222"); <i class="conum" data-value="2"></i><b>(2)</b>
 
-builder.clientIntelligence(ClientIntelligence.BASIC); <i class="conum" data-value="3"></i><b>(3)</b>
-
-remoteCacheManager = new RemoteCacheManager(builder.build()); <i class="conum" data-value="4"></i><b>(4)</b></code></pre>
+remoteCacheManager = new RemoteCacheManager(builder.build()); <i class="conum" data-value="3"></i><b>(3)</b></code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -933,10 +931,6 @@ remoteCacheManager = new RemoteCacheManager(builder.build()); <i class="conum" d
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>Uses <code>BASIC</code> Hot Rod client intelligence. This is required to use Docker with a Mac.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="4"></i><b>4</b></td>
 <td>Creates a <code>RemoteCacheManager</code> with the configuration.</td>
 </tr>
 </table>
@@ -1331,31 +1325,28 @@ public interface LocationWeatherSchema extends GeneratedSchema {
 </table>
 </div>
 <div class="listingblock">
-<div class="title">org.infinispan.tutorial.db.LocationWeatherMarshallingContext</div>
+<div class="title">org.infinispan.tutorial.db.DataSourceConnector</div>
 <div class="content">
-<pre class="pygments highlight"><code data-lang="java">       // Retrieve metadata cache
-      RemoteCache&lt;String, String&gt; metadataCache =
-            cacheManager.getCache(ProtobufMetadataManagerConstants.PROTOBUF_METADATA_CACHE_NAME); <i class="conum" data-value="1"></i><b>(1)</b>
+<pre class="pygments highlight"><code data-lang="java"> // Step - Get or create a Queryable Cache
+public RemoteCache&lt;String, LocationWeather&gt; getWeatherCache() {
+    Objects.requireNonNull(remoteCacheManager);
 
-      GeneratedSchema schema = new LocationWeatherSchemaImpl(); <i class="conum" data-value="2"></i><b>(2)</b>
+    // Step - Upload schema on the server
+    remoteCacheManager.administration().schemas()
+          .createOrUpdate(new LocationWeatherSchemaImpl()); <i class="conum" data-value="1"></i><b>(1)</b>
 
-      // Define the new schema on the server too
-      metadataCache.put(schema.getProtoFileName(), schema.getProtoFile()); <i class="conum" data-value="3"></i><b>(3)</b></code></pre>
+    System.out.println("---- Get the 'weather' cache ----");
+
+    // Get the cache
+   return remoteCacheManager.getCache("weather");
+}</code></pre>
 </div>
 </div>
 <div class="colist arabic">
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Retrieves the metadata cache that stores all Protobuf schemas.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>Use the class generated from the <code>LocationWeatherSchema</code> interface to retrieve the schema.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>Adds the schema to the cache.</td>
+<td>Use schema administration to upload to the server</td>
 </tr>
 </table>
 </div>
@@ -1790,7 +1781,7 @@ Porto is now SUNNY
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2024-05-17 16:18:39 +0200
+Last updated 2025-11-21 19:14:11 +0100
 </div>
 </div>
 </body>
