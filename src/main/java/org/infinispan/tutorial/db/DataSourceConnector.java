@@ -67,12 +67,12 @@ public class DataSourceConnector {
         // Get the cache
        return remoteCacheManager.getCache("temperature");
     }
-    // Step - Get or create a Queryable Cache
 
+    // Step - Get or create a Queryable Cache
     public RemoteCache<String, LocationWeather> getWeatherCache() {
         Objects.requireNonNull(remoteCacheManager);
 
-        // Upload schema on the server
+        // Step - Upload schema on the server
         remoteCacheManager.administration().schemas()
               .createOrUpdate(new LocationWeatherSchemaImpl());
 
