@@ -207,18 +207,6 @@ Open the `pom.xml` file for this project and confirm that the following dependen
     <groupId>org.infinispan</groupId>
     <artifactId>infinispan-client-hotrod</artifactId>
 </dependency>
-<dependency>
-    <groupId>org.infinispan</groupId>
-    <artifactId>infinispan-api</artifactId>
-</dependency>
-<dependency>
-    <groupId>org.infinispan</groupId>
-    <artifactId>infinispan-query-dsl</artifactId>
-</dependency>
-<dependency>
-    <groupId>org.infinispan</groupId>
-    <artifactId>infinispan-remote-query-client</artifactId>
-</dependency>
 ----
 
 ==== Create a Remote Connection
