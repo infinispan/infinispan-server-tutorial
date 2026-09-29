@@ -7,7 +7,8 @@
   <name>Infinispan Tutorial: Client/Server tutorial</name>
 
   <properties>
-    <version.infinispan>16.0.1</version.infinispan>
+    <version.infinispan>16.2.2</version.infinispan>
+    <version.protostream>6.0.9</version.protostream>
     <version.maven-surefire-plugin>2.22.2</version.maven-surefire-plugin>
     <version.maven-failsafe-plugin>2.22.2</version.maven-failsafe-plugin>
   </properties>
@@ -35,7 +36,8 @@
       </dependency>
       <dependency>
           <groupId>org.infinispan</groupId>
-          <artifactId>infinispan-server-testdriver-junit5</artifactId>
+          <artifactId>infinispan-server-testdriver-core</artifactId>
+          <version>${version.infinispan}</version>
           <scope>test</scope>
       </dependency>
   </dependencies>
@@ -46,10 +48,16 @@
              <plugin>
                  <groupId>org.apache.maven.plugins</groupId>
                  <artifactId>maven-compiler-plugin</artifactId>
-                 <version>3.8.1</version>
+                 <version>3.14.0</version>
                  <configuration>
-                     <source>17</source>
-                     <target>17</target>
+                     <release>17</release>
+                     <annotationProcessorPaths>
+                         <annotationProcessorPath>
+                             <groupId>org.infinispan.protostream</groupId>
+                             <artifactId>protostream-processor</artifactId>
+                             <version>${version.protostream}</version>
+                         </annotationProcessorPath>
+                     </annotationProcessorPaths>
                  </configuration>
              </plugin>
          </plugins>

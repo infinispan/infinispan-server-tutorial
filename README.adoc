@@ -108,7 +108,7 @@ The easiest way to run Infinispan Server locally is to pull the container image.
 
 * Docker
 +
-`docker run -it -p 11222:11222 -e USER="admin" -e PASS="password" infinispan/server:latest`
+`docker run -it -p 11222:11222 -e USER="admin" -e PASS="secret" quay.io/infinispan/server:latest`
 
 ==== Running the Server Distribution
 
@@ -195,10 +195,8 @@ Connect to your locally running Infinispan Server from a Hot Rod Java client.
 
 Open the `pom.xml` file for this project and confirm that the following dependencies are available:
 
-* `infinispan-client-hotrod` adds the https://infinispan.org/docs/stable/titles/hotrod_java/hotrod_java.html[Java Hot Rod Client].
-* `infinispan-api` adds the Infinispan new API with the annotations.
-* `infinispan-query-dsl` adds the Infinispan Search API.
-* `infinispan-remote-query-client` adds a remote search client.
+* `infinispan-client-hotrod` adds the https://infinispan.org/docs/stable/titles/hotrod_java/hotrod_java.html[Java Hot Rod Client], which includes the query and search APIs.
+* `protostream-processor` generates Protobuf serialization code at build time.
 
 .pom.xml
 [source,xml]
@@ -309,7 +307,7 @@ You should see messages such as the following:
 
 ---- Connect to Infinispan ----
 <timestamp> org.infinispan.client.hotrod.RemoteCacheManager actualStart
-INFO: ISPN004021: Infinispan version: Infinispan 'Corona Extra' 11.0.1.Final
+INFO: ISPN004021: Infinispan version: Infinispan 'Arctic Panzer Wolf' 16.2.2
 ---- Get or create the 'temperature' cache ----
 ---- Press any key to quit ----
 ---- Loading information ----
@@ -411,7 +409,7 @@ You should see a message that displays the current temperature of a location and
 
 ---- Connect to Infinispan ----
 <timestamp> org.infinispan.client.hotrod.RemoteCacheManager actualStart
-INFO: ISPN004021: Infinispan version: Infinispan 'Corona Extra' 11.0.1.Final
+INFO: ISPN004021: Infinispan version: Infinispan 'Arctic Panzer Wolf' 16.2.2
 ---- Get or create the 'temperature' cache ----
 Temperature 14.185611 for Bilbao, Spain
 ---- Start monitoring temperature changes for Bilbao, Spain ----
@@ -461,9 +459,9 @@ public record LocationWeather(@Basic
 
 To marshall the annotated `LocationWeather` class, Infinispan requires a Protobuf schema. You can either provide a Protobuf descriptor file or create a descriptor file from the annotations you added to the POJO.
 
-In `LocationWeatherMarshallingContext`, you add the schema to the Protobuf cache in Infinispan and then build a Protobuf using the `@AutoProtoSchemaBuilder` method.
+In `LocationWeatherSchema`, you add the schema to the Protobuf cache in Infinispan and then build a Protobuf schema using the `@ProtoSchema` annotation.
 
-.org.infinispan.tutorial.db.LocationWeatherMarshallingContext
+.org.infinispan.tutorial.db.LocationWeatherSchema
 [source,java]
 ----
 @ProtoSchema(
@@ -522,16 +520,19 @@ and on Infinispan Server.
 .org.infinispan.tutorial.db.DataSourceConnector
 [source,java]
 ----
-=     public RemoteCache<String, LocationWeather> getWeatherCache() {
-        System.out.println("--- Get or Create a queryable weather cache ---");
+    public RemoteCache<String, LocationWeather> getWeatherCache() {
         Objects.requireNonNull(remoteCacheManager);
 
-        LocationWeatherMarshallingContext.initSerializationContext(remoteCacheManager); // <1>
+        // Upload schema on the server
+        remoteCacheManager.administration().schemas()
+              .createOrUpdate(new LocationWeatherSchemaImpl()); // <1>
+
+        System.out.println("---- Get the 'weather' cache ----");
 
         return remoteCacheManager.getCache("weather"); // <2>
     }
 ----
-<1> Initializes the serialization context.
+<1> Uploads the Protobuf schema to the server.
 <2> Gets the `weather` cache.
 
 ==== Verify Weather Loader
@@ -548,7 +549,7 @@ You should see messages that indicate the `weather` cache is created and weather
 
 ---- Connect to Infinispan ----
 <timestamp> org.infinispan.client.hotrod.RemoteCacheManager actualStart
-INFO: ISPN004021: Infinispan version: Infinispan 'Corona Extra' 11.0.1.Final
+INFO: ISPN004021: Infinispan version: Infinispan 'Arctic Panzer Wolf' 16.2.2
 LocationWeatherMarshallingContext - initialize the serialization context for LocationWeather class
 ---- Get or create the 'weather' cache ----
 ---- Press any key to quit ----
@@ -723,14 +724,14 @@ https://www.testcontainers.org/test_framework_integration/junit_5/[Test containe
 
 This section of the tutorial provides an example test that verifies the temperatures loaded in Infinispan Server are correct.
 
-[IMPORTAT]
+[IMPORTANT]
 ====
 You need https://www.docker.com/[Docker] for this part of the tutorial.
 ====
 
 ==== Add Dependencies
 
-Open the `pom.xml` file for this project and add the `infinispan-server-testdriver-junit5` dependency as follows:
+Open the `pom.xml` file for this project and add the `infinispan-server-testdriver-core` dependency as follows:
 
 
 .pom.xml
@@ -738,16 +739,10 @@ Open the `pom.xml` file for this project and add the `infinispan-server-testdriv
 ----
     <dependency>
         <groupId>org.infinispan</groupId>
-        <artifactId>infinispan-server-testdriver-junit5</artifactId>
-        <version>${version.infinispan}</version>
+        <artifactId>infinispan-server-testdriver-core</artifactId>
         <scope>test</scope>
     </dependency>
 ----
-
-[NOTE]
-====
-JUnit 4 rules are also available for out-of-the-box testing with Infinispan Server. Check the `infinispan-server-testdriver-junit4` dependency.
-====
 
 ==== Using Test Containers
 
